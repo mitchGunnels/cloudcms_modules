@@ -1,4 +1,4 @@
-define(function(require) {
+define(function(require, exports, module) {
 
     var UI = require("ui");
     var moduleId = module.uri.match(/^.+(_modules[^\/]+)\/.*/)[1];

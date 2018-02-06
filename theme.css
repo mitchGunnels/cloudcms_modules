@@ -1,0 +1,142 @@
+/** GLOBAL **/
+
+.cloudcms-theme .context-header-logo {
+    background: url("https://www.cricketwireless.com/content/dam/newco/header/logo_cricket-green.png");
+    height: 41px;
+    width: 183px;
+}
+
+.cloudcms-theme .context-header-title {
+    display: none;
+}
+
+.cloudcms-theme .workspace-bar a:visited {
+    color: #fff;
+}
+
+.cloudcms-theme .workspace-bar .form-control {
+    background-color: transparent;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    border-color: #fff;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.cloudcms-theme-header .btn-link {
+    color: #000;
+}
+
+
+.cloudcms-theme .cloudcms-theme-header {
+    background-color: #fff;
+    border-color: #fff;
+    height: 64px;
+}
+
+
+.cloudcms-theme .workspace-bar a.btn.btn-default {
+    background-color: transparent;
+    color: #fff;
+    display: inline-block;
+    width: auto;
+    font-weight: 200;
+    border-color: #fff;
+    margin-top: -2px;
+}
+
+div[region="workspace-bar"] {
+    background-color: #000;
+    min-height: 50px;
+    border-top: 5px solid #60a630;
+    border-bottom: 5px solid #000;
+}
+
+a {
+    color: #1b75bb;
+    text-decoration: none;
+}
+
+.navmenu .nav a.navlink {
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 16px;
+    padding: 12px 0;
+    display: block;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 200;
+}
+
+.navmenu .nav li.active a.navlink {
+    background-color: #efefef;
+    color: #333;
+    font-weight: 700;
+    text-transform: none;
+}
+
+.navmenu .nav .header {
+    border-top: 1px #e3e3e3 solid;
+    color: #60a630;
+    text-align: center;
+    text-transform: uppercase;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-size: 12px;
+}
+
+.list-row-info a {
+    color: #1b75bb;
+}
+
+
+
+
+
+/*.cloudcms-theme .cloudcms-theme-header {
+    border: 0px;
+}
+
+.cloudcms-theme a {
+    color: #FF6600;
+}
+
+.cloudcms-theme a:visited {
+    color: #DD4400;
+}
+
+.cloudcms-theme .cloudcms-theme-footer {
+    background: url(./footer-logo.jpg);
+    width: 80px;
+    height: 50px;
+}*/
+
+
+
+/** PLATFORM **/
+
+/*.cloudcms-theme .cloudcms-theme-header.cloudcms-theme-header-platform {
+    background-color: #FF6600;
+}
+
+.cloudcms-theme .cloudcms-theme-header.cloudcms-theme-header-platform .context-header-logo {
+    background: url(./header-logo.jpg) no-repeat center !important;
+    ;
+    width: 77px;
+    height: 48px;
+}
+*/
+
+
+/** PROJECT **/
+
+/*.cloudcms-theme .cloudcms-theme-header.cloudcms-theme-header-project {
+    background-color: #C3BEBA;
+}
+
+.cloudcms-theme div[region="workspace-bar"] {
+    border-top: 0px;
+    background-color: #837E7A;
+}*/

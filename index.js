@@ -3,10 +3,10 @@ define(function(require) {
     var UI = require("ui");
     var moduleId = module.uri.match(/^.+(_modules[^\/]+)\/.*/)[1];
 
-    // register the theme: "cloud-cms-theme"
+    // register the theme: "cricket"
     UI.registerTheme({
-        "key": "cloud-cms-theme",
-        "title": "Cricket Theme",
+        "key": "cricket",
+        "title": "Cricket",
         "module": moduleId + "/theme.js"
     });
 

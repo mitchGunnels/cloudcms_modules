@@ -7,7 +7,7 @@ define(function(require, exports, module) {
     UI.registerTheme({
         "key": "cricket",
         "title": "Cricket",
-        "module": moduleId + "/theme.js"
+        "module": moduleId + "/cricket-theme.js"
     });
 
 });

@@ -1,0 +1,9 @@
+{
+    "fields": {
+        "copy": {
+            "type": "custom-copier",
+            "dependentField": "/source",
+            "required": false
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "title": "Example",
+    "type": "object",
+    "properties": {
+        "source": {
+            "type": "string",
+            "title": "Source Text"
+        },
+        "copy": {
+            "type": "string",
+            "title": "Copied Text"
+        }
+    }
+}

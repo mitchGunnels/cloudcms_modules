@@ -4,9 +4,9 @@ define(function(require, exports, module) {
         //Check workspace-picker to determine the appropriate env for creating the preview link.
         var workspacePickerVal = $('select.workspace-picker option:selected').val();
         //Decide on the correct environment
-        if (workspacePickerVal.contains("master")) {
+        if (workspacePickerVal.includes("Master")) {
             console.log("prod");
-        } else if (workspacePickerVal.contains("SIT1")) {
+        } else if (workspacePickerVal.includes("SIT1")) {
             console.log("SIT1");
         } else {
             console.log("Nothing found");

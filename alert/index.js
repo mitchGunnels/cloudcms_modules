@@ -1,3 +1,3 @@
 define(function(require) {
-    require("./alert/alert.js");
+    require("./test/alert.js");
 });

@@ -4,7 +4,10 @@ define(function(require, exports, module) {
 
     var inputVal = $('input[name=previewURL]')[0];
 
-    console.log(inputVal);
+    $(document).ajaxStop(function() {
+        // 0 === $.active
+        console.log(inputVal);
+    });
+
 
 });
-

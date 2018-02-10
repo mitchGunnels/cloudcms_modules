@@ -4,10 +4,7 @@ define(function(require, exports, module) {
 
     var inputVal = $('input[name=previewURL]')[0];
 
-    alert(inputVal);
-
-
-    
+    console.log(inputVal);
 
 });
 

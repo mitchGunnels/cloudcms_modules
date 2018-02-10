@@ -2,7 +2,7 @@ define(function(require, exports, module) {
 
     var $ = require("jquery");
 
-    var inputVal = $('input[name=previewURL]')[0];
+    var inputVal = $('div[name=previewURL]').text();
 
     $(document).ajaxStop(function() {
         // 0 === $.active

@@ -6,6 +6,6 @@ define(function(require, exports, module) {
         setTimeout(function() {
             var inputVal = $('div[name=previewURL]').text();
             console.log(inputVal);
-        }, 500);
+        }, 2000);
     });
 });

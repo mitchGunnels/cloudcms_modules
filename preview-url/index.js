@@ -3,7 +3,9 @@ define(function(require, exports, module) {
 	console.log('module', module);
 
 	var UI = require("ui");
-	console.log(UI);
+	console.log(UI.showModal);
+
+	UI.showModal();
 
     require("./script/preview.js");
 });

@@ -5,7 +5,9 @@ define(function(require, exports, module) {
 	var UI = require("ui");
 	console.log(UI.showModal);
 
-	UI.showModal();
+	UI.showModal({
+		"title":"test"
+	});
 
     require("./script/preview.js");
 });

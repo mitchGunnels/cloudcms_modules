@@ -34,7 +34,7 @@ define(function(require, exports, module) {
         setTimeout(function() {
             var endPoint = $('div[name=previewURL]').text();
             console.log(endPoint);
-            $('div[name=previewURL]').append('<a href="'+domain+endPoint+'" target="_blank">Preview</a>')
+            $('div[name=previewURL]').append(' - <a href="'+domain+endPoint+'" target="_blank">Preview</a>')
         }, 2000);
     });
 });

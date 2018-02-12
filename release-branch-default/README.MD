@@ -1,0 +1,1 @@
+Extending Cloud CMS to default to the last release selected.

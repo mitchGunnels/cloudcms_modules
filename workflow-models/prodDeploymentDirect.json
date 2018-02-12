@@ -1,0 +1,114 @@
+{
+    "title": "Prod Deployment Direct",
+    "nodes":
+    {
+        "start":
+        {
+            "type": "start",
+            "transitions":
+            {
+                "start": "step1"
+            },
+            "form": "main"
+        },
+        "step1":
+        {
+            "type": "participant",
+            "title": "Please approve the attached content for direct PROD deployment",
+            "description": "The provided content require your approval",
+            "swimlane": "approver",
+            "form": "main",
+            "transitions":
+            {
+                "approve": "approve",
+                "reject": "reject"
+            }
+        },
+        "approve":
+        {
+            "type": "passthru",
+            "transitions":
+            {
+                "end": "end"
+            }
+        },
+        "reject":
+        {
+            "type": "passthru",
+            "transitions":
+            {
+                "end": "end"
+            }
+        },
+        "end":
+        {
+            "type": "end"
+        }
+    },
+    "swimlanes":
+    {
+        "approver":
+        {
+            "principals": []
+        }
+    },
+    "forms":
+    {
+        "main":
+        {
+            "schema":
+            {
+                "type": "object",
+                "properties":
+                {
+                    "dueDate":
+                    {
+                        "type": "string"
+                    }
+                }
+            },
+            "options":
+            {
+                "fields":
+                {
+                    "dueDate":
+                    {
+                        "type": "date",
+                        "label": "Due Date",
+                        "required": true
+                    }
+                }
+            }
+        }
+    },
+    "handlers":
+    {
+        "enter": [
+        {
+            "type": "setProperties",
+            "config":
+            {
+                "properties": [
+                {
+                    "name": "state",
+                    "value": "live"
+                }]
+            }
+        }],
+        "leave": [
+        {
+            "type": "syncNode",
+            "config":
+            {
+                "asynchronous": true,
+                "targetBranchId": "master",
+                "includeAllAssociations": true
+            }
+        }]
+    },
+    "description": "After peer review content is deployed directly to PROD.",
+    "id": "prodDeployment",
+    "version": 2,
+    "deployed": true,
+    "head": true
+}

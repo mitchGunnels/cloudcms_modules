@@ -1,0 +1,225 @@
+{
+    "type": "object",
+    "properties":
+    {
+        "Production":
+        {
+            "title": null,
+            "type": "object",
+            "properties":
+            {
+                "header":
+                {
+                    "type": "string",
+                    "title": "Header - Account Settings"
+                },
+                "subhead":
+                {
+                    "type": "string",
+                    "title": "Subhead - Account Settings"
+                }
+            }
+        },
+        "accountInformation":
+        {
+            "title": "Account Information",
+            "type": "object",
+            "properties":
+            {
+                "headline":
+                {
+                    "type": "string",
+                    "title": "Headline - Account Information"
+                },
+                "accountNumberLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Account Number"
+                },
+                "accountTypeLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Account Type"
+                },
+                "smallBusiness":
+                {
+                    "type": "string",
+                    "title": "Copy - Small Business"
+                },
+                "contactNameLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Contact Name"
+                },
+                "nextBillCycleLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Next Billing Cycle"
+                },
+                "preferredLanguageLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Preferred Language"
+                },
+                "preferredLanguageLink":
+                {
+                    "type": "string",
+                    "title": "Label - Preferred Language Link"
+                },
+                "preferredLanguageEnglish":
+                {
+                    "type": "string",
+                    "title": "Copy - English"
+                },
+                "preferredLanguageSpanish":
+                {
+                    "type": "string",
+                    "title": "Copy - Spanish"
+                },
+                "tutorialLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Account Tutorial"
+                },
+                "tutorialLink":
+                {
+                    "type": "string",
+                    "title": "Link - Account Tutorial"
+                }
+            }
+        },
+        "security":
+        {
+            "title": "Security Component",
+            "type": "object",
+            "properties":
+            {
+                "headline":
+                {
+                    "type": "string",
+                    "title": "Headline - Security"
+                },
+                "changePasswordLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Change Password"
+                },
+                "changePasswordLink":
+                {
+                    "type": "string",
+                    "title": "Link - Change Password"
+                },
+                "accountPinLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Account PIN"
+                },
+                "managePinLink":
+                {
+                    "type": "string",
+                    "title": "Link - Manage PIN"
+                }
+            }
+        },
+        "line":
+        {
+            "title": "Line(s) Component",
+            "type": "object",
+            "properties":
+            {
+                "lineHeadline":
+                {
+                    "type": "string",
+                    "title": "Headline - Your Line"
+                },
+                "linesHeadline":
+                {
+                    "type": "string",
+                    "title": "Headline - Your Lines"
+                },
+                "lostStolenStatus":
+                {
+                    "type": "string",
+                    "title": "Copy - Lost or Stolen Status"
+                },
+                "managePendingChangesLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Manage Pending Changes"
+                },
+                "managePendingChangesLink":
+                {
+                    "type": "string",
+                    "title": "Link - Manage Pending Changes"
+                },
+                "voiceMailLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Voice Mail"
+                },
+                "resetPasscodeLink":
+                {
+                    "type": "string",
+                    "title": "Link - Reset Passcode"
+                },
+                "dataConservationLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Data Conservation"
+                },
+                "dataConservationLink":
+                {
+                    "type": "string",
+                    "title": "Link - Data Conservation"
+                },
+                "emailLabel":
+                {
+                    "type": "string",
+                    "title": "Label - Email"
+                },
+                "manageEmailsLink":
+                {
+                    "type": "string",
+                    "title": "Link - Manage Emails"
+                },
+                "awaitingActivation":
+                {
+                    "type": "string",
+                    "title": "Copy - Awaiting Activation"
+                },
+                "activateNowLink":
+                {
+                    "type": "string",
+                    "title": "Link - Activate Now"
+                }
+            }
+        },
+        "addALine":
+        {
+            "title": "Add A Line",
+            "type": "object",
+            "properties":
+            {
+                "addLineSmile":
+                {
+                    "type": "string",
+                    "title": "Copy - Add a Line & Smile"
+                },
+                "wantToAddLine":
+                {
+                    "type": "string",
+                    "title": "Copy - Want to add a line?"
+                },
+                "wantToAddLineDetails":
+                {
+                    "type": "string",
+                    "title": "Copy - Want to add a line details"
+                }
+            }
+        }
+    },
+    "title": "Account Settings",
+    "description": "myAccount:accountSettings",
+    "_parent": "myAccount:base-type",
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}

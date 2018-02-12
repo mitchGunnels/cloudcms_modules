@@ -1,0 +1,39 @@
+{
+    "SIT1": [
+    {
+        "myAccount":
+        {
+            "release": 1804,
+            "branchID": "9338392dkd293"
+        }
+    },
+    {
+        "portalBuyFlow":
+        {
+            "release": 1804,
+            "branchID": "9338392dkd293"
+        }
+    },
+    {
+        "portalSupport":
+        {
+            "release": 1804,
+            "branchID": "9338392dkd293"
+        }
+    },
+    {
+        "ODA":
+        {
+            "release": 1804,
+            "branchID": "9338392dkd293"
+        }
+    }],
+    "SIT2": [
+    {
+        "myAccount":
+        {
+            "release": 1804,
+            "branchID": "9338392dkd293"
+        }
+    }]
+}

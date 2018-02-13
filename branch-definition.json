@@ -1,225 +1,336 @@
 {
+    "title": "Branch Management",
+    "description": "",
+    "_parent": "n:node",
     "type": "object",
     "properties":
     {
+        "title":
+        {
+            "title": "Title",
+            "type": "string"
+        },
         "Production":
         {
-            "title": null,
-            "type": "object",
-            "properties":
+            "type": "array",
+            "title": "production",
+            "items":
             {
-                "header":
+                "type": "object",
+                "title": "projects",
+                "properties":
                 {
-                    "type": "string",
-                    "title": "Header - Account Settings"
+                    "title":
+                    {
+                        "title": "Project Name",
+                        "type": "string"
+                    },
+                    "Release":
+                    {
+                        "type": "array",
+                        "title": "releases",
+                        "items":
+                        {
+                            "type": "object",
+                            "title": "Release Info",
+                            "properties":
+                            {
+                                "releaseNumber":
+                                {
+                                    "title": "Release Number",
+                                    "type": "string"
+                                },
+                                "branchID":
+                                {
+                                    "title": "Branch ID",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "releaseNumber",
+                                "branchID"
+                            ]
+                        }
+                    }
                 },
-                "subhead":
+                "required": [
+                    "title"
+                ]
+            }
+        },
+        "SIT1":
+        {
+            "type": "array",
+            "title": "SIT1",
+            "items":
+            {
+                "type": "object",
+                "title": "projects",
+                "properties":
                 {
-                    "type": "string",
-                    "title": "Subhead - Account Settings"
+                    "title":
+                    {
+                        "title": "Project Name",
+                        "type": "string"
+                    },
+                    "Release":
+                    {
+                        "type": "array",
+                        "title": "releases",
+                        "items":
+                        {
+                            "type": "object",
+                            "title": "Release Info",
+                            "properties":
+                            {
+                                "releaseNumber":
+                                {
+                                    "title": "Release Number",
+                                    "type": "string"
+                                },
+                                "branchID":
+                                {
+                                    "title": "Branch ID",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "releaseNumber",
+                                "branchID"
+                            ]
+                        }
+                    }
                 }
             }
         },
-        "accountInformation":
+        "SIT2":
         {
-            "title": "Account Information",
-            "type": "object",
-            "properties":
+            "type": "array",
+            "title": "SIT2",
+            "items":
             {
-                "headline":
+                "type": "object",
+                "title": "projects",
+                "properties":
                 {
-                    "type": "string",
-                    "title": "Headline - Account Information"
-                },
-                "accountNumberLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Account Number"
-                },
-                "accountTypeLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Account Type"
-                },
-                "smallBusiness":
-                {
-                    "type": "string",
-                    "title": "Copy - Small Business"
-                },
-                "contactNameLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Contact Name"
-                },
-                "nextBillCycleLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Next Billing Cycle"
-                },
-                "preferredLanguageLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Preferred Language"
-                },
-                "preferredLanguageLink":
-                {
-                    "type": "string",
-                    "title": "Label - Preferred Language Link"
-                },
-                "preferredLanguageEnglish":
-                {
-                    "type": "string",
-                    "title": "Copy - English"
-                },
-                "preferredLanguageSpanish":
-                {
-                    "type": "string",
-                    "title": "Copy - Spanish"
-                },
-                "tutorialLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Account Tutorial"
-                },
-                "tutorialLink":
-                {
-                    "type": "string",
-                    "title": "Link - Account Tutorial"
+                    "title":
+                    {
+                        "title": "Project Name",
+                        "type": "string"
+                    },
+                    "Release":
+                    {
+                        "type": "array",
+                        "title": "releases",
+                        "items":
+                        {
+                            "type": "object",
+                            "title": "Release Info",
+                            "properties":
+                            {
+                                "releaseNumber":
+                                {
+                                    "title": "Release Number",
+                                    "type": "string"
+                                },
+                                "branchID":
+                                {
+                                    "title": "Branch ID",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "releaseNumber",
+                                "branchID"
+                            ]
+                        }
+                    }
                 }
             }
         },
-        "security":
+        "SIT3":
         {
-            "title": "Security Component",
-            "type": "object",
-            "properties":
+            "type": "array",
+            "title": "SIT3",
+            "items":
             {
-                "headline":
+                "type": "object",
+                "title": "projects",
+                "properties":
                 {
-                    "type": "string",
-                    "title": "Headline - Security"
-                },
-                "changePasswordLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Change Password"
-                },
-                "changePasswordLink":
-                {
-                    "type": "string",
-                    "title": "Link - Change Password"
-                },
-                "accountPinLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Account PIN"
-                },
-                "managePinLink":
-                {
-                    "type": "string",
-                    "title": "Link - Manage PIN"
+                    "title":
+                    {
+                        "title": "Project Name",
+                        "type": "string"
+                    },
+                    "Release":
+                    {
+                        "type": "array",
+                        "title": "releases",
+                        "items":
+                        {
+                            "type": "object",
+                            "title": "Release Info",
+                            "properties":
+                            {
+                                "releaseNumber":
+                                {
+                                    "title": "Release Number",
+                                    "type": "string"
+                                },
+                                "branchID":
+                                {
+                                    "title": "Branch ID",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "releaseNumber",
+                                "branchID"
+                            ]
+                        }
+                    }
                 }
             }
         },
-        "line":
+        "SIT6":
         {
-            "title": "Line(s) Component",
-            "type": "object",
-            "properties":
+            "type": "array",
+            "title": "SIT6",
+            "items":
             {
-                "lineHeadline":
+                "type": "object",
+                "title": "projects",
+                "properties":
                 {
-                    "type": "string",
-                    "title": "Headline - Your Line"
-                },
-                "linesHeadline":
-                {
-                    "type": "string",
-                    "title": "Headline - Your Lines"
-                },
-                "lostStolenStatus":
-                {
-                    "type": "string",
-                    "title": "Copy - Lost or Stolen Status"
-                },
-                "managePendingChangesLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Manage Pending Changes"
-                },
-                "managePendingChangesLink":
-                {
-                    "type": "string",
-                    "title": "Link - Manage Pending Changes"
-                },
-                "voiceMailLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Voice Mail"
-                },
-                "resetPasscodeLink":
-                {
-                    "type": "string",
-                    "title": "Link - Reset Passcode"
-                },
-                "dataConservationLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Data Conservation"
-                },
-                "dataConservationLink":
-                {
-                    "type": "string",
-                    "title": "Link - Data Conservation"
-                },
-                "emailLabel":
-                {
-                    "type": "string",
-                    "title": "Label - Email"
-                },
-                "manageEmailsLink":
-                {
-                    "type": "string",
-                    "title": "Link - Manage Emails"
-                },
-                "awaitingActivation":
-                {
-                    "type": "string",
-                    "title": "Copy - Awaiting Activation"
-                },
-                "activateNowLink":
-                {
-                    "type": "string",
-                    "title": "Link - Activate Now"
+                    "title":
+                    {
+                        "title": "Project Name",
+                        "type": "string"
+                    },
+                    "Release":
+                    {
+                        "type": "array",
+                        "title": "releases",
+                        "items":
+                        {
+                            "type": "object",
+                            "title": "Release Info",
+                            "properties":
+                            {
+                                "releaseNumber":
+                                {
+                                    "title": "Release Number",
+                                    "type": "string"
+                                },
+                                "branchID":
+                                {
+                                    "title": "Branch ID",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "releaseNumber",
+                                "branchID"
+                            ]
+                        }
+                    }
                 }
             }
         },
-        "addALine":
+        "SIT8":
         {
-            "title": "Add A Line",
-            "type": "object",
-            "properties":
+            "type": "array",
+            "title": "SIT8",
+            "items":
             {
-                "addLineSmile":
+                "type": "object",
+                "title": "projects",
+                "properties":
                 {
-                    "type": "string",
-                    "title": "Copy - Add a Line & Smile"
-                },
-                "wantToAddLine":
+                    "title":
+                    {
+                        "title": "Project Name",
+                        "type": "string"
+                    },
+                    "Release":
+                    {
+                        "type": "array",
+                        "title": "releases",
+                        "items":
+                        {
+                            "type": "object",
+                            "title": "Release Info",
+                            "properties":
+                            {
+                                "releaseNumber":
+                                {
+                                    "title": "Release Number",
+                                    "type": "string"
+                                },
+                                "branchID":
+                                {
+                                    "title": "Branch ID",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "releaseNumber",
+                                "branchID"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "SIT9":
+        {
+            "type": "array",
+            "title": "SIT9",
+            "items":
+            {
+                "type": "object",
+                "title": "projects",
+                "properties":
                 {
-                    "type": "string",
-                    "title": "Copy - Want to add a line?"
-                },
-                "wantToAddLineDetails":
-                {
-                    "type": "string",
-                    "title": "Copy - Want to add a line details"
+                    "title":
+                    {
+                        "title": "Project Name",
+                        "type": "string"
+                    },
+                    "Release":
+                    {
+                        "type": "array",
+                        "title": "releases",
+                        "items":
+                        {
+                            "type": "object",
+                            "title": "Release Info",
+                            "properties":
+                            {
+                                "releaseNumber":
+                                {
+                                    "title": "Release Number",
+                                    "type": "string"
+                                },
+                                "branchID":
+                                {
+                                    "title": "Branch ID",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "releaseNumber",
+                                "branchID"
+                            ]
+                        }
+                    }
                 }
             }
         }
     },
-    "title": "Account Settings",
-    "description": "myAccount:accountSettings",
-    "_parent": "myAccount:base-type",
-    "$schema": "http://json-schema.org/draft-04/schema#"
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "required": [
+        "title"
+    ]
 }

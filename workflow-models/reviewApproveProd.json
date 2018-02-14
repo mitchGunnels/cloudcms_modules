@@ -1,0 +1,80 @@
+{
+    "title": "PROD - Review and Publish",
+    "description": "Review and approve content changes. Mark as published. Copy to master(PROD) branch",
+    "nodes":
+    {
+        "start":
+        {
+            "type": "start",
+            "transitions":
+            {
+                "start": "review1"
+            }
+        },
+        "review1":
+        {
+            "type": "participant",
+            "title": "Review of content change",
+            "transitions":
+            {
+                "approve": "approve",
+                "reject": "reject"
+            },
+            "swimlane": "approver"
+        },
+        "approve":
+        {
+            "type": "passthru",
+            "transitions":
+            {
+                "finish": "end"
+            },
+            "handlers":
+            {
+                "enter": [
+                {
+                    "type": "setProperties",
+                    "config":
+                    {
+                        "properties": [
+                        {
+                            "name": "state",
+                            "value": "live"
+                        }]
+                    }
+                },
+                {
+                    "type": "syncNode",
+                    "config":
+                    {
+                        "targetBranchId": "master",
+                        "includeAllAssociations": true
+                    }
+                }]
+            }
+        },
+        "reject":
+        {
+            "type": "passthru",
+            "transitions":
+            {
+                "finish": "end"
+            }
+        },
+        "end":
+        {
+            "type": "end"
+        }
+    },
+    "swimlanes":
+    {
+        "approver":
+        {
+            "principals": []
+        }
+    },
+    "id": "reviewApproveProd",
+    "version": 1,
+    "deployed": false,
+    "head": false
+}

@@ -13,5 +13,5 @@ define(function(require, exports, module) {
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
     CKEDITOR.config.entities_processNumerical = true;
-    CKEDITOR.config.disallowedContent = 'script; style; *[on*]; *{*}';
+    CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font]; *{*}';
 });

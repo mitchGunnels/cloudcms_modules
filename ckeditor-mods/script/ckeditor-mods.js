@@ -5,13 +5,14 @@ define(function(require, exports, module) {
             // Use the ability to specify elements as an object.
             elements: CKEDITOR.dtd,
             attributes: true,
-            styles: true,
+            styles: false,
             classes: true
         }
     };
-    CKEDITOR.config.disallowedContent = 'script; style; *[on*]';
+    CKEDITOR.config.disallowedContent = 'script; style;';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-    CKEDITOR.config.pasteFromWordRemoveStyles = true;
-    CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
-    CKEDITOR.config.entities_processNumerical = true;
+    //CKEDITOR.config.pasteFromWordRemoveStyles = true;
+    //CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
+    //CKEDITOR.config.entities_processNumerical = true;
+    CKEDITOR.config.pasteFilter = 'plain-text';
 });

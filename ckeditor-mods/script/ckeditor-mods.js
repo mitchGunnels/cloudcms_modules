@@ -12,6 +12,7 @@ define(function(require, exports, module) {
     CKEDITOR.config.disallowedContent = 'script; style';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
-    CKEDITOR.config.pasteFromWordPromptCleanup = true;
+    CKEDITOR.config.pasteFromWordPromptCleanup = false;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
+    CKEDITOR.config.entities_processNumerical = true;
 });

@@ -11,8 +11,8 @@ define(function(require, exports, module) {
     };
     CKEDITOR.config.disallowedContent = 'script; style;';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-    //CKEDITOR.config.pasteFromWordRemoveStyles = true;
-    //CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
-    //CKEDITOR.config.entities_processNumerical = true;
+    CKEDITOR.config.pasteFromWordRemoveStyles = false;
+    CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
+    CKEDITOR.config.entities_processNumerical = false;
     CKEDITOR.config.pasteFilter = 'plain-text';
 });

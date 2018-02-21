@@ -9,10 +9,9 @@ define(function(require, exports, module) {
             classes: true
         }
     };
-    CKEDITOR.config.disallowedContent = 'script; style;';
+    CKEDITOR.config.disallowedContent = 'script; style; [style,font,on*]';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-    CKEDITOR.config.pasteFromWordRemoveStyles = false;
-    CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
-    CKEDITOR.config.entities_processNumerical = false;
-    CKEDITOR.config.pasteFilter = 'plain-text';
+    CKEDITOR.config.pasteFromWordRemoveStyles = true;
+    CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
+    CKEDITOR.config.entities_processNumerical = true;
 });

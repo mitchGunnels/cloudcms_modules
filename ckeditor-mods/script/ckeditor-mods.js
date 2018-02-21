@@ -11,5 +11,6 @@ define(function(require, exports, module) {
     };
     CKEDITOR.config.disallowedContent = 'script; style';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-    CKEDITOR.config.pasteFromWordCleanupFile = 'plugins/pastefromword/filter/custom.js';
+    //CKEDITOR.config.pasteFromWordCleanupFile = 'plugins/pastefromword/filter/custom.js';
+    CKEDITOR.config.pasteFromWordPromptCleanup = true;
 });

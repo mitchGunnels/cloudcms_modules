@@ -9,7 +9,7 @@ define(function(require, exports, module) {
             classes: true
         }
     };
-    CKEDITOR.config.disallowedContent = 'script; style; [style,font,on*]';
+    CKEDITOR.config.disallowedContent = '*[style]; script; style;';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;

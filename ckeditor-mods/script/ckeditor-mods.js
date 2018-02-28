@@ -9,9 +9,8 @@ define(function(require, exports, module) {
             classes: true
         }
     };
-    
-    CKEDITOR.config.extraPlugins = 'balloonpanel';
-    CKEDITOR.config.extraPlugins = 'a11ychecker';
+
+    CKEDITOR.config.extraPlugins = 'balloonpanel,a11ychecker,cloudcms-image';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;

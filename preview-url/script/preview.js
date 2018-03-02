@@ -36,7 +36,7 @@ define(function(require, exports, module) {
             //console.log(endPoint);
             if (endPoint.length > 0) {
                 $('div[name=previewURL]').append(' - <a href="' + domain + endPoint + '" target="_blank">Preview Content</a>');
-                $('#gadget175 div.row div.col-md-4').append('<div class="pull-right"><a href="' + domain + endPoint + '" target="_blank" class="btn btn-success"><span class="fa fa-eye" aria-hidden="true"></span>Preview Content</a></div>');
+                $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right"><a href="' + domain + endPoint + '" target="_blank" class="btn btn-success"><span class="fa fa-eye" aria-hidden="true"></span>Preview Content</a></div>');
             }
         }, 2000);
     });

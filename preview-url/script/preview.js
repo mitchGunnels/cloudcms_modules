@@ -15,7 +15,7 @@ define(function(require, exports, module) {
             //console.log("SIT2");
             domain = "https://wwwsit2.cricketwireless.com";
         } else if (workspacePickerVal.includes("SIT3")) {
-           //console.log("SIT3");
+            //console.log("SIT3");
             domain = "https://wwwsit3.cricketwireless.com";
         } else if (workspacePickerVal.includes("SIT6")) {
             //console.log("SIT6");
@@ -34,7 +34,10 @@ define(function(require, exports, module) {
         setTimeout(function() {
             var endPoint = $('div[name=previewURL]').text();
             //console.log(endPoint);
-            if(endPoint.length > 0) $('div[name=previewURL]').append(' - <a href="'+domain+endPoint+'" target="_blank">Preview</a>');
+            if (endPoint.length > 0) {
+                $('div[name=previewURL]').append(' - <a href="' + domain + endPoint + '" target="_blank">Preview Content</a>');
+                $('#gadget175 div.row div.col-md-4').append('<div class="pull-right"><a href="' + domain + endPoint + '" target="_blank" class="btn btn-success"><span class="fa fa-eye" aria-hidden="true"></span>Preview Content</a></div>');
+            }
         }, 2000);
     });
 });

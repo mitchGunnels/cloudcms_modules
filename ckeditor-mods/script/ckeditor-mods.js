@@ -9,11 +9,11 @@ define(function(require, exports, module) {
             classes: true
         }
     };
-    CKEDITOR.basePath = 'https://cache.cricketwireless.com/';
-    CKEDITOR.plugins.basePath = 'ckeditor-plugins/';
+    CKEDITOR.basePath = 'https://cache.cricketwireless.com/ckeditor-plugins/';
+    //CKEDITOR.plugins.basePath = '/';
     CKEDITOR.plugins.addExternal( 'a11ychecker');
 
-    
+
 
     CKEDITOR.config.extraPlugins = 'cloudcms-image,balloonpanel,a11ychecker';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;

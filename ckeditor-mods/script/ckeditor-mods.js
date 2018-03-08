@@ -9,9 +9,8 @@ define(function(require, exports, module) {
             classes: true
         }
     };
-    CKEDITOR.basePath = 'https://cache.cricketwireless.com/ckeditor-plugins/';
-    //CKEDITOR.plugins.basePath = '/';
-    CKEDITOR.plugins.addExternal( 'a11ychecker');
+    CKEDITOR.basePath = 'https://cache.cricketwireless.com/';
+    CKEDITOR.plugins.addExternal( 'a11ychecker','ckeditor-plugins/');
 
 
 

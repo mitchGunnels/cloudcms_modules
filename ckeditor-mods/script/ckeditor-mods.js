@@ -9,7 +9,7 @@ define(function(require, exports, module) {
             classes: true
         }
     };
-    CKEDITOR.plgins.basePath = 'https://cache.cricketwireless.com/ckeditor-plugins/';
+    CKEDITOR.plugins.basePath = 'https://cache.cricketwireless.com/ckeditor-plugins/';
     CKEDITOR.plugins.addExternal( 'balloonpanel', 'balloonpanel/');
     CKEDITOR.plugins.addExternal( 'a11ychecker', 'ckeditor-plugins/');
 

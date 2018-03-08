@@ -22,7 +22,7 @@
         hidpi: true, // %REMOVE_LINE_CORE%
 
         onLoad: function() {
-            var path = this.path;
+            var path = 'https://cache.cricketwireless.com/ckeditor-plugins/';//this.path;
 
             // Load skin CSS.
             CKEDITOR.document.appendStyleSheet( path + 'skins/' + this.getStylesSkinName() + '/a11ychecker.css' );

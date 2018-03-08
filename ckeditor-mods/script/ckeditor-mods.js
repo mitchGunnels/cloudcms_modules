@@ -10,7 +10,10 @@ define(function(require, exports, module) {
         }
     };
 
-    CKEDITOR.config.extraPlugins = 'balloonpanel,a11ychecker,cloudcms-image';
+    CKEDITOR.plugins.addExternal( 'balloonpanel', 'https://cache.cricketwireless.com/ckeditor/balloonpanel/');
+    CKEDITOR.plugins.addExternal( 'a11ychecker', 'https://cache.cricketwireless.com/ckeditor/');
+
+    CKEDITOR.config.extraPlugins = 'cloudcms-image,balloonpanel,a11ychecker';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;

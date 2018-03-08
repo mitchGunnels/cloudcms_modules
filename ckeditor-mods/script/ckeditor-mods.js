@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
 
     var a11ychecker = require('https://cache.cricketwireless.com/ckeditor-plugins/plugin.js');
-    
+
     //var $ = require("jquery");
     CKEDITOR.config.allowedContent = {
         $1: {
@@ -15,7 +15,7 @@ define(function(require, exports, module) {
 
 
 
-    CKEDITOR.config.extraPlugins = 'cloudcms-image,balloonpanel,a11ychecker';
+    CKEDITOR.config.extraPlugins = 'cloudcms-image,balloonpanel';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;

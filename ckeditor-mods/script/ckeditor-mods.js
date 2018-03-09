@@ -24,13 +24,13 @@ define(function(require, exports, module) {
             { name: 'tools', items: [ 'Maximize' ] },
             { name: 'editing', items: [ 'Scayt' ] }
         ],
-        customConfig: '',
-        extraPlugins: '',
-        enterMode: CKEDITOR.ENTER_BR,
-        pasteFromWordRemoveStyles:true,
-        pasteFromWordRemoveFontStyles:true,
-        entities_processNumerical:true,
-        disallowedContent:'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}'
+        customConfig= '',
+        extraPlugins= '',
+        enterMode= CKEDITOR.ENTER_BR,
+        pasteFromWordRemoveStyles=true,
+        pasteFromWordRemoveFontStyles=true,
+        entities_processNumerical=true,
+        disallowedContent='script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}'
     };
 
     //CKEDITOR.config.extraPlugins = '';

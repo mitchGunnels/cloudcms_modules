@@ -32,7 +32,6 @@ define(function(require, exports, module) {
 
     //CKEDITOR.plugins.basePath = 'https://raw.githubusercontent.com/mitchGunnels/cloudcms_modules/master/ckeditor-mods/script/';
     //CKEDITOR.plugins.addExternal('a11checker', 'a11ychecker/');
-    //CKEDITOR.config.extraPlugins = 'a11checker';
 
 
     // var ref = CKEDITOR.tools.addFunction(function() {
@@ -48,18 +47,59 @@ define(function(require, exports, module) {
     CKEDITOR.config.entities_processNumerical = true;
     CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
 
+    CKEDITOR.plugins.add('ajaxsave', {
+        init: function(editor) {
+            var pluginName = 'ajaxsave';
 
-    editorInstance.addCommand("mySimpleCommand", {
-        exec: function(edt) {
-            alert('yo');
+            editor.addCommand(pluginName, {
+                exec: function(editor) {
+                    new Ajax.Request('ajaxsave.php', {
+                        method: "POST",
+                        parameters: { filename: 'index.html', editor: editor.getData() },
+                        onFailure: function() { ThrowError("Error: The server has returned an unknown error"); },
+                        on0: function() { ThrowError('Error: The server is not responding. Please try again.'); },
+                        onSuccess: function(transport) {
+
+                            var resp = transport.responseText;
+
+                            //Successful processing by ckprocess.php should return simply 'OK'. 
+                            if (resp == "OK") {
+                                //This is a custom function I wrote to display messages. Nicer than alert() 
+                                ShowPageMessage('Changes have been saved successfully!');
+                            } else {
+                                ShowPageMessage(resp, '10');
+                            }
+                        }
+                    });
+                },
+
+                canUndo: true
+            });
+
+            editor.ui.addButton('ajaxsave', {
+                label: 'Save',
+                command: pluginName,
+                className: 'cke_button_save',
+                icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+            });
         }
     });
 
-    editorInstance.ui.addButton('SuperButton', {
-        label: "Click me",
-        command: 'mySimpleCommand',
-        toolbar: 'insert',
-        icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-    });
+
+    CKEDITOR.config.extraPlugins = 'ajaxsave';
+
+
+    //  editorInstance.addCommand("mySimpleCommand", {
+    //     exec: function(edt) {
+    //         alert('yo');
+    //     }
+    // });
+
+    // CKEDITOR.editor.ui.addButton('SuperButton', {
+    //     label: "Click me",
+    //     command: 'mySimpleCommand',
+    //     toolbar: 'insert',
+    //     icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+    // });
 
 });

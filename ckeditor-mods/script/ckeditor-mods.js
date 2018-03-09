@@ -49,19 +49,13 @@ define(function(require, exports, module) {
     CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
 
 
-     CKEDITOR.editorInstance.addCommand("mySimpleCommand", {
+    editorInstance.addCommand("mySimpleCommand", {
         exec: function(edt) {
             alert('yo');
         }
     });
 
-     editorInstance.addCommand("mySimpleCommand", {
-        exec: function(edt) {
-            alert('yo');
-        }
-    });
-
-    CKEDITOR.editor.ui.addButton('SuperButton', {
+    editorInstance.ui.addButton('SuperButton', {
         label: "Click me",
         command: 'mySimpleCommand',
         toolbar: 'insert',

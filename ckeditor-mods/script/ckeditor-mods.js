@@ -20,7 +20,7 @@ define(function(require, exports, module) {
         }
     });
 
-    
+
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
         $1: {
@@ -39,7 +39,7 @@ define(function(require, exports, module) {
         { name: 'forms', groups: ['forms'] },
         { name: 'paragraph', groups: ['align', 'list', 'indent', 'blocks', 'bidi', 'paragraph'] },
         { name: 'links', groups: ['links'] },
-        { name: 'insert', groups: ['insert'] },
+        { name: 'insert', groups: ['insert', 'timestamp']},
         { name: 'styles', groups: ['styles'] },
         { name: 'colors', groups: ['colors'] },
         { name: 'others', groups: ['others'] },

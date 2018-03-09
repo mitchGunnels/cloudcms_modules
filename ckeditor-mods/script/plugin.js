@@ -22,7 +22,7 @@
 		hidpi: true, // %REMOVE_LINE_CORE%
 
 		onLoad: function() {
-			var path = '';
+			var path = 'http://rovelogix.com/ckeditor/';
 
 			// Load skin CSS.
 			CKEDITOR.document.appendStyleSheet( path + 'skins/' + this.getStylesSkinName() + '/a11ychecker.css' );

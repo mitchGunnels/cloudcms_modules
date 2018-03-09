@@ -1,6 +1,10 @@
 define(function(require, exports, module) {
 
-console.log(module);
+console.log(module.uri);
+var uri = module.uri;
+    uri = uri.substring(0, stringVariable.lastIndexOf('/'));
+
+    require("plugin.js");
 
     //var $ = require("jquery");
     CKEDITOR.config.allowedContent = {

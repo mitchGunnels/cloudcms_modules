@@ -3,8 +3,6 @@ define(function(require, exports, module) {
     uri = uri.substring(0, uri.lastIndexOf('/'));
     console.log(uri);
 
-    require("https://cdn.ckeditor.com/4.8.0/full-all/ckeditor.js");
-
     CKEDITOR.config.allowedContent = {
         $1: {
             // Use the ability to specify elements as an object.
@@ -15,7 +13,7 @@ define(function(require, exports, module) {
         }
     };
 
-    CKEDITOR.config.extraPlugins = 'cloudcms-image,balloonpanel,a11ychecker';
+    CKEDITOR.config.extraPlugins = 'a11ychecker';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;

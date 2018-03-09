@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     console.log(uri);
 
 
-    CKEDITOR.config.customConfig= '';
+    CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
         $1: {
             // Use the ability to specify elements as an object.
@@ -30,9 +30,15 @@ define(function(require, exports, module) {
         { name: 'editing', groups: ['spellchecker', 'find', 'selection', 'editing'] },
         { name: 'document', groups: ['mode', 'document', 'doctools'] }
     ];
-    CKEDITOR.plugins.basePath = 'https://raw.githubusercontent.com/mitchGunnels/cloudcms_modules/master/ckeditor-mods/script/';
-    CKEDITOR.plugins.addExternal( 'a11checker', 'a11ychecker/' );
-    CKEDITOR.config.extraPlugins = 'a11checker';
+
+
+    CKEDITOR.plugins.load('myplugin', function(plugins) {
+        alert(plugins['myplugin']); // object
+    });
+
+    //CKEDITOR.plugins.basePath = 'https://raw.githubusercontent.com/mitchGunnels/cloudcms_modules/master/ckeditor-mods/script/';
+    //CKEDITOR.plugins.addExternal('a11checker', 'a11ychecker/');
+    //CKEDITOR.config.extraPlugins = 'a11checker';
 
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;

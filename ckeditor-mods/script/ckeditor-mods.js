@@ -31,11 +31,11 @@ define(function(require, exports, module) {
 
             // Namespace register.
             require([
-                path+'Engine',
-                path+'Issue',
-                path+'IssueList',
-                path+'IssueDetails',
-                path+'quickfix/LocalizedRepository'
+                'Engine',
+                'Issue',
+                'IssueList',
+                'IssueDetails',
+                'quickfix/LocalizedRepository'
             ], function(
                 Engine,
                 Issue,

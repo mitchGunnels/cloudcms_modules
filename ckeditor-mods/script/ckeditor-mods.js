@@ -4,7 +4,7 @@ console.log(module.uri);
 var uri = module.uri;
     uri = uri.substring(0, stringVariable.lastIndexOf('/'));
 
-    require("plugin.js");
+    //require("plugin.js");
 
     //var $ = require("jquery");
     CKEDITOR.config.allowedContent = {

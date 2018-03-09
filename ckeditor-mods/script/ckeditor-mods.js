@@ -3,7 +3,24 @@ define(function(require, exports, module) {
     uri = uri.substring(0, uri.lastIndexOf('/'));
     console.log(uri);
 
+    CKEDITOR.plugins.add('timestamp', {
+        icons: 'timestamp',
+        init: function(editor) {
+            editor.addCommand('insertTimestamp', {
+                exec: function(editor) {
+                    var now = new Date();
+                    editor.insertHtml('The current date and time is: <em>' + now.toString() + '</em>');
+                }
+            });
+            editor.ui.addButton('Timestamp', {
+                label: 'Insert Timestamp',
+                command: 'insertTimestamp',
+                toolbar: 'insert'
+            });
+        }
+    });
 
+    
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
         $1: {
@@ -30,11 +47,6 @@ define(function(require, exports, module) {
         { name: 'editing', groups: ['spellchecker', 'find', 'selection', 'editing'] },
         { name: 'document', groups: ['mode', 'document', 'doctools'] }
     ];
-
-
-    CKEDITOR.plugins.load('myplugin', function(plugins) {
-        alert(plugins['myplugin']); // object
-    });
 
     //CKEDITOR.plugins.basePath = 'https://raw.githubusercontent.com/mitchGunnels/cloudcms_modules/master/ckeditor-mods/script/';
     //CKEDITOR.plugins.addExternal('a11checker', 'a11ychecker/');

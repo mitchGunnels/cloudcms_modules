@@ -1,25 +1,7 @@
 define(function(require, exports, module) {
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
-    console.log('v1');
-
-    CKEDITOR.plugins.add('timestamp', {
-        icons: 'timestamp',
-        init: function(editor) {
-            editor.addCommand('insertTimestamp', {
-                exec: function(editor) {
-                    var now = new Date();
-                    editor.insertHtml('The current date and time is: <em>' + now.toString() + '</em>');
-                }
-            });
-            editor.ui.addButton('Timestamp', {
-                label: 'Insert Timestamp',
-                command: 'insertTimestamp',
-                toolbar: 'insert'
-            });
-        }
-    });
-
+    console.log('v2');
 
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -39,7 +21,7 @@ define(function(require, exports, module) {
         { name: 'forms', groups: ['forms'] },
         { name: 'paragraph', groups: ['align', 'list', 'indent', 'blocks', 'bidi', 'paragraph'] },
         { name: 'links', groups: ['links'] },
-        { name: 'insert', groups: ['insert', 'timestamp']},
+        { name: 'insert', groups: ['insert'] },
         { name: 'styles', groups: ['styles'] },
         { name: 'colors', groups: ['colors'] },
         { name: 'others', groups: ['others'] },
@@ -52,6 +34,13 @@ define(function(require, exports, module) {
     //CKEDITOR.plugins.addExternal('a11checker', 'a11ychecker/');
     //CKEDITOR.config.extraPlugins = 'a11checker';
 
+
+    var ref = CKEDITOR.tools.addFunction(function() {
+        alert('Hello!');
+    });
+    CKEDITOR.tools.callFunction(ref); // 'Hello!'
+
+    
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;

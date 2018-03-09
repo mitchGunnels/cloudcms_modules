@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
-    console.log(uri);
+    console.log('v1');
 
     CKEDITOR.plugins.add('timestamp', {
         icons: 'timestamp',

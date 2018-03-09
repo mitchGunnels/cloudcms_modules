@@ -1,9 +1,10 @@
 define(function(require, exports, module) {
 
-console.log(module.uri);
+
 var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
 
+console.log(uri);
     //require("plugin.js");
 
     //var $ = require("jquery");

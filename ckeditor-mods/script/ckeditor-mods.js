@@ -60,7 +60,7 @@ define(function(require, exports, module) {
                 label: 'Insert global content',
                 command: pluginName,
                 className: 'cke_button__find_icon',
-                toolbar: 'basicstyles,3'
+                toolbar: 'document,3'
             });
         }
     });

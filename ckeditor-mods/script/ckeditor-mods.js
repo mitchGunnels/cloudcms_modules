@@ -30,8 +30,8 @@ define(function(require, exports, module) {
         { name: 'editing', groups: ['spellchecker', 'find', 'selection', 'editing'] },
         { name: 'document', groups: ['mode', 'document', 'doctools'] }
     ];
-
-    CKEDITOR.plugins.addExternal( 'a11checker', 'https://raw.githubusercontent.com/mitchGunnels/cloudcms_modules/master/ckeditor-mods/script/a11ychecker/' );
+    CKEDITOR.plugins.basePath = 'https://raw.githubusercontent.com/mitchGunnels/cloudcms_modules/master/ckeditor-mods/script/';
+    CKEDITOR.plugins.addExternal( 'a11checker', 'a11ychecker/' );
     CKEDITOR.config.extraPlugins = 'a11checker';
 
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';

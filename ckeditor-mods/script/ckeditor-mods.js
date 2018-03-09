@@ -37,11 +37,11 @@ var uri = module.uri;
 
             // Namespace register.
             require( [
-                'Engine',
-                'Issue',
-                'IssueList',
-                'IssueDetails',
-                'quickfix/LocalizedRepository'
+                path+'Engine',
+                path+'Issue',
+                path+'IssueList',
+                path+'IssueDetails',
+                path+'quickfix/LocalizedRepository'
             ], function(
                 Engine,
                 Issue,

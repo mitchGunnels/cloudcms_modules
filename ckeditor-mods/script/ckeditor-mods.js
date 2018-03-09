@@ -13,7 +13,7 @@ define(function(require, exports, module) {
         }
     };
 
-    CKEDITOR.config.extraPlugins = 'a11ychecker';
+    CKEDITOR.config.extraPlugins = '';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;

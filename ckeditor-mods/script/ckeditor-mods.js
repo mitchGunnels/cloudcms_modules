@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
-    console.log('v4');
+    console.log('v5');
 
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -30,15 +30,6 @@ define(function(require, exports, module) {
         { name: 'document', groups: ['mode', 'document', 'doctools'] }
     ];
 
-    //CKEDITOR.plugins.basePath = 'https://raw.githubusercontent.com/mitchGunnels/cloudcms_modules/master/ckeditor-mods/script/';
-    //CKEDITOR.plugins.addExternal('a11checker', 'a11ychecker/');
-
-
-    // var ref = CKEDITOR.tools.addFunction(function() {
-    //     alert('Hello!');
-    // });
-    // CKEDITOR.tools.callFunction(ref); // 'Hello!'
-
 
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
@@ -47,59 +38,27 @@ define(function(require, exports, module) {
     CKEDITOR.config.entities_processNumerical = true;
     CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
 
-    CKEDITOR.plugins.add('ajaxsave', {
+    CKEDITOR.plugins.add('globalContent', {
         init: function(editor) {
-            var pluginName = 'ajaxsave';
+            var pluginName = 'globalContent';
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
-                    new Ajax.Request('ajaxsave.php', {
-                        method: "POST",
-                        parameters: { filename: 'index.html', editor: editor.getData() },
-                        onFailure: function() { ThrowError("Error: The server has returned an unknown error"); },
-                        on0: function() { ThrowError('Error: The server is not responding. Please try again.'); },
-                        onSuccess: function(transport) {
-
-                            var resp = transport.responseText;
-
-                            //Successful processing by ckprocess.php should return simply 'OK'. 
-                            if (resp == "OK") {
-                                //This is a custom function I wrote to display messages. Nicer than alert() 
-                                ShowPageMessage('Changes have been saved successfully!');
-                            } else {
-                                ShowPageMessage(resp, '10');
-                            }
-                        }
-                    });
+                    alert('yo');
                 },
 
                 canUndo: true
             });
 
-            editor.ui.addButton('ajaxsave', {
-                label: 'Save',
+            editor.ui.addButton('globalContent', {
+                label: 'Insert global content',
                 command: pluginName,
-                className: 'cke_button_save',
-                icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+                className: 'cke_button__blockquote_icon',
             });
         }
     });
 
 
-    CKEDITOR.config.extraPlugins = 'ajaxsave';
-
-
-    //  editorInstance.addCommand("mySimpleCommand", {
-    //     exec: function(edt) {
-    //         alert('yo');
-    //     }
-    // });
-
-    // CKEDITOR.editor.ui.addButton('SuperButton', {
-    //     label: "Click me",
-    //     command: 'mySimpleCommand',
-    //     toolbar: 'insert',
-    //     icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
-    // });
+    CKEDITOR.config.extraPlugins = 'globalContent';
 
 });

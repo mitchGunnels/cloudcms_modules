@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
-    console.log('v3');
+    console.log('v4');
 
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -40,17 +40,6 @@ define(function(require, exports, module) {
     // });
     // CKEDITOR.tools.callFunction(ref); // 'Hello!'
 
-    CKEDITOR.ui.addButton('MyBold', {
-        label: 'My Bold',
-        command: 'bold',
-        toolbar: 'basicstyles,1'
-    });
-
-    CKEDITOR.ui.add('MyBold2', CKEDITOR.UI_BUTTON, {
-        label: 'My Bold2',
-        command: 'bold'
-    });
-
 
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
@@ -58,5 +47,19 @@ define(function(require, exports, module) {
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
     CKEDITOR.config.entities_processNumerical = true;
     CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
+
+
+    CKEDITOR.editor.addCommand("mySimpleCommand", {
+        exec: function(edt) {
+            alert('yo');
+        }
+    });
+
+    CKEDITOR.editor.ui.addButton('SuperButton', {
+        label: "Click me",
+        command: 'mySimpleCommand',
+        toolbar: 'insert',
+        icon: 'https://avatars1.githubusercontent.com/u/5500999?v=2&s=16'
+    });
 
 });

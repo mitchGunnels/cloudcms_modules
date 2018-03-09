@@ -15,7 +15,7 @@ define(function(require, exports, module) {
 
 
 
-    CKEDITOR.config.extraPlugins = 'cloudcms-image,balloonpanel';
+    CKEDITOR.config.extraPlugins = 'cloudcms-image,balloonpanel,a11ychecker';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;

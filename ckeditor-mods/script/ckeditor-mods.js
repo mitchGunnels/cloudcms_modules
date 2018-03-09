@@ -3,6 +3,8 @@ define(function(require, exports, module) {
     uri = uri.substring(0, uri.lastIndexOf('/'));
     console.log(uri);
 
+
+    CKEDITOR.config.customConfig= '';
     CKEDITOR.config.allowedContent = {
         $1: {
             // Use the ability to specify elements as an object.

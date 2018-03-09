@@ -2,7 +2,7 @@ define(function(require, exports, module) {
 
 console.log(module.uri);
 var uri = module.uri;
-    uri = uri.substring(0, stringVariable.lastIndexOf('/'));
+    uri = uri.substring(0, uri.lastIndexOf('/'));
 
     //require("plugin.js");
 

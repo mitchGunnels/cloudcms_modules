@@ -12,32 +12,23 @@ define(function(require, exports, module) {
             classes: true
         }
     };
+    
+    CKEDITOR.config.toolbar = [
+        { name: 'clipboard', items: ['Undo', 'Redo'] },
+        { name: 'styles', items: ['Styles', 'Format'] },
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'Strike', '-', 'RemoveFormat'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
+        { name: 'links', items: ['Link', 'Unlink'] },
+        { name: 'insert', items: ['Image', 'EmbedSemantic', 'Table'] },
+        { name: 'tools', items: ['Maximize'] },
+        { name: 'editing', items: ['Scayt'] }
+    ];
 
-    CKEDITOR.editorConfig = function(config) {
-        toolbar: [
-            { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
-            { name: 'styles', items: [ 'Styles', 'Format' ] },
-            { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Strike', '-', 'RemoveFormat' ] },
-            { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
-            { name: 'links', items: [ 'Link', 'Unlink' ] },
-            { name: 'insert', items: [ 'Image', 'EmbedSemantic', 'Table' ] },
-            { name: 'tools', items: [ 'Maximize' ] },
-            { name: 'editing', items: [ 'Scayt' ] }
-        ],
-        customConfig= '',
-        extraPlugins= '',
-        enterMode= CKEDITOR.ENTER_BR,
-        pasteFromWordRemoveStyles=true,
-        pasteFromWordRemoveFontStyles=true,
-        entities_processNumerical=true,
-        disallowedContent='script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}'
-    };
-
-    //CKEDITOR.config.extraPlugins = '';
-    //CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-    //CKEDITOR.config.pasteFromWordRemoveStyles = true;
-    //CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
-    //CKEDITOR.config.entities_processNumerical = true;
-    //CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
+    CKEDITOR.config.extraPlugins = '';
+    CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
+    CKEDITOR.config.pasteFromWordRemoveStyles = true;
+    CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
+    CKEDITOR.config.entities_processNumerical = true;
+    CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
 
 });

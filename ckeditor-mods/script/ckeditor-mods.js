@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 
-    require('plugin.js');
+    //require('plugin.js');
 
     //var $ = require("jquery");
     CKEDITOR.config.allowedContent = {

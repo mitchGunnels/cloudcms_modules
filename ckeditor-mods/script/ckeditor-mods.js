@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
-    console.log('v2');
+    console.log('v3');
 
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -35,12 +35,23 @@ define(function(require, exports, module) {
     //CKEDITOR.config.extraPlugins = 'a11checker';
 
 
-    var ref = CKEDITOR.tools.addFunction(function() {
-        alert('Hello!');
-    });
-    CKEDITOR.tools.callFunction(ref); // 'Hello!'
+    // var ref = CKEDITOR.tools.addFunction(function() {
+    //     alert('Hello!');
+    // });
+    // CKEDITOR.tools.callFunction(ref); // 'Hello!'
 
-    
+    CKEDITOR.ui.addButton('MyBold', {
+        label: 'My Bold',
+        command: 'bold',
+        toolbar: 'basicstyles,1'
+    });
+
+    CKEDITOR.ui.add('MyBold2', CKEDITOR.UI_BUTTON, {
+        label: 'My Bold2',
+        command: 'bold'
+    });
+
+
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
     CKEDITOR.config.pasteFromWordRemoveStyles = true;

@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 
-    var a11ychecker = require('https://cache.cricketwireless.com/ckeditor-plugins/plugin.js');
+    var a11ychecker = require('https://rovelogix.com/ckeditor/plugin.js');
 
     //var $ = require("jquery");
     CKEDITOR.config.allowedContent = {

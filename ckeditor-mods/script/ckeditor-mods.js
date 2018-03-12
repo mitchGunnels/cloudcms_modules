@@ -41,13 +41,10 @@ define(function(require, exports, module) {
 
 
 
-
-    var dialogObj = new CKEDITOR.dialog('test');
-
-
     CKEDITOR.plugins.add('globalContent', {
         init: function(editor) {
             var pluginName = 'globalContent';
+            var dialogObj = new CKEDITOR.dialog(editor, 'test');
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {

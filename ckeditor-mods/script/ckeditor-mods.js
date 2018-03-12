@@ -1,4 +1,5 @@
 define(function(require, exports, module) {
+    var $ = require("jquery");
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
     console.log('v5');
@@ -41,7 +42,26 @@ define(function(require, exports, module) {
 
 
 
-
+    CKEDITOR.dialog.add('testOnly', function(editor) {
+        return {
+            title: 'Test Dialog',
+            resizable: CKEDITOR.DIALOG_RESIZE_BOTH,
+            minWidth: 500,
+            minHeight: 400,
+            contents: [{
+                id: 'tab1',
+                label: 'First Tab',
+                title: 'First Tab Title',
+                accessKey: 'Q',
+                elements: [{
+                    type: 'text',
+                    label: 'Test Text 1',
+                    id: 'testText1',
+                    'default': 'hello world!'
+                }]
+            }]
+        };
+    });
 
 
     CKEDITOR.plugins.add('globalContent', {
@@ -50,7 +70,7 @@ define(function(require, exports, module) {
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
-                    alert('yo');
+                    new CKEDITOR.dialogCommand('testOnly')
                 },
 
                 canUndo: true

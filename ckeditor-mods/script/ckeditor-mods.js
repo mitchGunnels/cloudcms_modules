@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    var modalHtml = '<div id="globalContent" class="fade modal"role=dialog tabindex=-1><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button class=close type=button data-dismiss=modal aria-label=Close><span aria-hidden=true>×</span></button><h4 class=modal-title>Modal title</h4></div><div class=modal-body><p>One fine body…</div><div class=modal-footer><button class="btn btn-default"type=button data-dismiss=modal>Close</button> <button class="btn btn-primary"type=button>Save changes</button></div></div></div></div>';
+    var modalHtml = '<div id="globalContent" class="fade modal"role=dialog tabindex=-1><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button class=close type=button data-dismiss=modal aria-label=Close><span aria-hidden=true>×</span></button><h4 class=modal-title>Add Global Content</h4></div><div class=modal-body><p><form><div class=form-group><label for=searchTerm>Modal Search (by title)</label><input class="form-control input-lg"id=searchTerm placeholder="Modal title"type=input></div><div id=result></div><a class="btn btn-default">Insert</form></p></div><div class=modal-footer><button class="btn btn-default"type=button data-dismiss=modal>Close</button> <button class="btn btn-primary"type=button>Save changes</button></div></div></div></div>';
     var $ = require("jquery");
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
@@ -38,7 +38,7 @@ define(function(require, exports, module) {
     CKEDITOR.config.pasteFromWordRemoveStyles = true;
     CKEDITOR.config.pasteFromWordRemoveFontStyles = true;
     CKEDITOR.config.entities_processNumerical = true;
-    CKEDITOR.config.disallowedContent = 'script; style; *[on*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
+    CKEDITOR.config.disallowedContent = 'script; style; *[on*, *[style*, border, width, height, cellpadding, valign, cellspacing, font, style]; *{*}';
 
     CKEDITOR.plugins.add('globalContent', {
         init: function(editor) {

@@ -1,10 +1,13 @@
 define(function(require, exports, module) {
+    var modalContent;
     var modalHtml = '<div class="fade modal"role=dialog id=globalContent tabindex=-1><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button class=close type=button data-dismiss=modal aria-label=Close><span aria-hidden=true>×</span></button><h4 class=modal-title>Insert Modal</h4></div><div class=modal-body><p><form><div class=form-group><label for=searchTerm>Modal Search (by title)</label><input class="form-control input-lg"id=searchTerm placeholder="Modal title"type=input></div><div id=result></div></form></p></div><div class=modal-footer><button class="btn btn-default"type=button data-dismiss=modal>Close</button> <button class="btn btn-primary"type=button>Insert</button></div></div></div></div>';
     var $ = require("jquery");
     require('https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.7/jquery.autocomplete.min.js');
-    var uri = module.uri;
-    uri = uri.substring(0, uri.lastIndexOf('/'));
-    console.log('v5');
+
+
+    // var uri = module.uri;
+    // uri = uri.substring(0, uri.lastIndexOf('/'));
+    // console.log('v5');
 
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -81,30 +84,21 @@ define(function(require, exports, module) {
     });
 
     function initAutoComplete() {
+        //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
+        if (!sessionStorage.getItem('modalContent');) {
+            $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/', function(result) {
+                sessionStorage.setItem('modalContent', JSON.stringify(result));
+                modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
+            });
+        }
 
+        modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
         $('#searchTerm').autocomplete({
-            serviceUrl: 'https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/',
+            lookup: modalContent,
             onSelect: function(suggestion) {
                 alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
             }
         });
-
-
-        // $("#searchTerm").autocomplete({
-        //     source: function(request, response) {
-        //         $.get("https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/", {
-        //             query: request.term
-        //         }, function(data) {
-        //             // assuming data is a JavaScript array such as
-        //             // ["one@abc.de", "onf@abc.de","ong@abc.de"]
-        //             // and not a string
-        //             //response(data);
-        //             console.log(data);
-        //         });
-        //     },
-        //     minLength: 3
-        // });
-
 
     }
 });

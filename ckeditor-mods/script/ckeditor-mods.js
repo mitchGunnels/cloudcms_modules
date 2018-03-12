@@ -4,6 +4,8 @@ define(function(require, exports, module) {
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
     console.log('v5');
+    $('#myModal').remove();
+    $('body').append(modalHtml);
 
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -64,7 +66,4 @@ define(function(require, exports, module) {
     });
 
     CKEDITOR.config.extraPlugins = 'globalContent,dialog';
-    $('#myModal').remove();
-    $('body').append(modalHtml);
-
 });

@@ -85,7 +85,7 @@ define(function(require, exports, module) {
 
     function initAutoComplete() {
         //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
-        if (!sessionStorage.getItem('modalContent');) {
+        if (!sessionStorage.getItem('modalContent')) {
             $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/', function(result) {
                 sessionStorage.setItem('modalContent', JSON.stringify(result));
                 modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));

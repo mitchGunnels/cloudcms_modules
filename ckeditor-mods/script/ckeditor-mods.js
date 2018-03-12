@@ -64,7 +64,7 @@ define(function(require, exports, module) {
     });
 
     CKEDITOR.config.extraPlugins = 'globalContent,dialog';
-
-    $('.content-holder').append(modalHtml);
+    $('#myModal').remove();
+    $('body').append(modalHtml);
 
 });

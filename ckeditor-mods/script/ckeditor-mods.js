@@ -43,8 +43,9 @@ define(function(require, exports, module) {
 
     CKEDITOR.plugins.add('globalContent', {
         init: function(editor) {
+            
             var pluginName = 'globalContent';
-            var dialogObj = new CKEDITOR.dialog(editor, 'test');
+            var dialogObj = new CKEDITOR.dialog( editor, 'smiley' );
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {

@@ -75,6 +75,26 @@ define(function(require, exports, module) {
             if ($('#globalContent').length == 0) {
                 $('body').append(modalHtml);
             }
+            initAutoComplete();
         });
     });
+
+
+
+    function initAutoComplete() {
+        $("#searchTerm").autocomplete({
+            source: function(request, response) {
+                $.get("https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/", {
+                    query: request.term
+                }, function(data) {
+                    // assuming data is a JavaScript array such as
+                    // ["one@abc.de", "onf@abc.de","ong@abc.de"]
+                    // and not a string
+                    //response(data);
+                    console.log(data);
+                });
+            },
+            minLength: 3
+        });
+    }
 });

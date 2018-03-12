@@ -42,7 +42,7 @@ define(function(require, exports, module) {
 
 
 
-    var dialogObj = new CKEDITOR.dialog( editor, 'smiley' );
+    var dialogObj = new CKEDITOR.dialog('test');
 
 
     CKEDITOR.plugins.add('globalContent', {

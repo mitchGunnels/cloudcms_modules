@@ -42,7 +42,7 @@ define(function(require, exports, module) {
 
 
 
-    CKEDITOR.dialog.add('testOnly', function(editor) {
+    var dialogObj = CKEDITOR.dialog.add('testOnly', function(editor) {
         return {
             title: 'Test Dialog',
             resizable: CKEDITOR.DIALOG_RESIZE_BOTH,
@@ -70,7 +70,7 @@ define(function(require, exports, module) {
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
-                    new CKEDITOR.dialogCommand('testOnly')
+                    dialogObj.show();
                 },
 
                 canUndo: true

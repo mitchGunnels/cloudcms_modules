@@ -48,7 +48,7 @@ define(function(require, exports, module) {
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
-                    $('#myModal').modal(options)
+                    $('#myModal').modal('toggle');
                 },
 
                 canUndo: true

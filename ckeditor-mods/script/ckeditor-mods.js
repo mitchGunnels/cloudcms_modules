@@ -80,22 +80,29 @@ define(function(require, exports, module) {
         });
     });
 
-
-
     function initAutoComplete() {
-        $("#searchTerm").autocomplete({
-            source: function(request, response) {
-                $.get("https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/", {
-                    query: request.term
-                }, function(data) {
-                    // assuming data is a JavaScript array such as
-                    // ["one@abc.de", "onf@abc.de","ong@abc.de"]
-                    // and not a string
-                    //response(data);
-                    console.log(data);
-                });
-            },
-            minLength: 3
+        $('#searchTerm').autocomplete({
+            width: 448,
+            delimiter: /(,|;)\s*/,
+            lookup: 'Andorra,Azerbaijan,Bahamas,Bahrain,Benin,Bhutan,Bolivia,Bosnia Herzegovina,Botswana,Brazil,Brunei,Bulgaria,Burkina, Burundi,Cambodia,Cameroon,Canada,Cape Verde,Central African Rep,Chile,China,Colombia,Comoros,Congo,Congo {Democratic Rep},Costa Rica,Croatia,Cuba,Cyprus,Czech Republic,Denmark,Djibouti,East Timor,Ecuador,Egypt,El Salvador,Equatorial Guinea,Eritrea,Fiji,France,Georgia,Germany,Ghana,Greece,Grenada,Guatemala,Guinea,Guinea-Bissau,Guyana,Haiti,Honduras,Hungary,India,Iraq,Ireland {Republic},Ivory Coast,Jamaica,Japan,Kazakhstan,Kiribati,Korea North,'.split(',')
         });
+
+
+        // $("#searchTerm").autocomplete({
+        //     source: function(request, response) {
+        //         $.get("https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/", {
+        //             query: request.term
+        //         }, function(data) {
+        //             // assuming data is a JavaScript array such as
+        //             // ["one@abc.de", "onf@abc.de","ong@abc.de"]
+        //             // and not a string
+        //             //response(data);
+        //             console.log(data);
+        //         });
+        //     },
+        //     minLength: 3
+        // });
+
+        
     }
 });

@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    var modalHtml = '<div id="myModal" class="fade modal"role=dialog tabindex=-1><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button class=close type=button data-dismiss=modal aria-label=Close><span aria-hidden=true>×</span></button><h4 class=modal-title>Modal title</h4></div><div class=modal-body><p>One fine body…</div><div class=modal-footer><button class="btn btn-default"type=button data-dismiss=modal>Close</button> <button class="btn btn-primary"type=button>Save changes</button></div></div></div></div>';
+    var modalHtml = '<div id="globalContent" class="fade modal"role=dialog tabindex=-1><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button class=close type=button data-dismiss=modal aria-label=Close><span aria-hidden=true>×</span></button><h4 class=modal-title>Modal title</h4></div><div class=modal-body><p>One fine body…</div><div class=modal-footer><button class="btn btn-default"type=button data-dismiss=modal>Close</button> <button class="btn btn-primary"type=button>Save changes</button></div></div></div></div>';
     var $ = require("jquery");
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
@@ -48,9 +48,7 @@ define(function(require, exports, module) {
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
-                    $('#myModal').remove();
-                    $('body').append(modalHtml);
-                    $('#myModal').modal('toggle');
+                    $('#globalContent').modal('toggle');
                 },
 
                 canUndo: true
@@ -66,4 +64,17 @@ define(function(require, exports, module) {
     });
 
     CKEDITOR.config.extraPlugins = 'globalContent,dialog';
+
+    CKEDITOR.on('instanceCreated', function(ev) {
+        var editor = ev.editor;
+        // Listen for the "pluginsLoaded" event, so we are sure that the
+        // "dialog" plugin has been loaded and we are able to do our
+        // customizations.
+        editor.on('pluginsLoaded', function() {
+            // If our custom dialog has not been registered, do that now.
+            if ($('#globalContent').length == 0) {
+                $('body').append(modalHtml);
+            }
+        });
+    });
 });

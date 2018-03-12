@@ -57,7 +57,7 @@ define(function(require, exports, module) {
             editor.ui.addButton('globalContent', {
                 label: 'Insert global content',
                 command: pluginName,
-                className: 'cke_button__find_icon',
+                className: 'cke_button_icon cke_button__find_icon',
                 toolbar: 'document,3'
             });
         }

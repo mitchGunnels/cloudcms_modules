@@ -52,6 +52,8 @@ define(function(require, exports, module) {
                 exec: function(editor) {
                     var eName = editor.name;
                     var selectedEditor = CKEDITOR.instances.eName;
+                    
+                    console.log(eName);
                     console.log(selectedEditor);
 
                     $('#globalContent').modal('show');
@@ -92,8 +94,10 @@ define(function(require, exports, module) {
             if ($('#globalContent').length == 0) {
                 $('body').append(modalHtml);
                 $('<style>' + modalCSS + '</style>').appendTo('#globalContent');
-                initAutoComplete();
+                
             }
+
+            initAutoComplete();
 
         });
     });

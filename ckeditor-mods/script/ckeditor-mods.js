@@ -146,7 +146,7 @@ define(function(require, exports, module) {
 
         console.log('GET CALLED!');
 
-        $.get(domain + '/cloudassets/cms/myAccount/modal/', function(result) {
+        $.get(domain + '/cloudassets/cms/myAccount/modal', function(result) {
             var newObject = [];
             $.each(result, function(data) {
                 //console.log(data);

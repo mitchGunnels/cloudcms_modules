@@ -50,11 +50,13 @@ define(function(require, exports, module) {
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
-                    var eName = editor.name;
-                    var selectedEditor = CKEDITOR.instances.eName;
+                    // var eName = editor.name;
+                    // var selectedEditor = CKEDITOR.instances.eName;
                     
-                    console.log(eName);
-                    console.log(selectedEditor);
+                    // console.log(eName);
+                    // console.log(selectedEditor);
+
+                    $('#insert').unbind( "click" );
 
                     $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
@@ -63,7 +65,7 @@ define(function(require, exports, module) {
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
 
-                        selectedEditor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        editor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
 
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();
@@ -94,11 +96,10 @@ define(function(require, exports, module) {
             if ($('#globalContent').length == 0) {
                 $('body').append(modalHtml);
                 $('<style>' + modalCSS + '</style>').appendTo('#globalContent');
-                
+                initAutoComplete();
             }
 
-            initAutoComplete();
-
+        
         });
     });
 

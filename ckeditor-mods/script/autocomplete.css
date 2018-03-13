@@ -1,11 +1,12 @@
-.modal.fade,
-.modal-scrollable,
 body div.modal-backdrop,
-body div.modal-backdrop.fade.in,
-.autocomplete-suggestions {
-    z-index: 9999 !important;
+body div.modal-backdrop.fade.in{
+    z-index: 9997 !important;
 }
 
+.modal.fade,
+.modal-scrollable{
+    z-index: 9998 !important;
+}
 span#modalID {
     font-size: 11px;
     font-style: italic;
@@ -15,6 +16,7 @@ span#modalID {
     border: 1px solid #999;
     background: #FFF;
     overflow: auto;
+    z-index: 9999 !important;
 }
 
 .autocomplete-suggestion {

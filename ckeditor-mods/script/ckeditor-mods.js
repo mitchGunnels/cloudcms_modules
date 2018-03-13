@@ -76,7 +76,7 @@ define(function(require, exports, module) {
             // If our custom dialog has not been registered, do that now.
             if ($('#globalContent').length == 0) {
                 $('body').append(modalHtml);
-                $('<style>'+ modalCSS +'</style>').appendTo('#globalContent');
+                $('<style>' + modalCSS + '</style>').appendTo('#globalContent');
             }
             initAutoComplete();
         });
@@ -103,7 +103,7 @@ define(function(require, exports, module) {
         $('#searchTerm').autocomplete({
             lookup: modalContent,
             onSelect: function(suggestion) {
-                console.log('You selected: ' + suggestion.value + ', ' + $.parseJSON(suggestion.data));
+                console.log('You selected: ' + suggestion.value + ', ' + suggestion.data.modalBody);
             }
         });
 

@@ -113,52 +113,49 @@ define(function(require, exports, module) {
 
     function initAutoComplete() {
         //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
-        if (!sessionStorage.getItem('modalContent')) {
 
-            //Check workspace-picker to determine the appropriate env for creating the preview link.
-            var workspacePickerVal = $('select.workspace-picker option:selected').text();
-            var domain;
-            //Decide on the correct environment
-            if (workspacePickerVal.includes("Master")) {
-                //console.log("prod");
-                domain = "https://www.cricketwireless.com";
-            } else if (workspacePickerVal.includes("SIT1")) {
-                //console.log("SIT1");
-                domain = "https://wwwsit1.cricketwireless.com";
-            } else if (workspacePickerVal.includes("SIT2")) {
-                //console.log("SIT2");
-                domain = "https://wwwsit2.cricketwireless.com";
-            } else if (workspacePickerVal.includes("SIT3")) {
-                //console.log("SIT3");
-                domain = "https://wwwsit3.cricketwireless.com";
-            } else if (workspacePickerVal.includes("SIT6")) {
-                //console.log("SIT6");
-                domain = "https://wwwsit6.cricketwireless.com";
-            } else if (workspacePickerVal.includes("SIT8")) {
-                //console.log("SIT8");
-                domain = "https://wwwsit8.cricketwireless.com";
-            } else if (workspacePickerVal.includes("SIT9")) {
-                //console.log("SIT9");
-                domain = "https://wwwsit9.cricketwireless.com";
-            } else {
-                console.log("Nothing found");
-            }
-
-            $.get(domain + '/cloudassets/cms/myAccount/modal/', function(result) {
-                var newObject = [];
-                $.each(result, function(data) {
-                    //console.log(data);
-                    var dataObj = { "value": this.title, "data": { "ID": data, "title": this.modalTitle, "modalBody": this.modalBody } };
-                    newObject.push(dataObj);
-                });
-                sessionStorage.setItem('modalContent', JSON.stringify(newObject));
-                modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
-                searchInit();
-            });
+        //Check workspace-picker to determine the appropriate env for creating the preview link.
+        var workspacePickerVal = $('select.workspace-picker option:selected').text();
+        var domain;
+        //Decide on the correct environment
+        if (workspacePickerVal.includes("Master")) {
+            //console.log("prod");
+            domain = "https://www.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT1")) {
+            //console.log("SIT1");
+            domain = "https://wwwsit1.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT2")) {
+            //console.log("SIT2");
+            domain = "https://wwwsit2.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT3")) {
+            //console.log("SIT3");
+            domain = "https://wwwsit3.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT6")) {
+            //console.log("SIT6");
+            domain = "https://wwwsit6.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT8")) {
+            //console.log("SIT8");
+            domain = "https://wwwsit8.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT9")) {
+            //console.log("SIT9");
+            domain = "https://wwwsit9.cricketwireless.com";
         } else {
+            console.log("Nothing found");
+        }
+
+        console.log('GET CALLED!');
+
+        $.get(domain + '/cloudassets/cms/myAccount/modal/', function(result) {
+            var newObject = [];
+            $.each(result, function(data) {
+                //console.log(data);
+                var dataObj = { "value": this.title, "data": { "ID": data, "title": this.modalTitle, "modalBody": this.modalBody } };
+                newObject.push(dataObj);
+            });
+            sessionStorage.setItem('modalContent', JSON.stringify(newObject));
             modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
             searchInit();
-        }
+        });
     }
 
     function searchInit() {

@@ -104,8 +104,7 @@ define(function(require, exports, module) {
             lookup: modalContent,
             onSelect: function(suggestion) {
                 //console.log('You selected: ' + suggestion.value + ', ' + suggestion.data.modalBody);
-                $('#result').html('<h4>' + suggestion.value + '</h4><br><p>'
-                    suggestion.data.modalBody '</p>');
+                $('#result').html('<h4>' + suggestion.value + '</h4><br><p>' + suggestion.data.modalBody + '</p>');
             }
         });
 

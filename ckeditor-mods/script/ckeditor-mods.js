@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var modalContent;
     var modalHtml = '<div class="fade modal"role=dialog id=globalContent tabindex=-1><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button class=close type=button data-dismiss=modal aria-label=Close><span aria-hidden=true>×</span></button><h4 class=modal-title>Insert Modal</h4></div><div class=modal-body><p><form><div class=form-group><label for=searchTerm>Modal Search (by title)</label><input class="form-control input-lg"id=searchTerm placeholder="Modal title"type=input></div><div id=result></div></form></p></div><div class=modal-footer><button class="btn btn-default"type=button data-dismiss=modal>Close</button> <button class="btn btn-primary" type="button" id="insert">Insert</button></div></div></div></div>';
-    var modalCSS = '.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; } .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; } .autocomplete-selected { background: #F0F0F0; } .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; } .autocomplete-group { padding: 2px 5px; } .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }';
+    var modalCSS = 'span#modalID{font-size:11px; font-style: italic;} .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; } .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; } .autocomplete-selected { background: #F0F0F0; } .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; } .autocomplete-group { padding: 2px 5px; } .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }';
     var $ = require("jquery");
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
@@ -57,7 +57,7 @@ define(function(require, exports, module) {
                         /* Act on the event */
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
-                        editor.insertHtml('<a href="#'+modalID+'" title="" class="custom-class" data-toggle="modal" data-target="'+modalID+'">'+modalTitle+'</a>');
+                        editor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
                         $('#globalContent').modal('toggle');
                     });
                 },
@@ -97,21 +97,21 @@ define(function(require, exports, module) {
                 var newObject = [];
                 $.each(result, function(data) {
                     //console.log(data);
-                    var dataObj = { "value": this.title, "data": { "ID":data, "title": this.modalTitle, "modalBody": this.modalBody } };
+                    var dataObj = { "value": this.title, "data": { "ID": data, "title": this.modalTitle, "modalBody": this.modalBody } };
                     newObject.push(dataObj);
                 });
                 sessionStorage.setItem('modalContent', JSON.stringify(newObject));
                 modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
             });
+        } else {
+            modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
         }
-
-        modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
 
         $('#searchTerm').autocomplete({
             lookup: modalContent,
             onSelect: function(suggestion) {
                 //console.log('You selected: ' + suggestion.value + ', ' + suggestion.data.modalBody);
-                $('#result').html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><span id="modalID">'+suggestion.data.ID+'</span></p>');
+                $('#result').html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><br><span id="modalID">' + suggestion.data.ID + '</span></p>');
             }
         });
 

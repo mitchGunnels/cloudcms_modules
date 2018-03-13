@@ -146,8 +146,7 @@ define(function(require, exports, module) {
                 var dataObj = { "value": this.title, "data": { "ID": data, "title": this.modalTitle, "modalBody": this.modalBody } };
                 newObject.push(dataObj);
             });
-            // sessionStorage.setItem('modalContent', JSON.stringify(newObject));
-            // modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
+            
             modalContent = newObject;
             searchInit();
         });

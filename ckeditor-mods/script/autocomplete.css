@@ -1,16 +1,22 @@
 body div.modal-backdrop,
-body div.modal-backdrop.fade.in{
+body div.modal-backdrop.fade.in {
     z-index: 9997 !important;
 }
 
+.cke_button__globalcontent_icon {
+    display: none;
+}
+
 .cke_button__globalcontent_label {
-    display: inline !important
+    display: inline !important padding: 0px;
+    margin: 0px;
 }
 
 .modal.fade,
-.modal-scrollable{
+.modal-scrollable {
     z-index: 9998 !important;
 }
+
 span#modalID {
     font-size: 11px;
     font-style: italic;

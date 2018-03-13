@@ -102,11 +102,15 @@ define(function(require, exports, module) {
                 });
                 sessionStorage.setItem('modalContent', JSON.stringify(newObject));
                 modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
+                searchInit();
             });
         } else {
             modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
+            searchInit();
         }
+    }
 
+    function searchInit() {
         $('#searchTerm').autocomplete({
             lookup: modalContent,
             onSelect: function(suggestion) {
@@ -114,6 +118,5 @@ define(function(require, exports, module) {
                 $('#result').html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><br><span id="modalID">' + suggestion.data.ID + '</span></p>');
             }
         });
-
     }
 });

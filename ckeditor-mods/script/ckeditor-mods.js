@@ -59,7 +59,7 @@ define(function(require, exports, module) {
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
 
-                        editor.eName.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        CKEDITOR.instances.eName.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
 
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();

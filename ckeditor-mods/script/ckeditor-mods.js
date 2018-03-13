@@ -55,7 +55,10 @@ define(function(require, exports, module) {
                     $('#insert').on('click', function(event) {
                         event.preventDefault();
                         /* Act on the event */
-                        editor.insertHtml('<p>This is a new paragraph.</p>');
+                        var modalTitle = $('#result h4#modalTitle').text();
+                        var modalID = $('#result span#modalID').text();
+                        editor.insertHtml('<a href="#'+modalID+'" title="" class="custom-class" data-toggle="modal" data-target="'+modalID+'">'+modalTitle+'</a>');
+                        $('#globalContent').modal('toggle');
                     });
                 },
                 canUndo: true
@@ -93,7 +96,8 @@ define(function(require, exports, module) {
             $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/modal/', function(result) {
                 var newObject = [];
                 $.each(result, function(data) {
-                    var dataObj = { "value": this.title, "data": { "title": this.modalTitle, "modalBody": this.modalBody } };
+                    //console.log(data);
+                    var dataObj = { "value": this.title, "data": { "ID":data, "title": this.modalTitle, "modalBody": this.modalBody } };
                     newObject.push(dataObj);
                 });
                 sessionStorage.setItem('modalContent', JSON.stringify(newObject));
@@ -107,7 +111,7 @@ define(function(require, exports, module) {
             lookup: modalContent,
             onSelect: function(suggestion) {
                 //console.log('You selected: ' + suggestion.value + ', ' + suggestion.data.modalBody);
-                $('#result').html('<h4>' + suggestion.value + '</h4><p>' + suggestion.data.modalBody + '</p>');
+                $('#result').html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><span id="modalID">'+suggestion.data.ID+'</span></p>');
             }
         });
 

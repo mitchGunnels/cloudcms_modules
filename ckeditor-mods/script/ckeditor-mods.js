@@ -86,7 +86,15 @@ define(function(require, exports, module) {
     function initAutoComplete() {
         //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
         if (!sessionStorage.getItem('modalContent')) {
-            $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/serverErrors/', function(result) {
+            $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/modal/', function(result) {
+
+                var newObject = [];
+
+                for (var i = 0; i < result.length; i++) {
+                    console.log(result[i].title);
+                    // more statements
+                }
+
                 sessionStorage.setItem('modalContent', JSON.stringify(result));
                 modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
             });

@@ -99,12 +99,12 @@ define(function(require, exports, module) {
 
         modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
 
-        console.log(modalContent);
+        //console.log(modalContent);
 
         $('#searchTerm').autocomplete({
             lookup: modalContent,
             onSelect: function(suggestion) {
-                console.log('You selected: ' + suggestion.value + ', ' + suggestion.data);
+                console.log('You selected: ' + suggestion.value + ', ' + $.parseJSON(suggestion.data));
             }
         });
 

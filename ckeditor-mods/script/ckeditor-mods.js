@@ -78,7 +78,7 @@ define(function(require, exports, module) {
             editor.ui.addButton('globalContent', {
                 label: 'Insert Modal',
                 command: pluginName,
-                className: 'cke_button_icon cke_button__modal_label',
+                className: 'cke_button__modal_label',
                 toolbar: 'document,3'
             });
         }

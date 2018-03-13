@@ -51,7 +51,9 @@ define(function(require, exports, module) {
             editor.addCommand(pluginName, {
                 exec: function(editor) {
                     var eName = editor.name;
-                    console.log(eName);
+                    var selectedEditor = CKEDITOR.instances.eName;
+                    console.log(selectedEditor);
+
                     $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
                         event.preventDefault();
@@ -59,7 +61,7 @@ define(function(require, exports, module) {
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
 
-                        CKEDITOR.instances.eName.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        selectedEditor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
 
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();

@@ -1,5 +1,9 @@
-.modal.fade {
-  z-index: 10000000 !important;
+.modal.fade,
+.modal-scrollable,
+body div.modal-backdrop,
+body div.modal-backdrop.fade.in,
+.autocomplete-suggestions {
+    z-index: 9999 !important;
 }
 
 span#modalID {

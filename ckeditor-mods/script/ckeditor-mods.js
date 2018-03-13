@@ -8,6 +8,40 @@ define(function(require, exports, module) {
 
     require('https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.7/jquery.autocomplete.min.js');
 
+
+
+    //Check workspace-picker to determine the appropriate env for creating the preview link.
+    var workspacePickerVal = $('select.workspace-picker option:selected').text();
+    var domain;
+    //Decide on the correct environment
+    if (workspacePickerVal.includes("Master")) {
+        //console.log("prod");
+        domain = "https://www.cricketwireless.com";
+    } else if (workspacePickerVal.includes("SIT1")) {
+        //console.log("SIT1");
+        domain = "https://wwwsit1.cricketwireless.com";
+    } else if (workspacePickerVal.includes("SIT2")) {
+        //console.log("SIT2");
+        domain = "https://wwwsit2.cricketwireless.com";
+    } else if (workspacePickerVal.includes("SIT3")) {
+        //console.log("SIT3");
+        domain = "https://wwwsit3.cricketwireless.com";
+    } else if (workspacePickerVal.includes("SIT6")) {
+        //console.log("SIT6");
+        domain = "https://wwwsit6.cricketwireless.com";
+    } else if (workspacePickerVal.includes("SIT8")) {
+        //console.log("SIT8");
+        domain = "https://wwwsit8.cricketwireless.com";
+    } else if (workspacePickerVal.includes("SIT9")) {
+        //console.log("SIT9");
+        domain = "https://wwwsit9.cricketwireless.com";
+    } else {
+        console.log("Nothing found");
+    }
+
+
+
+
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
         $1: {
@@ -33,7 +67,7 @@ define(function(require, exports, module) {
         { name: 'about', groups: ['about'] },
         { name: 'editing', groups: ['spellchecker', 'find', 'selection', 'editing'] },
         { name: 'document', groups: ['mode', 'document', 'doctools'] },
-        { name: 'globalContent'}
+        { name: 'globalContent' }
     ];
 
 
@@ -53,11 +87,11 @@ define(function(require, exports, module) {
                 exec: function(editor) {
                     // var eName = editor.name;
                     // var selectedEditor = CKEDITOR.instances.eName;
-                    
+
                     // console.log(eName);
                     // console.log(selectedEditor);
 
-                    $('#insert').unbind( "click" );
+                    $('#insert').unbind("click");
 
                     $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
@@ -100,14 +134,14 @@ define(function(require, exports, module) {
                 initAutoComplete();
             }
 
-        
+
         });
     });
 
     function initAutoComplete() {
         //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
         if (!sessionStorage.getItem('modalContent')) {
-            $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/modal/', function(result) {
+            $.get(domain+'/cloudassets/cms/myAccount/modal/', function(result) {
                 var newObject = [];
                 $.each(result, function(data) {
                     //console.log(data);

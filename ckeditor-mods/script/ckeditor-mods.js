@@ -50,6 +50,9 @@ define(function(require, exports, module) {
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
+
+                    console.log(editor);
+
                     $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
                         event.preventDefault();

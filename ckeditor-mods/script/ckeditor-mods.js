@@ -50,16 +50,20 @@ define(function(require, exports, module) {
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {
-                    console.log(editor);
-                    var self = editor;
                     
                     $('#globalContent').modal('show');
-                    $('#insert').on('click', function(event) {
+                    $('#insert').on('click', function(event, editor) {
                         event.preventDefault();
                         /* Act on the event */
+
+                        console.log(editor);
+
+
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
-                        self.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        
+                        editor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();
                         $('#searchTerm').val('');

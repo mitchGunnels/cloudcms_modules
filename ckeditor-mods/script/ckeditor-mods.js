@@ -6,7 +6,7 @@ define(function(require, exports, module) {
     uri = uri.substring(0, uri.lastIndexOf('/'));
 
     require('https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.7/jquery.autocomplete.min.js');
-    require(uri+'/autocomplete.css');
+    var css = require(uri + '/autocomplete.css');
 
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -47,7 +47,6 @@ define(function(require, exports, module) {
         init: function(editor) {
 
             var pluginName = 'globalContent';
-
 
             editor.addCommand(pluginName, {
                 exec: function(editor) {

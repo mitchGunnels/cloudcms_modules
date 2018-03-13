@@ -57,7 +57,7 @@ define(function(require, exports, module) {
             });
 
             editor.ui.addButton('globalContent', {
-                label: 'Insert global content',
+                label: 'Insert Modal',
                 command: pluginName,
                 className: 'cke_button_icon cke_button__find_icon',
                 toolbar: 'document,3'
@@ -103,7 +103,9 @@ define(function(require, exports, module) {
         $('#searchTerm').autocomplete({
             lookup: modalContent,
             onSelect: function(suggestion) {
-                console.log('You selected: ' + suggestion.value + ', ' + suggestion.data.modalBody);
+                //console.log('You selected: ' + suggestion.value + ', ' + suggestion.data.modalBody);
+                $('#result').html('<h4>' + suggestion.value + '</h4><br><p>'
+                    suggestion.data.modalBody '</p>');
             }
         });
 

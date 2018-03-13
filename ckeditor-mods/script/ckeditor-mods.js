@@ -89,7 +89,7 @@ define(function(require, exports, module) {
             $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/modal/', function(result) {
                 var newObject = [];
                 $.each(result, function(data) {
-                    var dataObj = { "value": data.title, "data": { "title": data.modalTitle, "modalBody": data.modalBody } };
+                    var dataObj = { "value": this.title, "data": { "title": this.modalTitle, "modalBody": this.modalBody } };
                     newObject.push(dataObj);
                 });
                 sessionStorage.setItem('modalContent', JSON.stringify(newObject));

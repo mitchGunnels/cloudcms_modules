@@ -87,15 +87,12 @@ define(function(require, exports, module) {
         //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
         if (!sessionStorage.getItem('modalContent')) {
             $.get('https://wwwsit3.cricketwireless.com/cloudassets/cms/myAccount/modal/', function(result) {
-
                 var newObject = [];
-
-                for (var i = 0; i < result.length; i++) {
-                    console.log(result[i].title);
-                    // more statements
-                }
-
-                sessionStorage.setItem('modalContent', JSON.stringify(result));
+                $.each(result, function(data) {
+                    var dataObj = { "value": data.title, "data": { "title": data.modalTitle, "modalBody": data.modalBody } };
+                    newObject.push(dataObj);
+                });
+                sessionStorage.setItem('modalContent', JSON.stringify(newObject));
                 modalContent = $.parseJSON(sessionStorage.getItem('modalContent'));
             });
         }

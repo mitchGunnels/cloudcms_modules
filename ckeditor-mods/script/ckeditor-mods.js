@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var modalContent;
     var modalHtml = '<div class="fade modal"role=dialog id=globalContent tabindex=-1><div class=modal-dialog role=document><div class=modal-content><div class=modal-header><button class=close type=button data-dismiss=modal aria-label=Close><span aria-hidden=true>×</span></button><h4 class=modal-title>Insert Modal</h4></div><div class=modal-body><p><form><div class=form-group><label for=searchTerm>Modal Search (by title)</label><input class="form-control input-lg"id=searchTerm placeholder="Modal title"type=input></div><div id=result></div></form></p></div><div class=modal-footer><button class="btn btn-default"type=button data-dismiss=modal>Close</button> <button class="btn btn-primary" type="button" id="insert">Insert</button></div></div></div></div>';
-    var modalCSS = 'body div.modal-backdrop, body div.modal-backdrop.fade.in{ z-index: 9997 !important; } .modal.fade, .modal-scrollable{ z-index: 9998 !important; } span#modalID { font-size: 11px; font-style: italic; } .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; z-index: 9999 !important; } .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; } .autocomplete-selected { background: #F0F0F0; } .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; } .autocomplete-group { padding: 2px 5px; } .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }';
+    var modalCSS = 'body div.modal-backdrop, body div.modal-backdrop.fade.in{ z-index: 9997 !important; } .cke_button__modal_label { display: inline !important } .modal.fade, .modal-scrollable{ z-index: 9998 !important; } span#modalID { font-size: 11px; font-style: italic; } .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; z-index: 9999 !important; } .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; } .autocomplete-selected { background: #F0F0F0; } .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; } .autocomplete-group { padding: 2px 5px; } .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }';
     var $ = require("jquery");
     var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
@@ -65,7 +65,7 @@ define(function(require, exports, module) {
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
 
-                        editor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        editor.insertHtml('<a href="' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
 
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();
@@ -78,7 +78,7 @@ define(function(require, exports, module) {
             editor.ui.addButton('globalContent', {
                 label: 'Insert Modal',
                 command: pluginName,
-                className: 'cke_button_icon cke_button__find_icon',
+                className: 'cke_button_icon cke_button__modal_label',
                 toolbar: 'document,3'
             });
         }

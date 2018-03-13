@@ -1,5 +1,5 @@
-#globalContent {
-    z-index: 9999;
+.modal.fade {
+  z-index: 10000000 !important;
 }
 
 span#modalID {

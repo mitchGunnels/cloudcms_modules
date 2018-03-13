@@ -51,14 +51,15 @@ define(function(require, exports, module) {
             editor.addCommand(pluginName, {
                 exec: function(editor) {
                     var editor = editor;
-                    $('#globalContent').modal('toggle');
+                    $('#globalContent #result').emty();
+                    $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
                         event.preventDefault();
                         /* Act on the event */
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
                         editor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
-                        $('#globalContent').modal('toggle');
+                        $('#globalContent').modal('hide');
                     });
                 },
                 canUndo: true
@@ -85,8 +86,9 @@ define(function(require, exports, module) {
             if ($('#globalContent').length == 0) {
                 $('body').append(modalHtml);
                 $('<style>' + modalCSS + '</style>').appendTo('#globalContent');
+                initAutoComplete();
             }
-            initAutoComplete();
+            
         });
     });
 

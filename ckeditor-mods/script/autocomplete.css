@@ -3,7 +3,7 @@ body div.modal-backdrop.fade.in{
     z-index: 9997 !important;
 }
 
-.cke_button__modal_label {
+.cke_button__globalcontent_label {
     display: inline !important
 }
 

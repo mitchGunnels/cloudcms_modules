@@ -51,7 +51,6 @@ define(function(require, exports, module) {
             editor.addCommand(pluginName, {
                 exec: function(editor) {
                     var editor = editor;
-                    $('#globalContent #result, #searchTerm').empty();
                     $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
                         event.preventDefault();
@@ -60,6 +59,8 @@ define(function(require, exports, module) {
                         var modalID = $('#result span#modalID').text();
                         editor.insertHtml('<a href="#' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
                         $('#globalContent').modal('hide');
+                        $('#globalContent #result').empty();
+                        $('#searchTerm').val('');
                     });
                 },
                 canUndo: true

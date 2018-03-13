@@ -104,6 +104,7 @@ define(function(require, exports, module) {
             if ($('#globalContent').length == 0) {
                 $('body').append(modalHtml);
                 $('<style>' + modalCSS + '</style>').appendTo('#globalContent');
+                $('select.workspace-picker').on('change', initAutoComplete);
                 initAutoComplete();
             }
 

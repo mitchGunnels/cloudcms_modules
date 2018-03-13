@@ -51,7 +51,7 @@ define(function(require, exports, module) {
             editor.addCommand(pluginName, {
                 exec: function(editor) {
                     var editor = editor;
-                    $('#globalContent #result').empty();
+                    $('#globalContent #result, #searchTerm').empty();
                     $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
                         event.preventDefault();
@@ -116,8 +116,7 @@ define(function(require, exports, module) {
         $('#searchTerm').autocomplete({
             lookup: modalContent,
             onSelect: function(suggestion) {
-                //console.log('You selected: ' + suggestion.value + ', ' + suggestion.data.modalBody);
-                $('#result').html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><br><span id="modalID">' + suggestion.data.ID + '</span></p>');
+                $('#result').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><br><span id="modalID">' + suggestion.data.ID + '</span></p>');
             }
         });
     }

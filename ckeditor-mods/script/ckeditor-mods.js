@@ -49,26 +49,17 @@ define(function(require, exports, module) {
         init: function(editor) {
 
             var modalContent = 'modalContent';
+            var legalContent = 'legalContent';
 
             editor.addCommand(modalContent, {
                 exec: function(editor) {
-                    // var eName = editor.name;
-                    // var selectedEditor = CKEDITOR.instances.eName;
-
-                    // console.log(eName);
-                    // console.log(selectedEditor);
-
                     $('#insert').unbind("click");
-
                     $('#globalContent').modal('show');
                     $('#insert').on('click', function(event) {
                         event.preventDefault();
-                        /* Act on the event */
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
-
                         editor.insertHtml('<a href="' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
-
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();
                         $('#searchTerm').val('');
@@ -77,17 +68,37 @@ define(function(require, exports, module) {
                 canUndo: true
             });
 
+
+            editor.addCommand(legalContent, {
+                exec: function(editor) {
+
+                    alert('legalContent');
+                   /* $('#insert').unbind("click");
+                    $('#globalContent').modal('show');
+                    $('#insert').on('click', function(event) {
+                        event.preventDefault();
+                        var modalTitle = $('#result h4#modalTitle').text();
+                        var modalID = $('#result span#modalID').text();
+                        
+                        editor.insertHtml('<a href="' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        
+                        $('#globalContent').modal('hide');
+                        $('#globalContent #result').empty();
+                        $('#searchTerm').val('');
+                    }); */
+                },
+                canUndo: true
+            });
+
             editor.ui.addButton('globalContent', {
                 label: 'Modal',
                 command: modalContent,
-                //className: 'cke_button_label cke_button__modal_label',
                 toolbar: 'globalContent,1'
             });
 
             editor.ui.addButton('legalContent', {
                 label: 'Legal',
                 command: modalContent,
-                //className: 'cke_button_label cke_button__modal_label',
                 toolbar: 'legalContent,1'
             });
         }

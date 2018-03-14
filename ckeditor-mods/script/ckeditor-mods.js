@@ -1,4 +1,9 @@
 define(function(require, exports, module) {
+
+    window.addEventListener('error', function(e) {
+        console.log(e);
+    }, true);
+
     var modalContent;
     var modalHtml = '<div id="globalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" id="insert">Insert Modal</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="searchTerm">Modal Search (by title)</label> <input class="form-control input-lg" id="searchTerm" placeholder="Modal title" type="input" /></div><div id="result"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button">Insert</button></div></div></div></div>';
     var legalHtml = '<div id="legalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" id="legalInsert">Insert Legal Content</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="legalSearch">Legal Search (by topic)</label> <input class="form-control input-lg" id="legalSearch" placeholder="Legal topic" type="input" /></div><div id="legalResult"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button">Insert</button></div></div></div></div>';
@@ -202,14 +207,4 @@ define(function(require, exports, module) {
             }
         });
     }
-
-
-    setTimeout(function() {
-        $('img').on("error", function() {
-            alert(this.src);
-            //this.src = ResolveUrl("~/images/tree-item.png");
-        });
-
-    }, 2000)
-
 });

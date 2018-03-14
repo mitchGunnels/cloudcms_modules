@@ -82,6 +82,13 @@ define(function(require, exports, module) {
                 className: 'cke_button_label cke_button__modal_label',
                 toolbar: 'globalContent,1'
             });
+
+            editor.ui.addButton('legalContent', {
+                label: 'Legal',
+                command: pluginName,
+                className: 'cke_button_label cke_button__modal_label',
+                toolbar: 'globalContent,2'
+            });
         }
     });
 
@@ -106,8 +113,6 @@ define(function(require, exports, module) {
     });
 
     function initAutoComplete() {
-        //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
-
         //Check workspace-picker to determine the appropriate env for creating the preview link.
         var workspacePickerVal = $('select.workspace-picker option:selected').text();
         var domain;
@@ -137,8 +142,8 @@ define(function(require, exports, module) {
             console.log("Nothing found");
         }
 
-        console.log('GET CALLED!');
-
+        //console.log('GET CALLED!');
+        //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
         $.get(domain + '/cloudassets/cms/myAccount/modal', function(result) {
             var newObject = [];
             $.each(result, function(data) {
@@ -146,7 +151,7 @@ define(function(require, exports, module) {
                 var dataObj = { "value": this.title, "data": { "ID": data, "title": this.modalTitle, "modalBody": this.modalBody } };
                 newObject.push(dataObj);
             });
-            
+
             modalContent = newObject;
             searchInit();
         });

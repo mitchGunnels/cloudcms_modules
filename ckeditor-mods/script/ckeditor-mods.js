@@ -84,6 +84,7 @@ define(function(require, exports, module) {
                             editor.insertText('~#[content]-[legal]-[content]-[' + legalID + ']-[' + descriptionType + ']#~');
                         } else {
                             $('#legalResult #descriptionTypeLabel').addClass('text-danger');
+                            return false;
                         }
                         $('#legalContent').modal('hide');
                         $('#legalContent #legalResult').empty();

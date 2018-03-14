@@ -201,7 +201,13 @@ define(function(require, exports, module) {
         $('#legalSearch').autocomplete({
             lookup: legalContent,
             onSelect: function(suggestion) {
-                $('#legalResult').empty().html('<p id="descriptionTypeLabel">Please select description type</p><select class="form-control" id="descriptionType"><option value="">Insert Short or Long Description</option><option value="short">Short</option><option value="long">Long</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer"><b>Short Disclaimer:</b><br>' + suggestion.data.shortDisclaimer + '</p><p id="longDisclaimer"><b>Long Disclaimer:</b><br>' + suggestion.data.longDisclaimer + '</p><p><span id="legalID">' + suggestion.data.ID + '</span></p>');
+                if (suggestion.data.longDisclaimer && suggestion.data.shortDisclaimer) {
+                    $('#legalResult').empty().html('<p id="descriptionTypeLabel">Please select description type</p><select class="form-control" id="descriptionType"><option value="">Insert Short or Long Description</option><option value="short">Short</option><option value="long">Long</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer"><b>Short Disclaimer:</b><br>' + suggestion.data.shortDisclaimer + '</p><p id="longDisclaimer"><b>Long Disclaimer:</b><br>' + suggestion.data.longDisclaimer + '</p><p><span id="legalID">' + suggestion.data.ID + '</span></p>');
+                } else if (suggestion.data.longDisclaimer) {
+                    $('#legalResult').empty().html('<p id="descriptionTypeLabel">Please select description type</p><select class="form-control" id="descriptionType"><option value="long">Long</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="longDisclaimer"><b>Long Disclaimer:</b><br>' + suggestion.data.longDisclaimer + '</p><p><span id="legalID">' + suggestion.data.ID + '</span></p>');
+                } else {
+                    $('#legalResult').empty().html('<p id="descriptionTypeLabel">Please select description type</p><select class="form-control" id="descriptionType"><option value="short">Short</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer"><b>Short Disclaimer:</b><br>' + suggestion.data.shortDisclaimer + '</p><p><span id="legalID">' + suggestion.data.ID + '</span></p>');
+                }
             }
         });
     }

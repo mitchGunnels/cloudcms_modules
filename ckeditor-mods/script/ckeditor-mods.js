@@ -83,7 +83,7 @@ define(function(require, exports, module) {
                         if (descriptionType.length > 0) {
                             editor.insertText('~#[content]-[legal]-[content]-[' + legalID + ']-[' + descriptionType + ']#~');
                         } else {
-                            alert('Description Type is required.');
+                            $('#legalResult #descriptionTypeLabel').addClass('text-danger');
                         }
                         $('#legalContent').modal('hide');
                         $('#legalContent #legalResult').empty();
@@ -200,7 +200,7 @@ define(function(require, exports, module) {
         $('#legalSearch').autocomplete({
             lookup: legalContent,
             onSelect: function(suggestion) {
-                $('#legalResult').empty().html('<select class="form-control" id="descriptionType"><option value="">Insert Long or Short Description</option><option value="long">Long</option><option value="short">Short</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer">' + suggestion.data.shortDisclaimer + '</p><p id="longDisclaimer">' + suggestion.data.longDisclaimer + '</p><p><span id="modalID">' + suggestion.data.ID + '</span></p>');
+                $('#legalResult').empty().html('<p id="descriptionTypeLabel">Please select description type</p><select class="form-control" id="descriptionType"><option value="">Insert Long or Short Description</option><option value="long">Long</option><option value="short">Short</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer">' + suggestion.data.shortDisclaimer + '</p><p id="longDisclaimer">' + suggestion.data.longDisclaimer + '</p><p><span id="modalID">' + suggestion.data.ID + '</span></p>');
             }
         });
     }

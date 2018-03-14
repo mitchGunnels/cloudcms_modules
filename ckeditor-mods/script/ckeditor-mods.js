@@ -80,7 +80,7 @@ define(function(require, exports, module) {
                         event.preventDefault();
                         var legalID = $('#legalResult span#legalID').text();
                         var descriptionType = $('#legalResult #descriptionType').val();
-                        if (descriptionType.length > 0) {
+                        if (descriptionType.length > 0 && descriptionType) {
                             editor.insertText('~#[content]-[legal]-[content]-[' + legalID + ']-[' + descriptionType + ']#~');
                         } else {
                             $('#legalResult #descriptionTypeLabel').addClass('text-danger');
@@ -201,7 +201,7 @@ define(function(require, exports, module) {
         $('#legalSearch').autocomplete({
             lookup: legalContent,
             onSelect: function(suggestion) {
-                $('#legalResult').empty().html('<p id="descriptionTypeLabel">Please select description type</p><select class="form-control" id="descriptionType"><option value="">Insert Long or Short Description</option><option value="long">Long</option><option value="short">Short</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer">' + suggestion.data.shortDisclaimer + '</p><p id="longDisclaimer">' + suggestion.data.longDisclaimer + '</p><p><span id="modalID">' + suggestion.data.ID + '</span></p>');
+                $('#legalResult').empty().html('<p id="descriptionTypeLabel">Please select description type</p><select class="form-control" id="descriptionType"><option value="">Insert Short or Long Description</option><option value="short">Short</option><option value="long">Long</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer"><b>Short Disclaimer:</b><br>' + suggestion.data.shortDisclaimer + '</p><p id="longDisclaimer"><b>Long Disclaimer:</b><br>' + suggestion.data.longDisclaimer + '</p><p><span id="legalID">' + suggestion.data.ID + '</span></p>');
             }
         });
     }

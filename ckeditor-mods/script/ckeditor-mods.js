@@ -204,13 +204,12 @@ define(function(require, exports, module) {
     }
 
 
-    $(document).ready(function($) {
-        //RESOLVE IMAGES SO THEY DISPLAY!
+    setTimeout(function() {
         $('img').on("error", function() {
             alert(this.src);
             //this.src = ResolveUrl("~/images/tree-item.png");
         });
-    });
 
+    }, 2000)
 
 });

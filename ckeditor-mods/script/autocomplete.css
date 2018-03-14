@@ -3,11 +3,11 @@ body div.modal-backdrop.fade.in {
     z-index: 9997 !important;
 }
 
-.cke_button__globalcontent_icon {
+.cke_button__globalcontent_icon, .cke_button__legalcontent_icon {
     display: none;
 }
 
-.cke_button__globalcontent_label {
+.cke_button__globalcontent_label, .cke_button__legalcontent_label  {
     display: inline !important;
     padding: 0px;
     margin: 0px;

@@ -1,9 +1,4 @@
 define(function(require, exports, module) {
-
-    window.addEventListener('error', function(e) {
-        console.log(e);
-    }, true);
-
     var modalContent;
     var modalHtml = '<div id="globalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" id="insert">Insert Modal</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="searchTerm">Modal Search (by title)</label> <input class="form-control input-lg" id="searchTerm" placeholder="Modal title" type="input" /></div><div id="result"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button">Insert</button></div></div></div></div>';
     var legalHtml = '<div id="legalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" id="legalInsert">Insert Legal Content</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="legalSearch">Legal Search (by topic)</label> <input class="form-control input-lg" id="legalSearch" placeholder="Legal topic" type="input" /></div><div id="legalResult"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button">Insert</button></div></div></div></div>';
@@ -67,7 +62,7 @@ define(function(require, exports, module) {
                         event.preventDefault();
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
-                        editor.insertHtml('<a href="' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        editor.insertHtml('<a href="modalAction/' + modalID + '" title="" pop-modal modalid="' + modalID + '" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();
                         $('#searchTerm').val('');
@@ -83,11 +78,13 @@ define(function(require, exports, module) {
                     $('#legalContent').modal('show');
                     $('#legalInsert').on('click', function(event) {
                         event.preventDefault();
-                        //var modalTitle = $('#result h4#modalTitle').text();
-                        //var modalID = $('#result span#modalID').text();
-
-                        //editor.insertHtml('<a href="' + modalID + '" title="" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
-
+                        var legalID = $('#legalResult span#legalID').text();
+                        var descriptionType = $('#legalResult #descriptionType').val();
+                        if (descriptionType.length > 0) {
+                            editor.insertText('~#[content]-[legal]-[content]-[' + legalID + ']-[' + descriptionType + ']#~');
+                        } else {
+                            alert('Description Type is required.');
+                        }
                         $('#legalContent').modal('hide');
                         $('#legalContent #legalResult').empty();
                         $('#legalSearch').val('');
@@ -181,8 +178,8 @@ define(function(require, exports, module) {
         $.get(domain + '/cloudassets/cms/legal/content', function(result) {
             var newObject = [];
             $.each(result, function(data) {
-                //var dataObj = { "value": this.title, "data": { "ID": data, "title": this.modalTitle, "modalBody": this.modalBody } };
-                //newObject.push(dataObj);
+                var dataObj = { "value": this.topic, "data": { "ID": data, "title": this.title, "shortDisclaimer": this.shortDisclaimer, "longDisclaimer": this.longDisclaimer } };
+                newObject.push(dataObj);
             });
 
             legalContent = newObject;
@@ -194,7 +191,7 @@ define(function(require, exports, module) {
         $('#searchTerm').autocomplete({
             lookup: modalContent,
             onSelect: function(suggestion) {
-                $('#result').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><br><span id="modalID">' + suggestion.data.ID + '</span></p>');
+                $('#result').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '</p><p><span id="modalID">' + suggestion.data.ID + '</span></p>');
             }
         });
     }
@@ -203,7 +200,7 @@ define(function(require, exports, module) {
         $('#legalSearch').autocomplete({
             lookup: legalContent,
             onSelect: function(suggestion) {
-                $('#legalResult').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><p id="modalBody">' + suggestion.data.modalBody + '<br><br><span id="modalID">' + suggestion.data.ID + '</span></p>');
+                $('#legalResult').empty().html('<select class="form-control" id="descriptionType"><option value="">Insert Long or Short Description</option><option value="long">Long</option><option value="short">Short</option></select><br><h4 id="legalTitle">' + suggestion.data.title + '</h4><p id="shortDisclaimer">' + suggestion.data.shortDisclaimer + '</p><p id="longDisclaimer">' + suggestion.data.longDisclaimer + '</p><p><span id="modalID">' + suggestion.data.ID + '</span></p>');
             }
         });
     }

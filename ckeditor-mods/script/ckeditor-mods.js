@@ -158,13 +158,6 @@ define(function(require, exports, module) {
             console.log("Nothing found");
         }
 
-
-        //RESOLVE IMAGES SO THEY DISPLAY!
-        $('img').on("error", function() {
-            alert(this.src);
-            //this.src = ResolveUrl("~/images/tree-item.png");
-        });
-
         //console.log('GET CALLED!');
         //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
         $.get(domain + '/cloudassets/cms/modal/content', function(result) {
@@ -209,4 +202,15 @@ define(function(require, exports, module) {
             }
         });
     }
+
+
+    $(document).ready(function($) {
+        //RESOLVE IMAGES SO THEY DISPLAY!
+        $('img').on("error", function() {
+            alert(this.src);
+            //this.src = ResolveUrl("~/images/tree-item.png");
+        });
+    });
+
+
 });

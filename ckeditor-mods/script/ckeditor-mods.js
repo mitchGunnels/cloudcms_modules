@@ -98,7 +98,7 @@ define(function(require, exports, module) {
 
             editor.ui.addButton('legalContent', {
                 label: 'Legal',
-                command: modalContent,
+                command: legalContent,
                 toolbar: 'legalContent,1'
             });
         }

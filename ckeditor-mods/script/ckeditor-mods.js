@@ -9,6 +9,7 @@ define(function(require, exports, module) {
 
     require('https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.7/jquery.autocomplete.min.js');
 
+    CKEDITOR.config.skin = 'moono-lisa';
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
         $1: {

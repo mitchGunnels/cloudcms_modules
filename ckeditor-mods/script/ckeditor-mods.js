@@ -33,6 +33,7 @@ define(function(require, exports, module) {
         { name: 'others', groups: ['others'] },
         { name: 'about', groups: ['about'] },
         { name: 'editing', groups: ['spellchecker', 'find', 'selection', 'editing'] },
+        '/',
         { name: 'document', groups: ['mode', 'document', 'doctools'] },
         { name: 'globalContent' },
         { name: 'legalContent' }

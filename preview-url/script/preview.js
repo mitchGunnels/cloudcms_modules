@@ -17,9 +17,7 @@ define(function(require, exports, module) {
                 if (slug != 'browse') {
                     $(self).attr('href', url + '/properties');
                 }
-
                 //console.log(url.substr(url.lastIndexOf('/') + 1));
-
             });
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
@@ -51,12 +49,16 @@ define(function(require, exports, module) {
             }
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();
+            
             //console.log(endPoint);
-
-            if (endPoint != undefined || inputEndPoint != undefined) {
+            if (endPoint != undefined) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
+            } else if (inputEndPoint != undefined) {
+                $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + inputEndPoint + '" target="_blank">Preview Content</a></span>');
+                $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
+
         }, 2000);
 
     });

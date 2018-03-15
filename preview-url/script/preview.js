@@ -14,10 +14,10 @@ define(function(require, exports, module) {
                 var url = $(this).attr('href');
                 var slug = url.substr(url.lastIndexOf('/') + 1);
                 var self = this;
-                if (slug != 'browse') {
+                if (slug != 'browse' && != 'properties') {
                     $(self).attr('href', url + '/properties');
                 }
-                //console.log(url.substr(url.lastIndexOf('/') + 1));
+                console.log(url.substr(url.lastIndexOf('/') + 1));
             });
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();

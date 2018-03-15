@@ -35,7 +35,8 @@ define(function(require, exports, module) {
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();
             //console.log(endPoint);
-            if (endPoint.length > 0 || inputEndPoint.length > 0) {
+            
+            if (endPoint != undefined || inputEndPoint != undefined) {
                 $('div[name=previewURL]').append(' - <a href="' + domain + endPoint + '" target="_blank">Preview Content</a>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }

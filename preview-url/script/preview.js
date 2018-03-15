@@ -1,13 +1,14 @@
 define(function(require, exports, module) {
     var $ = require("jquery");
-    var modalHtml = '<div id="previewModal" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button> <button class="minimize" type="button" aria-label="minimize"><span aria-hidden="true">-</span></button><div class="modal-body"> <iframe src="" width="100%" height="100%"></iframe></div></div></div></div>';
-    var modalCSS = '#previewModal .modal-dialog { width: 100%; height: 100%; margin: 0; padding: 0; } #previewModal .modal-content { height: auto; min-height: 100%; border-radius: 0; }';
+    // var modalHtml = '<div id="previewModal" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button> <button class="minimize" type="button" aria-label="minimize"><span aria-hidden="true">-</span></button><div class="modal-body"> <iframe src="" width="100%" height="100%"></iframe></div></div></div></div>';
+    // var modalCSS = '#previewModal .modal-dialog { width: 100%; height: 100%; margin: 0; padding: 0; } #previewModal .modal-content { height: auto; min-height: 100%; border-radius: 0; }';
     
-    if ($('#previewModal').length == 0) {
-        $('body').append(modalHtml);
-        $('<style>' + modalCSS + '</style>').appendTo('#previewModal');
-    }
-    $(document).ajaxStop(function() {
+    // if ($('#previewModal').length == 0) {
+    //     $('body').append(modalHtml);
+    //     $('<style>' + modalCSS + '</style>').appendTo('#previewModal');
+    // }
+    $(document).on("cloudcms-ready", function() {
+    //$(document).ajaxStop(function() {
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
             //Check workspace-picker to determine the appropriate env for creating the preview link.
@@ -40,7 +41,6 @@ define(function(require, exports, module) {
             }
             var endPoint = $('div[name=previewURL]').text();
             //console.log(endPoint);
-
             if (endPoint.length > 0) {
                 $('div[name=previewURL]').append(' - <a href="' + domain + endPoint + '" target="_blank">Preview Content</a>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right"><a href="javascript:void(0)" class="btn btn-success" id="previewModalClick"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');

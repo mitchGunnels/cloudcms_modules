@@ -43,12 +43,12 @@ define(function(require, exports, module) {
 
             if (endPoint.length > 0) {
                 $('div[name=previewURL]').append(' - <a href="' + domain + endPoint + '" target="_blank">Preview Content</a>');
-                // $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right"><a href="#" class="btn btn-success" id="previewModalClick"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
-                // $('#previewModal iframe').attr('src', domain + endPoint);
-                // $('#previewModalClick').on('click', function() {
-                //     $('#previewModal').modal('toggle');
-                // });
+                $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right"><a href="#" class="btn btn-success" id="previewModalClick"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
+                $('#previewModal iframe').attr('src', domain + endPoint);
+                $('#previewModalClick').on('click', function() {
+                    $('#previewModal').modal('toggle');
+                });
             }
-        }, 1500);
+        }, 2000);
     });
 });

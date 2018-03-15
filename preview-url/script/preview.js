@@ -11,16 +11,14 @@ define(function(require, exports, module) {
 
             //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
             $('.list-row-info.title a').each(function(index, el) {
-
                 var url = $(this).attr('href');
                 var slug = url.substr(url.lastIndexOf('/') + 1);
                 var self = this;
-
-                if(slug != 'browse'){
-                    $(self).attr('href', url+'/properties');
+                if (slug != 'browse') {
+                    $(self).attr('href', url + '/properties');
                 }
 
-                console.log(url.substr(url.lastIndexOf('/') + 1));
+                //console.log(url.substr(url.lastIndexOf('/') + 1));
 
             });
             //Check workspace-picker to determine the appropriate env for creating the preview link.

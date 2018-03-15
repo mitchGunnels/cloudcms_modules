@@ -5,9 +5,9 @@ define(function(require, exports, module) {
 
     $(document).ajaxStop(function() {
 
-        $('.list-row-info a').each(function(index, el) {
+        $('.list-row-info.title a').each(function(index, el) {
             var url = $(this).attr('href');
-            console.log(url.substr(this.href.lastIndexOf('/') + 1));
+            console.log(url.substr(url.lastIndexOf('/') + 1));
         });
 
         //Must delay for page render after ajax finishes. 

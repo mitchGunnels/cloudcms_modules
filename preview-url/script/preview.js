@@ -10,7 +10,7 @@ define(function(require, exports, module) {
     $(document).on("cloudcms-ready", function() {
     //$(document).ajaxStop(function() {
         //Must delay for page render after ajax finishes. 
-        setTimeout(function() {
+        //setTimeout(function() {
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
             var domain;
@@ -49,6 +49,6 @@ define(function(require, exports, module) {
                     $('#previewModal').modal('toggle');
                 });
             }
-        }, 2000);
+        //}, 2000);
     });
 });

@@ -1,16 +1,15 @@
 define(function(require, exports, module) {
-    
+
     var $ = require("jquery");
     var modalHtml = '<div id="previewModal" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button> <button class="minimize" type="button" aria-label="minimize"><span aria-hidden="true">-</span></button><div class="modal-body"> <iframe src="" width="100%" height="100%"></iframe></div></div></div></div>';
     var modalCSS = '#previewModal .modal-dialog { width: 100%; height: 100%; margin: 0; padding: 0; } #previewModal .modal-content { height: auto; min-height: 100%; border-radius: 0; }';
-
-    if ($('#previewModal').length == 0) {
-        $('body').append(modalHtml);
-        $('<style>' + modalCSS + '</style>').appendTo('#previewModal');
-    }
     $(document).ajaxStop(function() {
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
+            if ($('#previewModal').length == 0) {
+                $('body').append(modalHtml);
+                $('<style>' + modalCSS + '</style>').appendTo('#previewModal');
+            }
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
             var domain;
@@ -50,6 +49,6 @@ define(function(require, exports, module) {
                 });
             }
         }, 2000);
-        
+
     });
 });

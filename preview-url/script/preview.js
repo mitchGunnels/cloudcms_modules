@@ -14,7 +14,7 @@ define(function(require, exports, module) {
                 var url = $(this).attr('href');
                 var slug = url.substr(url.lastIndexOf('/') + 1);
                 var self = this;
-                if (slug != 'browse' && != 'properties') {
+                if (slug != 'browse' && slug != 'properties') {
                     $(self).attr('href', url + '/properties');
                 }
                 console.log(url.substr(url.lastIndexOf('/') + 1));

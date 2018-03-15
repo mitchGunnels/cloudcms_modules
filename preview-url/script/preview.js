@@ -1,17 +1,16 @@
 define(function(require, exports, module) {
     var $ = require("jquery");
 
-    $(document).on('swap', function(event) { console.log(event); });
+    //$(document).on('swap', function(event) { console.log(event); });
 
     $(document).ajaxStop(function() {
 
-        $('.list-row-info.title a').each(function(index, el) {
-            var url = $(this).attr('href');
-            console.log(url.substr(url.lastIndexOf('/') + 1));
-        });
-
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
+            $('.list-row-info.title a').each(function(index, el) {
+                var url = $(this).attr('href');
+                console.log(url.substr(url.lastIndexOf('/') + 1));
+            });
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
             var domain;

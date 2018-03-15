@@ -7,9 +7,20 @@ define(function(require, exports, module) {
 
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
+
+            //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
             $('.list-row-info.title a').each(function(index, el) {
+
                 var url = $(this).attr('href');
+                var slug = url.substr(url.lastIndexOf('/') + 1);
+                var self = this;
+
+                if(slug != 'browse'){
+                    $(self).attr('href', url+'/properties');
+                }
+
                 console.log(url.substr(url.lastIndexOf('/') + 1));
+
             });
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();

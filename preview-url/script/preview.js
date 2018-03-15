@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var $ = require("jquery");
 
-    $(document).on('dispatch', function(event) { console.log(event); });
+    $(document).on('swap', function(event) { console.log(event); });
 
     $(document).ajaxStop(function() {
 

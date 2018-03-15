@@ -50,11 +50,12 @@ define(function(require, exports, module) {
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();
             
-            //console.log(endPoint);
-            if (endPoint != undefined) {
+            console.log('endPoint', endPoint);
+            console.log('inputEndPoint', inputEndPoint);
+            if (endPoint != undefined && endPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
-            } else if (inputEndPoint != undefined) {
+            } else if (inputEndPoint != undefined && inputEndPoint.length >0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + inputEndPoint + '" target="_blank">Preview Content</a></span>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }

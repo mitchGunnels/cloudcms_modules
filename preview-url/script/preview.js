@@ -4,7 +4,8 @@ define(function(require, exports, module) {
     //$(document).on('swap', function(event) { console.log(event); });
 
     $(document).ajaxStop(function() {
-
+        //CLEAN UP
+        $('.previewButton').remove();
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
 
@@ -55,8 +56,8 @@ define(function(require, exports, module) {
             //console.log(endPoint);
 
             if (endPoint != undefined || inputEndPoint != undefined) {
-                $('div[name=previewURL]').append(' - <a href="' + domain + endPoint + '" target="_blank">Preview Content</a>');
-                $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
+                $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
+                $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
         }, 2000);
 

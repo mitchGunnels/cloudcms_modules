@@ -2,6 +2,12 @@ define(function(require, exports, module) {
     var $ = require("jquery");
     
     $(document).ajaxStop(function() {
+
+        $('.list-row-info a').each(function(index, el) {
+            var url = $(this).attr('href');
+            console.log(url.substr(this.href.lastIndexOf('/') + 1));
+        });
+
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
             //Check workspace-picker to determine the appropriate env for creating the preview link.

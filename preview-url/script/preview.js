@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     var $ = require("jquery");
 
-    //$(document).on('swap', function(event) { console.log(event); });
+    $(document).on('cloudcms-ready', function(event) { console.log(event); });
 
     $(document).ajaxComplete(function() {
         $('.previewButton').remove();
@@ -17,11 +17,10 @@ define(function(require, exports, module) {
                         $(self).attr('href', url + '/properties');
                     }
                     //console.log(url.substr(url.lastIndexOf('/') + 1));
-
-                    //handle creating a document type button:
-                    console.log($('.list-row-info-summary-body .list-row-info:last').text());
-
                 });
+                
+                //handle creating a document type button:
+                console.log($('.list-row-info-summary-body .list-row-info:last').text());
             }
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
@@ -54,8 +53,8 @@ define(function(require, exports, module) {
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();
 
-            console.log('endPoint', endPoint);
-            console.log('inputEndPoint', inputEndPoint);
+            //console.log('endPoint', endPoint);
+            //console.log('inputEndPoint', inputEndPoint);
             if (endPoint != undefined && endPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
@@ -64,7 +63,7 @@ define(function(require, exports, module) {
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
 
-        }, 2000);
+        }, 3000);
 
     });
 });

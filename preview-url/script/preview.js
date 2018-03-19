@@ -3,11 +3,10 @@ define(function(require, exports, module) {
 
     //$(document).on('swap', function(event) { console.log(event); });
 
-    $(document).ajaxStop(function() {
-        //CLEAN UP
+    $(document).ajaxComplete(function() {
         $('.previewButton').remove();
         //Must delay for page render after ajax finishes. 
-        setTimeout(function() {
+        //setTimeout(function() {
             //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
             if ($('.documents-list').length > 0 || $('.content-instances').length > 0) {
                 $('.list-row-info.title a').each(function(index, el) {
@@ -61,7 +60,7 @@ define(function(require, exports, module) {
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
 
-        }, 2000);
+        //}, 2000);
 
     });
 });

@@ -9,19 +9,20 @@ define(function(require, exports, module) {
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
             //MITCH
-            //FIX THIS TO BE MORE SPECIFIC.
             //FIX PREVIEW TO ALSO USE THE TR>TD on the SIDE.
-
+            if ($(document).hasClass('documents-list') || $(document).hasClass('content-instances')) {
+                $('.list-row-info.title a').each(function(index, el) {
+                    var url = $(this).attr('href');
+                    var slug = url.substr(url.lastIndexOf('/') + 1);
+                    var self = this;
+                    if (slug != 'browse' && slug != 'properties') {
+                        $(self).attr('href', url + '/properties');
+                    }
+                    console.log(url.substr(url.lastIndexOf('/') + 1));
+                });
+            }
             //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
-            /*$('.list-row-info.title a').each(function(index, el) {
-                var url = $(this).attr('href');
-                var slug = url.substr(url.lastIndexOf('/') + 1);
-                var self = this;
-                if (slug != 'browse' && slug != 'properties') {
-                    $(self).attr('href', url + '/properties');
-                }
-                console.log(url.substr(url.lastIndexOf('/') + 1));
-            });*/
+
 
 
             //Check workspace-picker to determine the appropriate env for creating the preview link.
@@ -54,13 +55,13 @@ define(function(require, exports, module) {
             }
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();
-            
+
             console.log('endPoint', endPoint);
             console.log('inputEndPoint', inputEndPoint);
             if (endPoint != undefined && endPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
-            } else if (inputEndPoint != undefined && inputEndPoint.length >0) {
+            } else if (inputEndPoint != undefined && inputEndPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + inputEndPoint + '" target="_blank">Preview Content</a></span>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }

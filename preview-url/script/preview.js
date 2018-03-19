@@ -62,7 +62,7 @@ define(function(require, exports, module) {
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
 
-        }, 500);
+        }, 1000);
 
     });
 });

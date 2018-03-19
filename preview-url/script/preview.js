@@ -8,9 +8,8 @@ define(function(require, exports, module) {
         $('.previewButton').remove();
         //Must delay for page render after ajax finishes. 
         setTimeout(function() {
-            //MITCH
-            //FIX PREVIEW TO ALSO USE THE TR>TD on the SIDE.
-            if ($(document).hasClass('documents-list') || $(document).hasClass('content-instances')) {
+            //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
+            if ($('.documents-list').length > 0 || $('.content-instances').length > 0) {
                 $('.list-row-info.title a').each(function(index, el) {
                     var url = $(this).attr('href');
                     var slug = url.substr(url.lastIndexOf('/') + 1);
@@ -18,13 +17,9 @@ define(function(require, exports, module) {
                     if (slug != 'browse' && slug != 'properties') {
                         $(self).attr('href', url + '/properties');
                     }
-                    console.log(url.substr(url.lastIndexOf('/') + 1));
+                    //console.log(url.substr(url.lastIndexOf('/') + 1));
                 });
             }
-            //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
-
-
-
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
             var domain;

@@ -17,6 +17,10 @@ define(function(require, exports, module) {
                         $(self).attr('href', url + '/properties');
                     }
                     //console.log(url.substr(url.lastIndexOf('/') + 1));
+
+                    //handle creating a document type button:
+                    console.log($('.list-row-info-summary-body .list-row-info:last').text());
+
                 });
             }
             //Check workspace-picker to determine the appropriate env for creating the preview link.

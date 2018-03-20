@@ -4,9 +4,9 @@ define(function(require, exports, module) {
     $(document).on('cloudcms-ready', function(event) {
 
         //WHEN "CREATING A DOCUMENT" SELECT THE PROPER NODE BASED ON THE CURRENT FOLDER
-        var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
+        
         $(document).on('click', '.list-button-new_document', function(event) {
-            console.log(event);
+            var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
             var selectExists = setInterval(function() {
                 if($('.card-content-holder select').length){
                     $('.card-content-holder select option:contains(' + nodeName + ')').attr('selected', 'selected');

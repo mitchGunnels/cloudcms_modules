@@ -7,12 +7,13 @@ define(function(require, exports, module) {
 
 
         //Create custom config for authors
-        var uiConfig = $('button[data-header-item-key=ui-config-dropdown]').text().replace(/\s/g,'');
-        if ( uiConfig == 'Author') {
+        var uiConfig = $('button[data-header-item-key=ui-config-dropdown]').text().replace(/\s/g, '');
+        if (uiConfig == 'Author') {
             //HIDE FROM VIEW
             $('.list-button-view_details, .list-button-new_text_document').parent().hide();
+            $('.list-button-view_rules, .dropdown-menu li.divider').hide();
             //CHANGE NAME
-            //$('.list-button-new_document').text('Create Content Document');
+
             //CUSTOM ACTIONS
         }
         //---------------------------------------------------------------------------------------------------------------

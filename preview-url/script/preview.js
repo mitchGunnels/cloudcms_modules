@@ -5,14 +5,14 @@ define(function(require, exports, module) {
         //console.log(event);
         console.log($('ol.breadcrumb.docpath li:last a').text());
 
-        
+
         //Create custom config for authors
         var uiConfig = $('button[data-header-item-key=ui-config-dropdown]').text().replace(/\s/g,'');
         if ( uiConfig == 'Author') {
             //HIDE FROM VIEW
             $('.list-button-view_details, .list-button-new_text_document').parent().hide();
             //CHANGE NAME
-            $('.list-button-new_document').text('Create Content Document');
+            //$('.list-button-new_document').text('Create Content Document');
             //CUSTOM ACTIONS
         }
         //---------------------------------------------------------------------------------------------------------------

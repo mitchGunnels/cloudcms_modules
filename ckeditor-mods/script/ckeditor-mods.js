@@ -40,6 +40,20 @@ define(function(require, exports, module) {
         { name: 'legalContent' }
     ];
 
+    CKEDITOR.stylesSet.add('styles', [
+        // Block-level styles
+        { name: 'Heading 1', element: 'h1' },
+        { name: 'Heading 2', element: 'h2' },
+        { name: 'Heading 3', element: 'h3' },
+        { name: 'Introduction', element: 'p', attributes: { 'class': 'introduction' } },
+
+        // Inline styles
+        { name: 'Link button', element: 'a', attributes: { 'class': 'button' } },
+        { name: 'Highlight', element: 'span', attributes: { 'class': 'highlight' } },
+
+        // Object styles
+        { name: 'Stretch', element: 'img', attributes: { 'class': 'stretch' } },
+    ]);
 
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;

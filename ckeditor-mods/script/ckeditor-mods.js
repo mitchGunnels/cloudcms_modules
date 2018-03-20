@@ -9,6 +9,7 @@ define(function(require, exports, module) {
 
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
     var fleschKincaid = require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); 
+    var exports = [];
 
     var str = "The quick brown fox jumped over the lazy dogs";
     console.log( fleschKincaid.grade( str ) ); // 3.653333333333336

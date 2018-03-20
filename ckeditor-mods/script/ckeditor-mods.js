@@ -136,7 +136,7 @@ define(function(require, exports, module) {
         }
     });
 
-    CKEDITOR.config.extraPlugins = 'globalContent,dialog';
+    CKEDITOR.config.extraPlugins = 'globalContent,dialog,a11ychecker';
 
     CKEDITOR.on('instanceCreated', function(ev) {
         var editor = ev.editor;

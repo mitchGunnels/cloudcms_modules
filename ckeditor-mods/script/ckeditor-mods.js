@@ -44,7 +44,7 @@ define(function(require, exports, module) {
         // Block-level styles
         { name: 'Blue Title', element: 'h2', styles: { 'color': 'Blue' } },
         { name: 'Red Title', element: 'h3', styles: { 'color': 'Red' } },
-        { name: 'Heading 1', element: 'h1', attributes: { 'class': 'custom-heading' }},
+        { name: 'Heading 1', element: '*', attributes: { 'class': 'custom-heading' }},
 
         // Inline styles
         { name: 'CSS Style', element: 'span', attributes: { 'class': 'my_style' } },

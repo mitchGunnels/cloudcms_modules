@@ -20,7 +20,6 @@ define(function(require, exports, module) {
             classes: true
         }
     };
-
     CKEDITOR.config.toolbarGroups = [
         { name: 'clipboard', groups: ['clipboard', 'undo'] },
         { name: 'tools', groups: ['tools'] },
@@ -136,7 +135,7 @@ define(function(require, exports, module) {
         }
     });
 
-    CKEDITOR.config.extraPlugins = 'globalContent,dialog,a11ychecker';
+    CKEDITOR.config.extraPlugins = 'globalContent,dialog';
 
     CKEDITOR.on('instanceCreated', function(ev) {
         var editor = ev.editor;

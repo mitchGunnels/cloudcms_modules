@@ -5,7 +5,9 @@ define(function(require, exports, module) {
         //console.log(event);
         console.log($('ol.breadcrumb.docpath li:last a').text());
 
-
+        $('.list-button-new_document').on('click', function(event) {
+            
+        });
         //Create custom config for authors
         var uiConfig = $('button[data-header-item-key=ui-config-dropdown]').text().replace(/\s/g, '');
         if (uiConfig == 'Author') {
@@ -16,6 +18,9 @@ define(function(require, exports, module) {
 
             //CUSTOM ACTIONS
         }
+
+
+
         //---------------------------------------------------------------------------------------------------------------
         //IF DELAY IS NEEDED:
         setTimeout(function() {
@@ -31,9 +36,6 @@ define(function(require, exports, module) {
                     }
                     //console.log(url.substr(url.lastIndexOf('/') + 1));
                 });
-
-                //handle creating a document type button:
-                //console.log($('.list-row-info-summary-body .list-row-info:last').text());
             }
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();

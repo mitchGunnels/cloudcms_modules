@@ -4,9 +4,18 @@ define(function(require, exports, module) {
     $(document).on('cloudcms-ready', function(event) {
         //console.log(event);
         console.log($('ol.breadcrumb.docpath li:last a').text());
-        //$(document).ajaxComplete(function() {
-        $('.previewButton').remove();
+        
+        //Create custom config for authors
+        if ($('.select-ui-config').text() == 'Author') {
+            //HIDE FROM VIEW
+            $('.list-button-view_details, .list-button-new_text_document').parent().hide();
+            //CHANGE NAME
+            $('.list-button-new_document').text('Create Content Document');
+        }
+        //---------------------------------------------------------------------------------------------------------------
+        //IF DELAY IS NEEDED:
         setTimeout(function() {
+            $('.previewButton').remove();
             //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
             if ($('.documents-list').length > 0 || $('.content-instances').length > 0) {
                 $('.list-row-info.title a').each(function(index, el) {

@@ -2,7 +2,8 @@ define(function(require, exports, module) {
     var $ = require("jquery");
 
     $(document).on('cloudcms-ready', function(event) {
-        console.log(event);
+        //console.log(event);
+        console.log($('ol.breadcrumb.docpath li:last a').text());
         //$(document).ajaxComplete(function() {
         $('.previewButton').remove();
         setTimeout(function() {
@@ -19,7 +20,7 @@ define(function(require, exports, module) {
                 });
 
                 //handle creating a document type button:
-                console.log($('.list-row-info-summary-body .list-row-info:last').text());
+                //console.log($('.list-row-info-summary-body .list-row-info:last').text());
             }
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
@@ -62,7 +63,7 @@ define(function(require, exports, module) {
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
 
-        }, 1000);
+        }, 2000);
 
     });
 });

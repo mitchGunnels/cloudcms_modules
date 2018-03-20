@@ -11,6 +11,7 @@ define(function(require, exports, module) {
             $('.list-button-view_details, .list-button-new_text_document').parent().hide();
             //CHANGE NAME
             $('.list-button-new_document').text('Create Content Document');
+            //CUSTOM ACTIONS
         }
         //---------------------------------------------------------------------------------------------------------------
         //IF DELAY IS NEEDED:

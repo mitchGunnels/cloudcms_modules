@@ -2,11 +2,16 @@ define(function(require, exports, module) {
     var $ = require("jquery");
 
     $(document).on('cloudcms-ready', function(event) {
-        //console.log(event);
-        console.log($('ol.breadcrumb.docpath li:last a').text());
 
+        //WHEN "CREATING A DOCUMENT" SELECT THE PROPER NODE BASED ON THE CURRENT FOLDER
+        var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
         $('.list-button-new_document').on('click', function(event) {
-            
+            var selectExists = setInterval(function() {
+                if($('.card-content-holder select').length){
+                    $('.card-content-holder select option:contains(' + nodeName + ')').attr('selected', 'selected');
+                    clearInterval(selectExists);
+                }
+            }, 100);
         });
         //Create custom config for authors
         var uiConfig = $('button[data-header-item-key=ui-config-dropdown]').text().replace(/\s/g, '');
@@ -18,8 +23,6 @@ define(function(require, exports, module) {
 
             //CUSTOM ACTIONS
         }
-
-
 
         //---------------------------------------------------------------------------------------------------------------
         //IF DELAY IS NEEDED:
@@ -34,7 +37,6 @@ define(function(require, exports, module) {
                     if (slug != 'browse' && slug != 'properties') {
                         $(self).attr('href', url + '/properties');
                     }
-                    //console.log(url.substr(url.lastIndexOf('/') + 1));
                 });
             }
             //Check workspace-picker to determine the appropriate env for creating the preview link.
@@ -68,8 +70,6 @@ define(function(require, exports, module) {
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();
 
-            //console.log('endPoint', endPoint);
-            //console.log('inputEndPoint', inputEndPoint);
             if (endPoint != undefined && endPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
                 $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');

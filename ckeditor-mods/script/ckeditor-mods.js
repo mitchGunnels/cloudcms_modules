@@ -42,13 +42,29 @@ define(function(require, exports, module) {
 
     CKEDITOR.stylesSet.add('cricket_styles', [
         // Block-level styles
-        { name: 'Blue Title', element: 'h2', styles: { 'color': 'Blue' } },
-        { name: 'Red Title', element: 'h3', styles: { 'color': 'Red' } },
-        { name: 'Heading 1', attributes: { 'class': 'custom-heading' }},
-
+        { name: 'Paragraph Font-10px', element: 'p', attributes: { 'class': 'font-10' }},
+        { name: 'Paragraph Font-11px', element: 'p', attributes: { 'class': 'font-11' }},
+        { name: 'Paragraph Font-12px', element: 'p', attributes: { 'class': 'font-12' }},
+        { name: 'Paragraph Font-14px', element: 'p', attributes: { 'class': 'font-14' }},
+        { name: 'Paragraph Font-16px', element: 'p', attributes: { 'class': 'font-16' }},
+        { name: 'Paragraph Font-18px', element: 'p', attributes: { 'class': 'font-18' }},
+        { name: 'Paragraph Font-20px', element: 'p', attributes: { 'class': 'font-20' }},
+        { name: 'Paragraph Font-22px', element: 'p', attributes: { 'class': 'font-22' }},
+        { name: 'Paragraph Font-24px', element: 'p', attributes: { 'class': 'font-24' }},
+        { name: 'Paragraph Font-26px', element: 'p', attributes: { 'class': 'font-26' }},
+        { name: 'Paragraph Font-36px', element: 'p', attributes: { 'class': 'font-36' }},
+        { name: 'Paragraph Font-40px', element: 'p', attributes: { 'class': 'font-40' }},
         // Inline styles
-        { name: 'CSS Style', element: 'span', attributes: { 'class': 'my_style' } },
-        { name: 'Marker: Yellow', element: 'span', styles: { 'background-color': 'Yellow' } }
+        { name: 'Cricket Green', element: 'span', attributes: { 'class': 'cricket-green-text' } },
+        { name: 'Dark Green', element: 'span', attributes: { 'class': 'dark-green-text' } },
+        { name: 'Light Green', element: 'span', attributes: { 'class': 'light-green-text' } },
+        { name: 'Dark Blue', element: 'span', attributes: { 'class': 'dark-blue-text' } },
+        { name: 'Light Blue', element: 'span', attributes: { 'class': 'light-blue-text' } },
+        { name: 'Dark Gray', element: 'span', attributes: { 'class': 'dark-gray-text' } },
+        { name: 'Light Gray', element: 'span', attributes: { 'class': 'light-gray-text' } },
+        { name: 'Black', element: 'span', attributes: { 'class': 'black-text' } },
+        { name: 'White', element: 'span', attributes: { 'class': 'white-text' } },
+        { name: 'Gold', element: 'span', attributes: { 'class': 'gold-text' } }
     ]);
 
     CKEDITOR.config.stylesSet = 'cricket_styles';

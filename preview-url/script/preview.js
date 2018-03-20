@@ -6,6 +6,7 @@ define(function(require, exports, module) {
         //WHEN "CREATING A DOCUMENT" SELECT THE PROPER NODE BASED ON THE CURRENT FOLDER
         var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
         $('.list-button-new_document').on('click', function(event) {
+            console.log(event);
             var selectExists = setInterval(function() {
                 if($('.card-content-holder select').length){
                     $('.card-content-holder select option:contains(' + nodeName + ')').attr('selected', 'selected');

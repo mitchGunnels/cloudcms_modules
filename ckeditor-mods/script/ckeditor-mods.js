@@ -40,7 +40,7 @@ define(function(require, exports, module) {
         { name: 'legalContent' }
     ];
 
-    CKEDITOR.stylesSet.add('styles', [
+    CKEDITOR.stylesSet.add('my_styles', [
         // Block-level styles
         { name: 'Heading 1', element: 'h1' },
         { name: 'Heading 2', element: 'h2' },

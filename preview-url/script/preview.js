@@ -4,7 +4,7 @@ define(function(require, exports, module) {
     $(document).on('cloudcms-ready', function(event) {
         //console.log(event);
         console.log($('ol.breadcrumb.docpath li:last a').text());
-        
+        console.log($('.select-ui-config').text());
         //Create custom config for authors
         if ($('.select-ui-config').text() == 'Author') {
             //HIDE FROM VIEW

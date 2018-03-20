@@ -29,7 +29,7 @@ define(function(require, exports, module) {
         { name: 'paragraph', groups: ['align', 'list', 'indent', 'blocks', 'bidi', 'paragraph'] },
         { name: 'links', groups: ['links'] },
         { name: 'insert', groups: ['insert'] },
-        { name: 'styles', groups: ['my_styles'] },
+        { name: 'styles', groups: ['cricket_styles'] },
         { name: 'colors', groups: ['colors'] },
         { name: 'others', groups: ['others'] },
         { name: 'about', groups: ['about'] },
@@ -40,17 +40,18 @@ define(function(require, exports, module) {
         { name: 'legalContent' }
     ];
 
-    CKEDITOR.stylesSet.add('my_styles', [
+    CKEDITOR.stylesSet.add('cricket_styles', [
         // Block-level styles
         { name: 'Blue Title', element: 'h2', styles: { 'color': 'Blue' } },
         { name: 'Red Title', element: 'h3', styles: { 'color': 'Red' } },
+        { name: 'Heading 1', element: 'h1', attributes: { 'class': 'custom-heading' },
 
         // Inline styles
         { name: 'CSS Style', element: 'span', attributes: { 'class': 'my_style' } },
         { name: 'Marker: Yellow', element: 'span', styles: { 'background-color': 'Yellow' } }
     ]);
 
-    CKEDITOR.config.stylesSet = 'my_styles';
+    CKEDITOR.config.stylesSet = 'cricket_styles';
 
     CKEDITOR.config.removeButtons = 'Save,NewPage,Preview,Templates,ShowBlocks,Cut,Copy,Paste,PasteText,PasteFromWord,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Replace,Find,CopyFormatting,RemoveFormat,BidiLtr,BidiRtl,Language,CreateDiv,Flash,Image,Smiley,PageBreak,Iframe,About,TextColor,BGColor,FontSize,Font,Format';
     CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;

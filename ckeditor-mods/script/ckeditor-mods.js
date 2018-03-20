@@ -29,7 +29,7 @@ define(function(require, exports, module) {
         { name: 'paragraph', groups: ['align', 'list', 'indent', 'blocks', 'bidi', 'paragraph'] },
         { name: 'links', groups: ['links'] },
         { name: 'insert', groups: ['insert'] },
-        { name: 'styles', groups: ['styles'] },
+        { name: 'styles', groups: ['my_styles'] },
         { name: 'colors', groups: ['colors'] },
         { name: 'others', groups: ['others'] },
         { name: 'about', groups: ['about'] },

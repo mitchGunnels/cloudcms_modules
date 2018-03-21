@@ -87,7 +87,8 @@ define(function(require, exports, module) {
 
             editor.addCommand(fleschKincaid, {
                 exec: function(editor) {
-                    var str = "The quick brown fox jumped over the lazy dogs";
+                    var str = editor.getText();
+                    console.log(str);
                     console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
                 },
                 canUndo: true

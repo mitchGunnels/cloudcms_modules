@@ -3,9 +3,9 @@
     "config": {
         "context": {
             "items": [{
-                "key": "catalog/header",
-                "title": "Mitch",
-                "order": 10000,
+                "key": "cricket/header",
+                "title": "Cricket",
+                "order": 1,
                 "header": true,
                 "iconClass": "fa fa-dashboard",
                 "allowAuthority": [],
@@ -13,8 +13,8 @@
                 "rejectAuthority": [],
                 "rejectPermission": [],
                 "items": [{
-                    "key": "sample/products",
-                    "title": "Products2",
+                    "key": "custom-pages/fleschKincaid",
+                    "title": "Flesch Kincaid",
                     "uri": "#/projects/{projectId}/products",
                     "iconClass": "fa fa-pencil",
                     "allowPermission": []

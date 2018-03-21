@@ -5,7 +5,7 @@
             "items": [{
                 "key": "catalog/header",
                 "title": "Mitch",
-                "order": 1,
+                "order": 10000,
                 "header": true,
                 "iconClass": "fa fa-dashboard",
                 "allowAuthority": [],
@@ -14,12 +14,10 @@
                 "rejectPermission": [],
                 "items": [{
                     "key": "sample/products",
-                    "title": "Products",
+                    "title": "Products2",
                     "uri": "#/projects/{projectId}/products",
                     "iconClass": "fa fa-pencil",
-                    "allowPermission": [
-                        "manager"
-                    ]
+                    "allowPermission": []
                 }]
             }]
         }

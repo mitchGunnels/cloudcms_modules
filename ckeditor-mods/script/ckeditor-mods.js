@@ -87,7 +87,7 @@ define(function(require, exports, module) {
 
             editor.addCommand(fleschKincaid, {
                 exec: function(editor) {
-                    var str = editor.getText();
+                    var str = editor.getData();
                     console.log(str);
                     console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
                 },

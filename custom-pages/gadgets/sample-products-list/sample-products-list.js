@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
 
     require("./sample-products-list.css");
-    var html = require("html!./sample-products-list.html");
+    var html = require("text!./sample-products-list.html");
 
     var Empty = require("ratchet/dynamic/empty");
 

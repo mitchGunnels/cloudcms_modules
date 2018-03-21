@@ -1,4 +1,4 @@
-/*{
+{
     "evaluator": "and",
     "condition": [{
         "evaluator": "context-project"
@@ -22,4 +22,4 @@
             }]
         }
     }
-}*/
+}

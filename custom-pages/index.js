@@ -18,5 +18,4 @@ define(function(require) {
 
     // global CSS overrides
     //require("css!./styles/sample.css");
-
 });

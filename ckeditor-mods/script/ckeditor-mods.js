@@ -37,8 +37,8 @@ define(function(require, exports, module) {
         '/',
         { name: 'document', groups: ['mode', 'document', 'doctools'] },
         { name: 'globalContent' },
-        { name: 'legalContent' }
-        { name: 'fleschKincaid' },
+        { name: 'legalContent' },
+        { name: 'fleschKincaid' }
     ];
 
     CKEDITOR.stylesSet.add('cricket_styles', [

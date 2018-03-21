@@ -1,22 +1,13 @@
 define(function(require, exports, module) {
 
-    require("css!./my-blogs-list.css");
-    var html = require("text!./my-blogs-list.html");
-
-    var Empty = require("ratchet/dynamic/empty");
+    var html = require("./sample-random-product-dashlet.html");
+    require("./sample-random-product-dashlet.css");
 
     var UI = require("ui");
 
-    return UI.registerGadget("my-blogs-list", Empty.extend({
+    return UI.registerDashlet("sample-random-product-dashlet", UI.AbstractDashlet.extend({
 
         TEMPLATE: html,
-
-        /**
-         * Binds this gadget to the /myblogs route
-         */
-        setup: function() {
-            this.get("/projects/{projectId}/myblogs", this.index);
-        },
 
         /**
          * Puts variables into the model for rendering within our template.
@@ -29,14 +20,28 @@ define(function(require, exports, module) {
         prepareModel: function(el, model, callback) {
 
             // get the current project
-            var project = this.observable("project").get();
+            // var project = this.observable("project").get();
 
             // the current branch
             var branch = this.observable("branch").get();
 
             // call into base method and then set up the model
             this.base(el, model, function() {
-                callback();
+
+                // query for catalog:product instances
+                branch.queryNodes({ "_type": "catalog:product" }).then(function() {
+
+                    // all of the products
+                    var products = this.asArray();
+
+                    // keep one at random
+                    var product = model.product = products[Math.floor(Math.random() * products.length)];
+
+                    // add "imageUrl" value to product (retrieve preview of width 256)
+                    product.imageUrl = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=256&name=preview256";
+
+                    callback();
+                });
             });
         },
 
@@ -64,16 +69,18 @@ define(function(require, exports, module) {
          * @param originalContext the dispatch context used to inject
          * @param callback
          */
-        afterSwap: function(el, model, originalContext, callback) {
-            this.base(el, model, originalContext, function() {
+        afterSwap: function(el, model, context, callback)
+        {
+            var self = this;
 
-                // find all .media-popups and attach to a lightbox
+            this.base(el, model, context, function() {
 
+                // TODO: grab any injected DOM elements and bind JS behaviors if needed
 
                 callback();
+
             });
         }
-
+        
     }));
-
 });

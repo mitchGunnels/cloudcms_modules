@@ -8,7 +8,7 @@ define(function(require, exports, module) {
     uri = uri.substring(0, uri.lastIndexOf('/'));
 
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
-    require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); 
+    require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js');
 
     CKEDITOR.config.skin = 'moono-lisa';
     CKEDITOR.config.customConfig = '';
@@ -83,6 +83,16 @@ define(function(require, exports, module) {
             var modalContent = 'modalContent';
             var legalContent = 'legalContent';
 
+
+            editor.addCommand(fleschKincaid, {
+                exec: function(editor) {
+                    var str = "The quick brown fox jumped over the lazy dogs";
+                    console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
+                },
+                canUndo: true
+            });
+
+
             editor.addCommand(modalContent, {
                 exec: function(editor) {
                     $('#insert').unbind("click");
@@ -123,6 +133,12 @@ define(function(require, exports, module) {
                 canUndo: true
             });
 
+            editor.ui.addButton('fleschKincaid', {
+                label: 'Flesch Kincaid Score',
+                command: fleschKincaid,
+                toolbar: 'fleschKincaid,1'
+            });
+
             editor.ui.addButton('globalContent', {
                 label: 'Modal',
                 command: modalContent,
@@ -137,26 +153,6 @@ define(function(require, exports, module) {
         }
     });
 
-    CKEDITOR.plugins.add('fleschKincaid', {
-        init: function(editor) {
-
-            editor.addCommand(fleschKincaid, {
-                exec: function(editor) {
-                    var str = "The quick brown fox jumped over the lazy dogs";
-                    console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
-                },
-                canUndo: true
-            });
-
-            editor.ui.addButton('fleschKincaid', {
-                label: 'Flesch Kincaid Score',
-                command: fleschKincaid,
-                toolbar: 'fleschKincaid,1'
-            });
-        }
-    });
-
-        
 
     CKEDITOR.config.extraPlugins = 'globalContent,dialog';
 

@@ -8,12 +8,10 @@ define(function(require, exports, module) {
     uri = uri.substring(0, uri.lastIndexOf('/'));
 
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
-    
-    var FleschKincaid = require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); // in the vein of node    
-    //exports.doSomethingElse = function() { return someModule.doSomething() + "bar"; };
+    require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); 
 
-    var str = "The quick brown fox jumped over the lazy dogs";
-    console.log( FleschKincaid.grade( str ) ); // 3.653333333333336
+    //var str = "The quick brown fox jumped over the lazy dogs";
+    //console.log( FleschKincaid.grade( str ) ); // 3.653333333333336
 
     CKEDITOR.config.skin = 'moono-lisa';
     CKEDITOR.config.customConfig = '';

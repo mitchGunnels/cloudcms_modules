@@ -1,68 +1,239 @@
-/*eslint prefer-const: "error", sourceType: "module" */
-/*eslint-env es6*/
+// TextStatistics.js
+// Christopher Giffard (2012)
+// 1:1 API Fork of TextStatistics.php by Dave Child (Thanks mate!)
+// https://github.com/DaveChild/Text-Statistics
 
-const syllables = x => {
-    /*
-     * basic algortithm: each vowel-group indicates a syllable, except for: final
-     * (silent) e 'ia' ind two syl @AddSyl and @SubSyl list regexps to massage the
-     * basic count. Each match from @AddSyl adds 1 to the basic count, each
-     * @SubSyl match -1 Keep in mind that when the regexps are checked, any final
-     * 'e' will have been removed, and all '\'' will have been removed.
-     */
-    const subSyl = [
-        /cial/,
-        /tia/,
-        /cius/,
-        /cious/,
-        /giu/, // belgium!
-        /ion/,
-        /iou/,
-        /sia$/,
-        /.ely$/, // absolutely! (but not ely!)
-        /sed$/, // doused, housed, used
-    ]
 
-    const addSyl = [
-        /ia/,
-        /riet/,
-        /dien/,
-        /iu/,
-        /io/,
-        /ii/,
-        /[aeiouym]bl$/, // -Vble, plus -mble
-        /[aeiou]{3}/, // agreeable
-        /^mc/,
-        /ism$/, // -isms
-        /([^aeiouy])\1l$/, // middle twiddle battle bottle, etc.
-        /[^l]lien/, // // alien, salient [1]
-        /^coa[dglx]./, // [2]
-        /[^gq]ua[^auieo]/, // i think this fixes more than it breaks
-        /dnt$/, // couldn't
-    ]
+(function(glob) {
+    
+    function cleanText(text) {
+        // all these tags should be preceeded by a full stop. 
+        var fullStopTags = ['li', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'dd'];
+        
+        fullStopTags.forEach(function(tag) {
+            text = text.replace("</" + tag + ">",".");
+        });
+        
+        text = text
+            .replace(/<[^>]+>/g, "")                // Strip tags
+            .replace(/[,:;()\/&+]|\-\-/g, " ")              // Replace commas, hyphens etc (count them as spaces)
+            .replace(/[\.!?]/g, ".")                    // Unify terminators
+            .replace(/^\s+/, "")                        // Strip leading whitespace
+            .replace(/[\.]?(\w+)[\.]?(\w+)@(\w+)[\.](\w+)[\.]?/g, "$1$2@$3$4")  // strip periods in email addresses (so they remain counted as one word)
+            .replace(/[ ]*(\n|\r\n|\r)[ ]*/g, ".")  // Replace new lines with periods
+            .replace(/([\.])[\.]+/g, ".")           // Check for duplicated terminators
+            .replace(/[ ]*([\.])/g, ". ")               // Pad sentence terminators
+            .replace(/\s+/g, " ")                       // Remove multiple spaces
+            .replace(/\s+$/, "");                   // Strip trailing whitespace
+            
+        if(text.slice(-1) != '.') {
+            text += "."; // Add final terminator, just in case it's missing.
+        }
+        return text;
+    }
+    
+    var TextStatistics = function TextStatistics(text) {
+        this.text = text ? cleanText(text) : this.text;
+    };
+    
+    TextStatistics.prototype.fleschKincaidReadingEase = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return Math.round((206.835 - (1.015 * this.averageWordsPerSentence(text)) - (84.6 * this.averageSyllablesPerWord(text)))*10)/10;
+    };
+    
+    TextStatistics.prototype.fleschKincaidGradeLevel = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return Math.round(((0.39 * this.averageWordsPerSentence(text)) + (11.8 * this.averageSyllablesPerWord(text)) - 15.59)*10)/10;
+    };
+    
+    TextStatistics.prototype.gunningFogScore = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return Math.round(((this.averageWordsPerSentence(text) + this.percentageWordsWithThreeSyllables(text, false)) * 0.4)*10)/10;
+    };
+    
+    TextStatistics.prototype.colemanLiauIndex = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return Math.round(((5.89 * (this.letterCount(text) / this.wordCount(text))) - (0.3 * (this.sentenceCount(text) / this.wordCount(text))) - 15.8 ) *10)/10;
+    };
+    
+    TextStatistics.prototype.smogIndex = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return Math.round(1.043 * Math.sqrt((this.wordsWithThreeSyllables(text) * (30 / this.sentenceCount(text))) + 3.1291)*10)/10;
+    };
+    
+    TextStatistics.prototype.automatedReadabilityIndex = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return Math.round(((4.71 * (this.letterCount(text) / this.wordCount(text))) + (0.5 * (this.wordCount(text) / this.sentenceCount(text))) - 21.43)*10)/10;
+    };
 
-    // (comments refer to titan's /usr/dict/words)
-    // [1] alien, salient, but not lien or ebbullient...
-    // (those are the only 2 exceptions i found, there may be others)
-    // [2] exception for 7 words:
-    // coadjutor coagulable coagulate coalesce coalescent coalition coaxial
-
-    const xx = x.toLowerCase().replace(/'/g, '').replace(/e\b/g, '')
-    const scrugg = xx.split(/[^aeiouy]+/).filter(Boolean) // '-' should be perhaps added?
-
-    return (undefined === x || null === x || '' === x) ? 0 :
-           (1 === xx.length) ? 1 :
-           subSyl.map(r => (xx.match(r) || []).length).reduce((a, b) => a - b) +
-           addSyl.map(r => (xx.match(r) || []).length).reduce((a, b) => a + b) +
-           scrugg.length - ((scrugg.length > 0 && '' === scrugg[0]) ? 1 : 0) +
-           // got no vowels? ("the", "crwth")
-           xx.split(/\b/).map(x => x.trim()).filter(Boolean).filter(x => !x.match(/[.,'!?]/g)).map(x => x.match(/[aeiouy]/) ? 0 : 1).reduce((a, b) => a + b)
-
-}
-
-const words = x => (x.split(/\s+/) || ['']).length
-const sentences = x => (x.split('. ') || ['']).length
-const syllablesPerWord = x => syllables(x) / words(x)
-const wordsPerSentence = x => words(x) / sentences(x)
-
-export const rate = x => 206.835 - 1.015 * wordsPerSentence(x) - 84.6 * syllablesPerWord(x)
-export const grade = x => 0.39 * wordsPerSentence(x) + 11.8 * syllablesPerWord(x) - 15.59
+    TextStatistics.prototype.textLength = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return text.length;
+    };
+    
+    TextStatistics.prototype.letterCount = function(text) {
+        text = text ? cleanText(text) : this.text;
+        text = text.replace(/[^a-z]+/ig,"");
+        return text.length;
+    };
+    
+    TextStatistics.prototype.sentenceCount = function(text) {
+        text = text ? cleanText(text) : this.text;
+        
+        // Will be tripped up by "Mr." or "U.K.". Not a major concern at this point.
+        return text.replace(/[^\.!?]/g, '').length || 1;
+    };
+    
+    TextStatistics.prototype.wordCount = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return text.split(/[^a-z0-9\'@\.\-]+/i).length || 1;
+    };
+    
+    TextStatistics.prototype.averageWordsPerSentence = function(text) {
+        text = text ? cleanText(text) : this.text;
+        return this.wordCount(text) / this.sentenceCount(text);
+    };
+    
+    TextStatistics.prototype.averageSyllablesPerWord = function(text) {
+        text = text ? cleanText(text) : this.text;
+        var syllableCount = 0, wordCount = this.wordCount(text), self = this;
+        
+        text.split(/\s+/).forEach(function(word) {
+            syllableCount += self.syllableCount(word);
+        });
+        
+        // Prevent NaN...
+        return (syllableCount||1) / (wordCount||1);
+    };
+    
+    TextStatistics.prototype.wordsWithThreeSyllables = function(text, countProperNouns) {
+        text = text ? cleanText(text) : this.text;
+        var longWordCount = 0, self = this;
+        
+        countProperNouns = countProperNouns === false ? false : true;
+        
+        text.split(/\s+/).forEach(function(word) {
+            
+            // We don't count proper nouns or capitalised words if the countProperNouns attribute is set.
+            // Defaults to true.
+            if (!word.match(/^[A-Z]/) || countProperNouns) {
+                if (self.syllableCount(word) > 2) longWordCount ++;
+            }
+        });
+        
+        return longWordCount;
+    };
+    
+    TextStatistics.prototype.percentageWordsWithThreeSyllables = function(text, countProperNouns) {
+        text = text ? cleanText(text) : this.text;
+        
+        return (this.wordsWithThreeSyllables(text,countProperNouns) / this.wordCount(text)) * 100;
+    };
+    
+    TextStatistics.prototype.syllableCount = function(word) {
+        var syllableCount = 0,
+            prefixSuffixCount = 0,
+            wordPartCount = 0;
+        
+        // Prepare word - make lower case and remove non-word characters
+        word = word.toLowerCase().replace(/[^a-z]/g,"");
+    
+        // Specific common exceptions that don't follow the rule set below are handled individually
+        // Array of problem words (with word as key, syllable count as value)
+        var problemWords = {
+            "simile":       3,
+            "forever":      3,
+            "shoreline":    2
+        };
+        
+        // Return if we've hit one of those...
+        if (problemWords.hasOwnProperty(word)) return problemWords[word];
+        
+        // These syllables would be counted as two but should be one
+        var subSyllables = [
+            /cial/,
+            /tia/,
+            /cius/,
+            /cious/,
+            /giu/,
+            /ion/,
+            /iou/,
+            /sia$/,
+            /[^aeiuoyt]{2,}ed$/,
+            /.ely$/,
+            /[cg]h?e[rsd]?$/,
+            /rved?$/,
+            /[aeiouy][dt]es?$/,
+            /[aeiouy][^aeiouydt]e[rsd]?$/,
+            /^[dr]e[aeiou][^aeiou]+$/, // Sorts out deal, deign etc
+            /[aeiouy]rse$/ // Purse, hearse
+        ];
+    
+        // These syllables would be counted as one but should be two
+        var addSyllables = [
+            /ia/,
+            /riet/,
+            /dien/,
+            /iu/,
+            /io/,
+            /ii/,
+            /[aeiouym]bl$/,
+            /[aeiou]{3}/,
+            /^mc/,
+            /ism$/,
+            /([^aeiouy])\1l$/,
+            /[^l]lien/,
+            /^coa[dglx]./,
+            /[^gq]ua[^auieo]/,
+            /dnt$/,
+            /uity$/,
+            /ie(r|st)$/
+        ];
+    
+        // Single syllable prefixes and suffixes
+        var prefixSuffix = [
+            /^un/,
+            /^fore/,
+            /ly$/,
+            /less$/,
+            /ful$/,
+            /ers?$/,
+            /ings?$/
+        ];
+    
+        // Remove prefixes and suffixes and count how many were taken
+        prefixSuffix.forEach(function(regex) {
+            if (word.match(regex)) {
+                word = word.replace(regex,"");
+                prefixSuffixCount ++;
+            }
+        });
+        
+        wordPartCount = word
+            .split(/[^aeiouy]+/ig)
+            .filter(function(wordPart) {
+                return !!wordPart.replace(/\s+/ig,"").length;
+            })
+            .length;
+        
+        // Get preliminary syllable count...
+        syllableCount = wordPartCount + prefixSuffixCount;
+        
+        // Some syllables do not follow normal rules - check for them
+        subSyllables.forEach(function(syllable) {
+            if (word.match(syllable)) syllableCount --;
+        });
+        
+        addSyllables.forEach(function(syllable) {
+            if (word.match(syllable)) syllableCount ++;
+        });
+        
+        return syllableCount || 1;
+    };
+    
+    function textStatistics(text) {
+        return new TextStatistics(text);
+    }
+    
+    (typeof module != "undefined" && module.exports) ? (module.exports = textStatistics) : (typeof define != "undefined" ? (define("textstatistics", [], function() { return textStatistics; })) : (glob.textstatistics = textStatistics));
+})(this);

@@ -25,7 +25,7 @@ define(function(require, exports, module) {
          * @param el
          * @param model
          * @param callback
-         */
+         
         prepareModel: function(el, model, callback) {
 
             // get the current project
@@ -57,7 +57,7 @@ define(function(require, exports, module) {
                     callback();
                 });
             });
-        },
+        },*/
 
         /**
          * This method gets called before the rendered DOM element is injected into the page.

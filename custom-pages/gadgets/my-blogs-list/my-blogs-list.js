@@ -1,21 +1,21 @@
 define(function(require, exports, module) {
 
-    require("./sample-products-list.css");
-    var html = require("./sample-products-list.html");
+    require("css!./my-blogs-list.css");
+    var html = require("text!./my-blogs-list.html");
 
     var Empty = require("ratchet/dynamic/empty");
 
     var UI = require("ui");
 
-    return UI.registerGadget("sample-products-list", Empty.extend({
+    return UI.registerGadget("my-blogs-list", Empty.extend({
 
         TEMPLATE: html,
 
         /**
-         * Binds this gadget to the /products route
+         * Binds this gadget to the /myblogs route
          */
         setup: function() {
-            this.get("/projects/{projectId}/products", this.index);
+            this.get("/projects/{projectId}/myblogs", this.index);
         },
 
         /**
@@ -25,7 +25,7 @@ define(function(require, exports, module) {
          * @param el
          * @param model
          * @param callback
-         
+         */
         prepareModel: function(el, model, callback) {
 
             // get the current project
@@ -37,27 +37,32 @@ define(function(require, exports, module) {
             // call into base method and then set up the model
             this.base(el, model, function() {
 
-                // query for catalog:product instances
-                branch.queryNodes({ "_type": "catalog:product" }).then(function() {
+                // query for blog post instances
+                branch.queryNodes({ "_type": "mmcx:blogpost", "blogState": {"$in": ["In Progress", "New"]} }, {"limit": 50}).then(function() {
 
-                    // store "products" on the model (as a list) and then fire callback
-                    model.products = this.asArray();
+                    // store blog post node on the model (as a list) and then fire callback
+                    model.nodes = this.asArray();
+                    model.harry = "hello";
 
-                    // add "imageUrl" attribute to each product
-                    // add "browseUrl" attribute to each product
-                    for (var i = 0; i < model.products.length; i++)
+                    // add "imageUrl" attribute
+                    // add "browseUrl" attribute
+                    for (var i = 0; i < model.nodes.length; i++)
                     {
-                        var product = model.products[i];
+                        var node = model.nodes[i];
 
-                        product.imageUrl256 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=256&name=preview256&force=true";
-                        product.imageUrl128 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=128&name=preview128&force=true";
-                        product.browseUrl = "/#/projects/" + project._doc + "/documents/" + product._doc;
+                        node.imageUrl256 = "/preview/repository/" + node.getRepositoryId() + "/branch/" + node.getBranchId() + "/node/" + node.getId() + "/default?size=256&name=preview256&force=true";
+                        node.imageUrl128 = "/preview/repository/" + node.getRepositoryId() + "/branch/" + node.getBranchId() + "/node/" + node.getId() + "/default?size=128&name=preview128&force=true";
+                        node.browseUrl = "/#/projects/" + project._doc + "/documents/" + node._doc + "/properties/";
+
+                        console.log(node.author.title);
+                        console.log(node.headline);
+                        console.log(node.blogState);
                     }
 
                     callback();
                 });
             });
-        },*/
+        },
 
         /**
          * This method gets called before the rendered DOM element is injected into the page.
@@ -92,12 +97,12 @@ define(function(require, exports, module) {
 
                     e.preventDefault();
 
-                    var productIndex = $(this).attr("data-media-index");
-                    var product = model.products[productIndex];
+                    var nodeIndex = $(this).attr("data-media-index");
+                    var node = model.nodes[nodeIndex];
 
                     UI.showPopupModal({
-                        "title": "Viewing: " + product.title,
-                        "body": "<div style='text-align:center'><img src='" + product.imageUrl256 + "'></div>"
+                        "title": "Viewing: " + node.title,
+                        "body": "<div style='text-align:center'><img src='" + node._doc + "'></div>"
                     });
                 });
 

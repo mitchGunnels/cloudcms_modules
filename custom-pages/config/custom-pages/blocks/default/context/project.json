@@ -4,12 +4,12 @@
         "context": {
             "items": [{
                 "key": "catalog/header",
-                "title": "Catalog",
-                "order": 10000,
+                "title": "Mitch",
+                "order": 1,
                 "header": true,
                 "iconClass": "fa fa-dashboard",
-                "allowAuthority": ["manager"],
-                "allowPermission": ["read"],
+                "allowAuthority": [],
+                "allowPermission": [],
                 "rejectAuthority": [],
                 "rejectPermission": [],
                 "items": [{

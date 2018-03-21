@@ -9,7 +9,7 @@ define(function(require, exports, module) {
     uri = uri.substring(0, uri.lastIndexOf('/'));
 
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
-    require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); 
+    var FleschKincaid = require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); 
     
     var FleschKincaid = exports;
 

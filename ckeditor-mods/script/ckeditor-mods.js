@@ -82,6 +82,7 @@ define(function(require, exports, module) {
 
             var modalContent = 'modalContent';
             var legalContent = 'legalContent';
+            var fleschKincaid = 'fleschKincaid';
 
 
             editor.addCommand(fleschKincaid, {

@@ -89,8 +89,8 @@ define(function(require, exports, module) {
                 exec: function(editor) {
                     var str = editor.getData();
                     //console.log(str);
-                    editor.showNotification(TextStatistics.prototype.fleschKincaidGradeLevel(str));
-                    console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
+                    editor.showNotification('Flesch Kincaid grade level is: '+TextStatistics.prototype.fleschKincaidGradeLevel(str));
+                    //console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
                 },
                 canUndo: true
             });

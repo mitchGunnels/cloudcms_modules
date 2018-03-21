@@ -88,7 +88,8 @@ define(function(require, exports, module) {
             editor.addCommand(fleschKincaid, {
                 exec: function(editor) {
                     var str = editor.getData();
-                    console.log(str);
+                    //console.log(str);
+                    editor.showNotification(TextStatistics.prototype.fleschKincaidGradeLevel(str));
                     console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
                 },
                 canUndo: true

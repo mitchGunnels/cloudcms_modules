@@ -10,9 +10,6 @@ define(function(require, exports, module) {
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
     require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); 
 
-    var str = "The quick brown fox jumped over the lazy dogs";
-    console.log(textStatistics(str));
-
     CKEDITOR.config.skin = 'moono-lisa';
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -41,6 +38,7 @@ define(function(require, exports, module) {
         { name: 'document', groups: ['mode', 'document', 'doctools'] },
         { name: 'globalContent' },
         { name: 'legalContent' }
+        { name: 'fleschKincaid' },
     ];
 
     CKEDITOR.stylesSet.add('cricket_styles', [
@@ -138,6 +136,27 @@ define(function(require, exports, module) {
             });
         }
     });
+
+    CKEDITOR.plugins.add('fleschKincaid', {
+        init: function(editor) {
+
+            editor.addCommand(fleschKincaid, {
+                exec: function(editor) {
+                    var str = "The quick brown fox jumped over the lazy dogs";
+                    console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
+                },
+                canUndo: true
+            });
+
+            editor.ui.addButton('fleschKincaid', {
+                label: 'Flesch Kincaid Score',
+                command: fleschKincaid,
+                toolbar: 'fleschKincaid,1'
+            });
+        }
+    });
+
+        
 
     CKEDITOR.config.extraPlugins = 'globalContent,dialog';
 

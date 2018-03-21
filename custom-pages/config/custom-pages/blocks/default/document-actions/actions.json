@@ -1,4 +1,4 @@
-{
+/*{
     "evaluator": "context-project",
     "config": {
         "document-actions": [{
@@ -11,4 +11,4 @@
             ]
         }]
     }
-}
+}*/

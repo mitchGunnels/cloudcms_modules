@@ -1,4 +1,4 @@
-{
+/*{
     "evaluator": "document-is-folder",
     "condition": true,
     "config": {
@@ -16,4 +16,4 @@
             }]
         }]
     }
-}
+}*/

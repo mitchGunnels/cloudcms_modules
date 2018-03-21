@@ -11,7 +11,7 @@ define(function(require, exports, module) {
     var FleschKincaid = require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js'); 
 
     var str = "The quick brown fox jumped over the lazy dogs";
-    console.log( FleschKincaid.exports.textStatistics( str ) ); // 3.653333333333336
+    console.log( FleschKincaid.textStatistics( str ) ); // 3.653333333333336
 
     CKEDITOR.config.skin = 'moono-lisa';
     CKEDITOR.config.customConfig = '';

@@ -36,26 +36,26 @@ define(function(require, exports, module) {
 
             // call into base method and then set up the model
             this.base(el, model, function() {
-
+                callback();
                 // query for catalog:product instances
-                branch.queryNodes({ "_type": "catalog:product" }).then(function() {
+                // branch.queryNodes({ "_type": "catalog:product" }).then(function() {
 
-                    // store "products" on the model (as a list) and then fire callback
-                    model.products = this.asArray();
+                //     // store "products" on the model (as a list) and then fire callback
+                //     model.products = this.asArray();
 
-                    // add "imageUrl" attribute to each product
-                    // add "browseUrl" attribute to each product
-                    for (var i = 0; i < model.products.length; i++)
-                    {
-                        var product = model.products[i];
+                //     // add "imageUrl" attribute to each product
+                //     // add "browseUrl" attribute to each product
+                //     for (var i = 0; i < model.products.length; i++)
+                //     {
+                //         var product = model.products[i];
 
-                        product.imageUrl256 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=256&name=preview256&force=true";
-                        product.imageUrl128 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=128&name=preview128&force=true";
-                        product.browseUrl = "/#/projects/" + project._doc + "/documents/" + product._doc;
-                    }
+                //         product.imageUrl256 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=256&name=preview256&force=true";
+                //         product.imageUrl128 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=128&name=preview128&force=true";
+                //         product.browseUrl = "/#/projects/" + project._doc + "/documents/" + product._doc;
+                //     }
 
-                    callback();
-                });
+                //     callback();
+                // });
             });
         },
 

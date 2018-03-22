@@ -1,8 +1,8 @@
 {
-    "type": "sample-products-list",
+    "type": "flesch-kincaid",
     "config": {
         "chrome": {
-            "title": "Sample Products List"
+            "title": "Flesch Kincaid"
         }
     }
 }

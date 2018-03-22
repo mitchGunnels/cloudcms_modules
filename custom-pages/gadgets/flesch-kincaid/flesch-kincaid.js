@@ -1,21 +1,21 @@
 define(function(require, exports, module) {
 
-    require("css!./sample-products-list.css");
-    var html = require("text!./sample-products-list.html");
+    require("css!./flesch-kincaid.css");
+    var html = require("text!./flesch-kincaid.html");
 
     var Empty = require("ratchet/dynamic/empty");
 
     var UI = require("ui");
 
-    return UI.registerGadget("sample-products-list", Empty.extend({
+    return UI.registerGadget("flesch-kincaid", Empty.extend({
 
         TEMPLATE: html,
 
         /**
-         * Binds this gadget to the /products route
+         * Binds this gadget to the /flesch-kincaid route
          */
         setup: function() {
-            this.get("/projects/{projectId}/products", this.index);
+            this.get("/projects/{projectId}/flesch-kincaid", this.index);
         },
 
         /**
@@ -36,7 +36,12 @@ define(function(require, exports, module) {
 
             // call into base method and then set up the model
             this.base(el, model, function() {
+
+                model.project = project;
+                model.branch = branch;
+
                 callback();
+
                 // query for catalog:product instances
                 // branch.queryNodes({ "_type": "catalog:product" }).then(function() {
 
@@ -83,23 +88,22 @@ define(function(require, exports, module) {
          * @param originalContext the dispatch context used to inject
          * @param callback
          */
-        afterSwap: function(el, model, originalContext, callback)
-        {
+        afterSwap: function(el, model, originalContext, callback) {
             this.base(el, model, originalContext, function() {
 
                 // find all .media-popups and attach to a lightbox
-                $(el).find(".media-popup").click(function(e) {
+                // $(el).find(".media-popup").click(function(e) {
 
-                    e.preventDefault();
+                //     e.preventDefault();
 
-                    var productIndex = $(this).attr("data-media-index");
-                    var product = model.products[productIndex];
+                //     var productIndex = $(this).attr("data-media-index");
+                //     var product = model.products[productIndex];
 
-                    UI.showPopupModal({
-                        "title": "Viewing: " + product.title,
-                        "body": "<div style='text-align:center'><img src='" + product.imageUrl256 + "'></div>"
-                    });
-                });
+                //     UI.showPopupModal({
+                //         "title": "Viewing: " + product.title,
+                //         "body": "<div style='text-align:center'><img src='" + product.imageUrl256 + "'></div>"
+                //     });
+                // });
 
                 callback();
             });

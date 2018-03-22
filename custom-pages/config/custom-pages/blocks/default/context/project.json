@@ -15,7 +15,7 @@
                 "items": [{
                     "key": "custom-pages/fleschKincaid",
                     "title": "Flesch Kincaid",
-                    "uri": "#/projects/{projectId}/products",
+                    "uri": "#/projects/{projectId}/flesch-kincaid",
                     "iconClass": "fa fa-pencil",
                     "allowPermission": []
                 }]

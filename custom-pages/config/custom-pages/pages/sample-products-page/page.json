@@ -1,6 +1,6 @@
 {
-    "title": "Catalog Products",
-    "uri": "/projects/{projectId}/products",
+    "title": "Flesch Kincaid",
+    "uri": "/projects/{projectId}/flesch-kincaid",
     "extends": "project/_project",
-    "template": "sample-template"
+    "template": "flesch-kincaid"
 }

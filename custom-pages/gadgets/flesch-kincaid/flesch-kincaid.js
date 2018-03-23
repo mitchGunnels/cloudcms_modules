@@ -39,7 +39,8 @@ define(function(require, exports, module) {
 
                 model.project = project;
                 model.branch = branch;
-
+                console.log(branch);
+                console.log(project);
                 console.log(model);
 
                 callback();

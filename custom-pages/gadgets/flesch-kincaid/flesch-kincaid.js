@@ -31,25 +31,20 @@ define(function(require, exports, module) {
             // get the current project
             //var repository = this.observable("repository").get();
             var project = this.observable("project").get();
-
             // the current branch
             var branch = this.observable("branch").get();
-
             // call into base method and then set up the model
             this.base(el, model, function() {
-                //model.repository = repository._doc;
-                //model.project = project._doc;
-                //model.branch = branch._doc;
+                
+                model.project = project._doc;
+                model.branch = branch._doc;
 
                 console.log('branch ', branch._doc);
                 console.log('project', project._doc);
-                //console.log('repository', repository._doc);
-                platform.listRepositories().each(function() {
-    console.log("Repository title: " + this.get("title"));
-});
+                
 
                 // assume we have a repository
-                var repository = repository._doc;
+                var repository = "fe6166ac8042240542f8";
                 // here is our branch id
                 var branchId = branch._doc;
                 repository.queryChangesets({

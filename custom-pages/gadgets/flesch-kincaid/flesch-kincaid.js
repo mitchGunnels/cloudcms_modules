@@ -29,7 +29,7 @@ define(function(require, exports, module) {
         prepareModel: function(el, model, callback) {
 
             // get the current project
-            var repository = this.observable("repository").get();
+            //var repository = this.observable("repository").get();
             var project = this.observable("project").get();
 
             // the current branch
@@ -43,8 +43,10 @@ define(function(require, exports, module) {
 
                 console.log('branch ', branch._doc);
                 console.log('project', project._doc);
-                console.log('repository', repository._doc);
-
+                //console.log('repository', repository._doc);
+                platform.listRepositories().each(function() {
+    console.log("Repository title: " + this.get("title"));
+});
 
                 // assume we have a repository
                 var repository = repository._doc;

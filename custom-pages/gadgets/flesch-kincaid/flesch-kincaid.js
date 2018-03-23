@@ -41,8 +41,8 @@ define(function(require, exports, module) {
 
                 console.log('branch ', branch._doc);
                 console.log('project', project._doc);
-                console.log('repo', this.observable("repository")._doc);
-                console.log('repo', this.observable("repository").id);
+                //console.log('repo', this.observable("repository")._doc);
+                //console.log('repo', this.observable("repository").id);
 
                 // assume we have a repository
                 var repository = "fe6166ac8042240542f8";

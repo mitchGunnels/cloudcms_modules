@@ -45,6 +45,17 @@ define(function(require, exports, module) {
                 console.log('project', project._doc);
                 console.log('repository', repository._doc);
 
+
+                // assume we have a repository
+                var repository = repository._doc;
+                // here is our branch id
+                var branchId = branch._doc;
+                repository.queryChangesets({
+                    "branch": branchId
+                }).each(function() {
+                    console.log("Found changeset: " + this.getId());
+                });
+
                 callback();
 
                 // query for catalog:product instances

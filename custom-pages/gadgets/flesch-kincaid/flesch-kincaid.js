@@ -41,14 +41,20 @@ define(function(require, exports, module) {
 
             repository.queryChangesets({
                 "branch": branch._doc
-            }).each(function(changeset) {
-                console.log("Found changeset: " + changeset);
+            }).each(function() {
+                console.log("Found changeset: " + this.getId());
 
-                branch.readNode("8bc807d9b2fcf6621df3").then(function() {
-                    console.log("Found node: " + this.get("title"));
+                var changesetId = this.getId();
+
+                repository.listChangesetChildren(changesetId).each(function() {
+                    console.log("The changeset: " + changesetId + " has child: " + this.getId());
                 });
 
-                
+                // branch.readNode("8bc807d9b2fcf6621df3").then(function() {
+                //     console.log("Found node: " + this.get("title"));
+                // });
+
+
             });
 
 

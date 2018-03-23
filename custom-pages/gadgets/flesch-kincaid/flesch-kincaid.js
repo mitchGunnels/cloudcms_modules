@@ -40,6 +40,8 @@ define(function(require, exports, module) {
                 model.project = project;
                 model.branch = branch;
 
+                console.log(model);
+
                 callback();
 
                 // query for catalog:product instances

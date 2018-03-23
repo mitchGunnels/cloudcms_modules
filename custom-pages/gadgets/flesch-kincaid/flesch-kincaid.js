@@ -41,8 +41,8 @@ define(function(require, exports, module) {
 
             repository.queryChangesets({
                 "branch": branch._doc
-            }).each(function() {
-                console.log("Found changeset: " + this);
+            }).each(function(changeset) {
+                console.log("Found changeset: " + changeset);
             });
 
 

@@ -212,7 +212,7 @@ define(function(require, exports, module) {
 
         //console.log('GET CALLED!');
         //EVENTUALLY NEED TO SEARCH ONDEMAND, WILL NEED TO MODIFY THE MIDDLEWARE
-        $.get(domain + '/cloudassets/cms/modal/content?appId=cms&path=modalPlugin', function(result) {
+        $.get(domain + '/cloudassets/cms/modal/content', function(result) {
             var newObject = [];
             $.each(result, function(data) {
                 //console.log(data);
@@ -225,7 +225,7 @@ define(function(require, exports, module) {
         });
 
         //LOAD LEGAL CONTENT
-        $.get(domain + '/cloudassets/cms/legal/content?appId=cms&path=legalPlugin', function(result) {
+        $.get(domain + '/cloudassets/cms/legal/content', function(result) {
             var newObject = [];
             $.each(result, function(data) {
                 var dataObj = { "value": this.topic, "data": { "ID": data, "title": this.title, "shortDisclaimer": this.shortDisclaimer, "longDisclaimer": this.longDisclaimer } };

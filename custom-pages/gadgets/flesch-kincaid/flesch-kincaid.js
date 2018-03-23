@@ -32,9 +32,13 @@ define(function(require, exports, module) {
             //var repository = this.observable("repository").get();
             var project = this.observable("project").get();
             var branch = this.observable("branch").get();
+            var repository = branch.getRepository();
 
             console.log('project', project);
-                console.log('branch ', branch);
+            console.log('branch ', branch);
+            console.log('repository ', repository);
+
+
             // call into base method and then set up the model
             this.base(el, model, function() {
                 

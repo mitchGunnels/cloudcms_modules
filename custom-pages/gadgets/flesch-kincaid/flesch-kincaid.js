@@ -37,11 +37,12 @@ define(function(require, exports, module) {
             console.log('project', project);
             console.log('branch ', branch);
             console.log('repository ', repository);
+            console.log('model', model);
 
             repository.queryChangesets({
                 "branch": branch._doc
             }).each(function() {
-                console.log("Found changeset: " + this.getId());
+                console.log("Found changeset: " + this);
             });
 
 

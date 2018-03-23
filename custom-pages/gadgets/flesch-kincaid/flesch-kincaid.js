@@ -37,12 +37,13 @@ define(function(require, exports, module) {
 
             // call into base method and then set up the model
             this.base(el, model, function() {
+                //model.repository = repository._doc;
+                //model.project = project._doc;
+                //model.branch = branch._doc;
 
-                model.project = project;
-                model.branch = branch;
-                console.log(branch);
-                console.log(project);
-                console.log(model);
+                console.log('branch ', branch._doc);
+                console.log('project', project._doc);
+                console.log('repository', repository._doc);
 
                 callback();
 

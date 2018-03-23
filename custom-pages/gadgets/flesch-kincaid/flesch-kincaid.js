@@ -29,6 +29,7 @@ define(function(require, exports, module) {
         prepareModel: function(el, model, callback) {
 
             // get the current project
+            var repository = this.observable("repository").get();
             var project = this.observable("project").get();
 
             // the current branch

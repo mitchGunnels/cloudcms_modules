@@ -47,7 +47,7 @@ define(function(require, exports, module) {
                 var changesetId = this.getId();
 
                 repository.listChangesetChildren(changesetId).each(function() {
-                    console.log("The changeset: " + changesetId + " has child: " + this.get("title"));
+                    console.log("The changeset: " + changesetId + " has child: " + this.getId());
                 });
 
                 // branch.readNode("8bc807d9b2fcf6621df3").then(function() {

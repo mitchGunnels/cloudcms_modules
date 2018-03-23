@@ -43,6 +43,12 @@ define(function(require, exports, module) {
                 "branch": branch._doc
             }).each(function(changeset) {
                 console.log("Found changeset: " + changeset);
+
+                branch.readNode("8bc807d9b2fcf6621df3").then(function() {
+                    console.log("Found node: " + this.get("title"));
+                });
+
+                
             });
 
 

@@ -38,14 +38,20 @@ define(function(require, exports, module) {
             console.log('branch ', branch);
             console.log('repository ', repository);
 
+            repository.queryChangesets({
+                "branch": branch._doc
+            }).each(function() {
+                console.log("Found changeset: " + this.getId());
+            });
+
 
             // call into base method and then set up the model
             this.base(el, model, function() {
-                
+
                 //model.project = project._doc;
                 //model.branch = branch._doc;
-                
-                
+
+
                 //console.log('repo', this.observable("repository")._doc);
                 //console.log('repo', this.observable("repository").id);
 
@@ -53,7 +59,7 @@ define(function(require, exports, module) {
                 //var repository = "fe6166ac8042240542f8";
                 // here is our branch id
                 //var branchId = branch._doc;
-                
+
 
                 callback();
 

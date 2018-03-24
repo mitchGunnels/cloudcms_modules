@@ -2,9 +2,16 @@ define(function(require, exports, module) {
     var $ = require("jquery");
 
     $(document).on('cloudcms-ready', function(event) {
+
         
         //HANDLE THE COLOR AT THE TOP OF THE PAGE TO REMIND WHICH BRANCH
-        $('select.workspace-picker').on('click', function() {
+        var workspacePickerVal = $('select.workspace-picker option:selected').text();
+        if (workspacePickerVal.includes("Master")) {
+            $('div[region="workspace-bar"]').css('borderTopColor', '#a94442');
+        } else {
+            $('div[region="workspace-bar"]').css('borderTopColor', '#60a630');
+        }
+        $('select.workspace-picker').on('change', function() {
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
             if (workspacePickerVal.includes("Master")) {
                 $('div[region="workspace-bar"]').css('borderTopColor', '#a94442');

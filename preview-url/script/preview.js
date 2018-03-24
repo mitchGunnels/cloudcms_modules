@@ -2,13 +2,22 @@ define(function(require, exports, module) {
     var $ = require("jquery");
 
     $(document).on('cloudcms-ready', function(event) {
+        
+        //HANDLE THE COLOR AT THE TOP OF THE PAGE TO REMIND WHICH BRANCH
+        $('select.workspace-picker').on('click', function() {
+            var workspacePickerVal = $('select.workspace-picker option:selected').text();
+            if (workspacePickerVal.includes("Master")) {
+                $('div[region="workspace-bar"]').css('borderTopColor', '#a94442');
+            } else {
+                $('div[region="workspace-bar"]').css('borderTopColor', '#60a630');
+            }
+        });
 
         //WHEN "CREATING A DOCUMENT" SELECT THE PROPER NODE BASED ON THE CURRENT FOLDER
-        
         $(document).on('click', '.list-button-new_document', function(event) {
             var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
             var selectExists = setInterval(function() {
-                if($('.card-content-holder select').length){
+                if ($('.card-content-holder select').length) {
                     $('.card-content-holder select option:contains(' + nodeName + ')').attr('selected', 'selected');
                     clearInterval(selectExists);
                 }

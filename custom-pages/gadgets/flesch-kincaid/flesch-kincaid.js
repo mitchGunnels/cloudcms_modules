@@ -34,6 +34,8 @@ define(function(require, exports, module) {
             var branch = this.observable("branch").get();
             var repository = branch.getRepository();
 
+            console.log(Gitana.MergeConflict(repository));
+
             console.log('project', project);
             console.log('branch ', branch);
             console.log('repository ', repository);

@@ -4,12 +4,35 @@
     width: 183px;
 }
 
-.cloudcms-theme .context-header-title{
-    display:none;
+.cloudcms-theme .context-header-title {
+    display: none;
 }
 
-.cloudcms-theme .workspace-bar a:visited{
-    color:#fff;
+/*.project-icon-48 {
+    background-image: url(oneteam/modules/app/images/icons/project-48.png);
+    height: 48px;
+    width: 48px;
+}
+*/
+.project-icon-48 {
+    position: relative;
+}
+ 
+.project-icon-48:before {
+    content: "\f0b1";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+/*--adjust as necessary--*/
+    color: #000;
+    font-size: 48px;
+    padding-right: 0.5em;
+}
+
+
+.cloudcms-theme .workspace-bar a:visited {
+    color: #fff;
 }
 
 .cloudcms-theme .workspace-bar .form-control {
@@ -31,6 +54,7 @@
     background-color: #fff;
     border-color: #fff;
     height: 64px;
+    border-bottom: 5px solid #60a630;
 }
 
 
@@ -67,6 +91,7 @@ a {
     font-size: 14px;
     font-weight: 200;
 }
+
 .navmenu .nav li.active a.navlink {
     background-color: #efefef;
     color: #333;
@@ -83,10 +108,11 @@ a {
     padding-bottom: 10px;
     font-size: 12px;
 }
+
 .list-row-info a {
     color: #1b75bb;
 }
 
-.alpaca-field-checkbox label.control-label{
-    margin-top:0px;
+.alpaca-field-checkbox label.control-label {
+    margin-top: 0px;
 }

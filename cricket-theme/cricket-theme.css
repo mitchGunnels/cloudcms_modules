@@ -14,11 +14,11 @@
     width: 48px;
 }
 */
-.project-icon-48 {
+.project-icon-64 {
     position: relative;
 }
  
-.project-icon-48:before {
+.project-icon-64:before {
     content: "\f0b1";
     font-family: FontAwesome;
     font-style: normal;
@@ -26,7 +26,7 @@
     text-decoration: inherit;
 /*--adjust as necessary--*/
     color: #000;
-    font-size: 48px;
+    font-size: 64px;
     padding-right: 0.5em;
 }
 

@@ -3,7 +3,7 @@ define(function(require, exports, module) {
 
     $(document).on('cloudcms-ready', function(event) {
 
-        
+
         //HANDLE THE COLOR AT THE TOP OF THE PAGE TO REMIND WHICH BRANCH
         var workspacePickerVal = $('select.workspace-picker option:selected').text();
         if (workspacePickerVal.includes("Master")) {
@@ -19,6 +19,8 @@ define(function(require, exports, module) {
                 $('div[region="workspace-bar"]').css('borderTopColor', '#60a630');
             }
         });
+
+        //------------------------------------------------------------------
 
         //WHEN "CREATING A DOCUMENT" SELECT THE PROPER NODE BASED ON THE CURRENT FOLDER
         $(document).on('click', '.list-button-new_document', function(event) {

@@ -21,6 +21,7 @@
 .project-icon-64, .project-icon-48 {
     position: relative;
     background: none;
+    top: -10px;
 }
  
 .project-icon-64:before{

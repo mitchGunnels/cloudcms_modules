@@ -8,45 +8,9 @@
     display: none;
 }
 
-#footer{
+#footer, #push{
 	display: none;
 }
-
-/*.project-icon-48 {
-    background-image: url(oneteam/modules/app/images/icons/project-48.png);
-    height: 48px;
-    width: 48px;
-}
-*/
-.project-icon-64, .project-icon-48 {
-    position: relative;
-    background: none;
-    top: -10px;
-}
- 
-.project-icon-64:before{
-    content: "\f0b1";
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-/*--adjust as necessary--*/
-    color: #000;
-    font-size: 64px;
-    padding-right: 0.5em;
-}
-.project-icon-48:before{
-    content: "\f0b1";
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-/*--adjust as necessary--*/
-    color: #000;
-    font-size: 48px;
-    padding-right: 0.5em;
-}
-
 
 .cloudcms-theme .workspace-bar a:visited {
     color: #fff;

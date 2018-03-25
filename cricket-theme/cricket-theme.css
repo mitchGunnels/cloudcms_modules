@@ -8,6 +8,10 @@
     display: none;
 }
 
+#footer{
+	display: none;
+}
+
 /*.project-icon-48 {
     background-image: url(oneteam/modules/app/images/icons/project-48.png);
     height: 48px;

@@ -109,7 +109,7 @@
                                     },
                                     {
                                         "key": "document/graph",
-                                        "remove": true
+                                        "remove": false
                                     },
                                     {
                                         "key": "document/json",
@@ -125,11 +125,11 @@
                                     },
                                     {
                                         "key": "document/tags",
-                                        "remove": true
+                                        "remove": false
                                     },
                                     {
                                         "key": "document/workflows",
-                                        "remove": true
+                                        "remove": false
                                     },
                                     {
                                         "key": "document/versions",

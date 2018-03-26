@@ -8,8 +8,9 @@
     display: none;
 }
 
-#footer, #push{
-	display: none;
+#footer,
+#push {
+    display: none;
 }
 
 .cloudcms-theme .workspace-bar a:visited {
@@ -37,7 +38,6 @@
     height: 64px;
     border-bottom: 5px solid #60a630;
 }
-
 
 .cloudcms-theme .workspace-bar a.btn.btn-default {
     background-color: transparent;
@@ -97,3 +97,40 @@ a {
 .alpaca-field-checkbox label.control-label {
     margin-top: 0px;
 }
+
+/*.wizard-nav-list li.active > a {
+    background-color: #036b37;
+}
+
+.wizard-progress-container {
+    margin-top: 20px;
+    padding: 15px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    display: none;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #60a630;
+    border-color: #60a630;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open>.dropdown-toggle.btn-primary {
+    color: #fff;
+    background-color: #036b37;
+    border-color: #036b37;
+}
+
+.modal-header {
+    background-color: #60a630;
+    background-image: none;
+    border-radius: 5px 5px 0px 0px;
+    color: white;
+}*/

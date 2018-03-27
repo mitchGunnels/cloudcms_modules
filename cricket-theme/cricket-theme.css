@@ -4,7 +4,7 @@
     width: 183px;
 }
 
-.project-icon-48{
+.project-icon-48, .project-icon-64{
     display: none;
 }
 .cloudcms-theme .context-header-title {

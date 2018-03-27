@@ -12,7 +12,7 @@ define(function(require, exports, module) {
                         $(self).attr('href', url + '/properties');
                     }
                 });
-                console.log('attempt');
+                //console.log('attempt');
                 clearInterval(propLink);
             }
         }, 50);
@@ -89,7 +89,7 @@ define(function(require, exports, module) {
                 //console.log("SIT9");
                 domain = "https://wwwsit9.cricketwireless.com";
             } else {
-                console.log("Nothing found");
+                //console.log("Nothing found");
             }
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();

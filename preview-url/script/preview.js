@@ -2,8 +2,6 @@ define(function(require, exports, module) {
     var $ = require("jquery");
 
     $(document).on('cloudcms-ready', function(event) {
-
-
         //HANDLE THE COLOR AT THE TOP OF THE PAGE TO REMIND WHICH BRANCH
         var workspacePickerVal = $('select.workspace-picker option:selected').text();
         if (workspacePickerVal.includes("Master")) {
@@ -91,10 +89,10 @@ define(function(require, exports, module) {
 
             if (endPoint != undefined && endPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
-                $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
+                $('.content-holder div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             } else if (inputEndPoint != undefined && inputEndPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + inputEndPoint + '" target="_blank">Preview Content</a></span>');
-                $('#gadget175 div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
+                $('.content-holder div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
 
         }, 2000);

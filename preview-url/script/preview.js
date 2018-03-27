@@ -3,9 +3,8 @@ define(function(require, exports, module) {
     $(document).on('cloudcms-ready', function(event) {
         //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
         var propLink = setInterval(function() {
-            console.log('attempt');
+            
             if ($('.documents-list').length > 0 || $('.content-instances').length > 0) {
-                clearInterval(propLink);
                 $('.list-row-info.title a').each(function(index, el) {
                     var url = $(this).attr('href');
                     var slug = url.substr(url.lastIndexOf('/') + 1);
@@ -14,6 +13,8 @@ define(function(require, exports, module) {
                         $(self).attr('href', url + '/properties');
                     }
                 });
+                console.log('attempt');
+                clearInterval(propLink);
             }
         }, 50);
 

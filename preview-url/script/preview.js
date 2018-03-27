@@ -18,7 +18,7 @@ define(function(require, exports, module) {
         }, 50);
 
         //Adding just in case the interval doesn't clear. 
-        //setTimeout(function() { clearInterval(propLink); }, 5000);
+        setTimeout(function() { clearInterval(propLink); }, 5000);
 
         //HANDLE THE COLOR AT THE TOP OF THE PAGE TO REMIND WHICH BRANCH
         var workspacePickerVal = $('select.workspace-picker option:selected').text();

@@ -1,10 +1,9 @@
 define(function(require, exports, module) {
     var $ = require("jquery");
-
     $(document).on('cloudcms-ready', function(event) {
-
         //THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
-        var propLink = setInterval(function(){
+        var propLink = setInterval(function() {
+            console.log('attempt');
             if ($('.documents-list').length > 0 || $('.content-instances').length > 0) {
                 clearInterval(propLink);
                 $('.list-row-info.title a').each(function(index, el) {
@@ -15,8 +14,12 @@ define(function(require, exports, module) {
                         $(self).attr('href', url + '/properties');
                     }
                 });
-            } }, 50);
+            }
+        }, 50);
 
+        //Adding just in case the interval doesn't clear. 
+        setTimeout(function() { clearInterval(propLink); }, 5000);
+        
         //HANDLE THE COLOR AT THE TOP OF THE PAGE TO REMIND WHICH BRANCH
         var workspacePickerVal = $('select.workspace-picker option:selected').text();
         if (workspacePickerVal.includes("Master")) {
@@ -59,8 +62,6 @@ define(function(require, exports, module) {
         //---------------------------------------------------------------------------------------------------------------
         //IF DELAY IS NEEDED:
         setTimeout(function() {
-            //Adding just in case the interval doesn't clear. 
-            clearInterval(propLink);
             $('.previewButton').remove();
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();

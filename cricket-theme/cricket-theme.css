@@ -10,7 +10,8 @@
 
 #footer,
 #push {
-    display: none;
+    height: 0;
+    overflow: hidden;
 }
 
 .cloudcms-theme .workspace-bar a:visited {
@@ -97,6 +98,7 @@ a {
 .alpaca-field-checkbox label.control-label {
     margin-top: 0px;
 }
+
 
 /*.wizard-nav-list li.active > a {
     background-color: #036b37;

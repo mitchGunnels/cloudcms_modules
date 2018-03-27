@@ -1,151 +1,167 @@
 {
     "title": "Author",
-    "config": {
+    "config":
+    {
         "blocks": [
+        {
+            "evaluator": "context-project",
+            "config":
             {
-                "evaluator": "context-project",
-                "config": {
-                    "context": {
+                "context":
+                {
+                    "items": [
+                    {
+                        "key": "project/content/heading",
                         "items": [
-                            {
-                                "key": "project/content/heading",
-                                "items": [
-                                    {
-                                        "key": "project/content",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "project/documents",
-                                        "remove": false,
-                                        "title": "Content"
-                                    },
-                                    {
-                                        "key": "project/datalists",
-                                        "remove": true
-                                    }
-                                ]
-                            },
-                            {
-                                "key": "project/search/heading",
-                                "items": [
-                                    {
-                                        "key": "project/dataviews",
-                                        "remove": true
-                                    }
-                                ]
-                            },
-                            {
-                                "key": "project/collaboration/heading",
-                                "items": [
-                                    {
-                                        "key": "project/tasks",
-                                        "remove": false
-                                    },
-                                    {
-                                        "key": "project/members",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "project/activities",
-                                        "remove": false
-                                    }
-                                ]
-                            },
-                            {
-                                "key": "project/applications/heading",
-                                "remove": true
-                            },
-                            {
-                                "key": "project/reports/heading",
-                                "remove": true
-                            },
-                            {
-                                "key": "project/design/heading",
-                                "remove": true
-                            },
-                            {
-                                "key": "project/deletions/heading",
-                                "remove": true
-                            },
-                            {
-                                "key": "project/manage/heading",
-                                "remove": true
-                            },
-                            {
-                                "key": "project/developers/heading",
-                                "remove": true
-                            },
-                            {
-                                "key": "project/web/heading",
-                                "remove": true
-                            }
-                        ]
-                    }
-                }
-            },
-            {
-                "evaluator": "context-document",
-                "config": {
-                    "subcontext": {
+                        {
+                            "key": "project/content",
+                            "remove": true
+                        },
+                        {
+                            "key": "project/documents",
+                            "remove": false,
+                            "title": "Content"
+                        },
+                        {
+                            "key": "project/datalists",
+                            "remove": true
+                        }]
+                    },
+                    {
+                        "key": "project/search/heading",
                         "items": [
-                            {
-                                "key": "document",
-                                "items": [
-                                    {
-                                        "key": "document/actions",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/associations",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/authorities",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/features",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/graph",
-                                        "remove": false
-                                    },
-                                    {
-                                        "key": "document/json",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/rules",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/pagerenditions",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/tags",
-                                        "remove": false
-                                    },
-                                    {
-                                        "key": "document/workflows",
-                                        "remove": false
-                                    },
-                                    {
-                                        "key": "document/versions",
-                                        "remove": true
-                                    },
-                                    {
-                                        "key": "document/preview",
-                                        "remove": true
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+                        {
+                            "key": "project/dataviews",
+                            "remove": true
+                        }]
+                    },
+                    {
+                        "key": "project/collaboration/heading",
+                        "items": [
+                        {
+                            "key": "project/tasks",
+                            "remove": false
+                        },
+                        {
+                            "key": "project/members",
+                            "remove": true
+                        },
+                        {
+                            "key": "project/activities",
+                            "remove": false
+                        }]
+                    },
+                    {
+                        "key": "project/applications/heading",
+                        "remove": true
+                    },
+                    {
+                        "key": "project/reports/heading",
+                        "remove": true
+                    },
+                    {
+                        "key": "project/design/heading",
+                        "remove": true
+                    },
+                    {
+                        "key": "project/deletions/heading",
+                        "remove": true
+                    },
+                    {
+                        "key": "project/manage/heading",
+                        "remove": true
+                    },
+                    {
+                        "key": "project/developers/heading",
+                        "remove": true
+                    },
+                    {
+                        "key": "project/web/heading",
+                        "remove": true
+                    }]
                 }
             }
-        ]
+        },
+        {
+            "evaluator": "context-document",
+            "config":
+            {
+                "subcontext":
+                {
+                    "items": [
+                    {
+                        "key": "document",
+                        "items": [
+                            {
+                                "key": "document/editor",
+                                "remove": false,
+                                "title": "Attachment Editor"
+                            },
+                            {
+                                "key": "document/properties",
+                                "remove": false,
+                                "title": "Content Editor"
+                            },
+                            {
+                                "key": "document/actions",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/overview",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/associations",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/authorities",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/features",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/graph",
+                                "remove": false,
+                                "title": "Graph"
+                            },
+                            {
+                                "key": "document/json",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/rules",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/pagerenditions",
+                                "remove": true
+                            },
+
+                            {
+                                "key": "document/tags",
+                                "remove": false
+                            },
+                            {
+                                "key": "document/workflows",
+                                "remove": false
+                            },
+                            {
+                                "key": "document/versions",
+                                "remove": true
+                            },
+                            {
+                                "key": "document/preview",
+                                "remove": true
+                            }
+                        ]
+                    }]
+                }
+            }
+        }]
     },
-    "enabled": true
+    "enabled": true,
+    "projectId": "835a2682b69c82dbc166"
 }

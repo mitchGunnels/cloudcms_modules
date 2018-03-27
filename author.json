@@ -104,7 +104,7 @@
                             },
                             {
                                 "key": "document/actions",
-                                "remove": true
+                                "remove": false
                             },
                             {
                                 "key": "document/overview",

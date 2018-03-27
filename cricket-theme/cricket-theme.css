@@ -4,6 +4,9 @@
     width: 183px;
 }
 
+.project-icon-48{
+    display: none;
+}
 .cloudcms-theme .context-header-title {
     display: none;
 }

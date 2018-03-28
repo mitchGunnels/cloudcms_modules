@@ -48,6 +48,7 @@ define(function(require, exports, module) {
         //         }
         //     }, 50);
         // });
+
         //Create custom config for authors
         var uiConfig = $('button[data-header-item-key=ui-config-dropdown]').text().replace(/\s/g, '');
         if (uiConfig == 'Author') {
@@ -62,7 +63,7 @@ define(function(require, exports, module) {
         //---------------------------------------------------------------------------------------------------------------
         //IF DELAY IS NEEDED:
         setTimeout(function() {
-            $('.previewButton').remove();
+            
             //Check workspace-picker to determine the appropriate env for creating the preview link.
             var workspacePickerVal = $('select.workspace-picker option:selected').text();
             var domain;
@@ -93,13 +94,13 @@ define(function(require, exports, module) {
             }
             var endPoint = $('div[name=previewURL]').text();
             var inputEndPoint = $('input[name=previewURL]').val();
-
+            $('.previewButton').remove();
             if (endPoint != undefined && endPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + endPoint + '" target="_blank">Preview Content</a></span>');
-                $('.content-holder div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
+                $('.content-holder div.row:first div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + endPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             } else if (inputEndPoint != undefined && inputEndPoint.length > 0) {
                 $('div[name=previewURL]').append(' <span class="previewButton">- <a href="' + domain + inputEndPoint + '" target="_blank">Preview Content</a></span>');
-                $('.content-holder div.row div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
+                $('.content-holder div.row:first div.col-md-4').prepend('<div class="pull-right previewButton"><a href="' + domain + inputEndPoint + '" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>');
             }
 
         }, 2000);

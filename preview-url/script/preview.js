@@ -39,15 +39,15 @@ define(function(require, exports, module) {
         //------------------------------------------------------------------
 
         //WHEN "CREATING A DOCUMENT" SELECT THE PROPER NODE BASED ON THE CURRENT FOLDER
-        $(document).on('click', '.list-button-new_document', function(event) {
-            var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
-            var selectExists = setInterval(function() {
-                if ($('.card-content-holder select').length) {
-                    $('.card-content-holder select option:contains(' + nodeName + ')').attr('selected', 'selected');
-                    clearInterval(selectExists);
-                }
-            }, 100);
-        });
+        // $(document).on('click', '.list-button-new_document', function(event) {
+        //     var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
+        //     var selectExists = setInterval(function() {
+        //         if ($('.card-content-holder select').length) {
+        //             setTimeout(function(){$('.card-content-holder select option:contains(' + nodeName + ')').attr('selected', 'selected');},10)
+        //             clearInterval(selectExists);
+        //         }
+        //     }, 50);
+        // });
         //Create custom config for authors
         var uiConfig = $('button[data-header-item-key=ui-config-dropdown]').text().replace(/\s/g, '');
         if (uiConfig == 'Author') {

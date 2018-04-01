@@ -104,7 +104,7 @@ define(function(require, exports, module) {
                         event.preventDefault();
                         var modalTitle = $('#result h4#modalTitle').text();
                         var modalID = $('#result span#modalID').text();
-                        editor.insertHtml('<a href="modalAction/' + modalID + '" title="" pop-modal modalid="' + modalID + '" class="custom-class" data-toggle="modal" data-target="' + modalID + '">' + modalTitle + '</a>');
+                        editor.insertHtml('<a href="modalAction/' + modalID + '" title="" pop-modal modalid="' + modalID + '" class="custom-class" data-toggle="modal" data-target="#' + modalID + '">' + modalTitle + '</a>');
                         $('#globalContent').modal('hide');
                         $('#globalContent #result').empty();
                         $('#searchTerm').val('');

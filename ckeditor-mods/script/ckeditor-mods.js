@@ -10,6 +10,11 @@ define(function(require, exports, module) {
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
     require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js');
 
+    var basePluginPath = "../../.."; // necessary to offset from Cloud CMS plugin location
+    basePluginPath += uri.replace(window.location.origin, "");
+    CKEDITOR.plugins.addExternal('balloonpanel', basePluginPath+'/plugins/balloonpanel/');
+    CKEDITOR.plugins.addExternal('a11ychecker', basePluginPath+'/plugins/a11ychecker/');
+
     CKEDITOR.config.skin = 'moono-lisa';
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
@@ -157,7 +162,7 @@ define(function(require, exports, module) {
     });
 
 
-    CKEDITOR.config.extraPlugins = 'globalContent,dialog';
+    CKEDITOR.config.extraPlugins = 'balloonpanel,a11ychecker,globalContent,dialog';
 
     CKEDITOR.on('instanceCreated', function(ev) {
         var editor = ev.editor;

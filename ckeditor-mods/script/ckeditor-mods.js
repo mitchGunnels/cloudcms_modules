@@ -12,8 +12,8 @@ define(function(require, exports, module) {
 
     var basePluginPath = "../../.."; // necessary to offset from Cloud CMS plugin location
     basePluginPath += uri.replace(window.location.origin, "");
-    CKEDITOR.plugins.addExternal('balloonpanel', basePluginPath+'/plugins/balloonpanel/');
-    CKEDITOR.plugins.addExternal('a11ychecker', basePluginPath+'/plugins/a11ychecker/');
+    CKEDITOR.plugins.addExternal('balloonpanel', basePluginPath + '/plugins/balloonpanel/');
+    CKEDITOR.plugins.addExternal('a11ychecker', basePluginPath + '/plugins/a11ychecker/');
 
     CKEDITOR.config.skin = 'moono-lisa';
     CKEDITOR.config.customConfig = '';
@@ -94,7 +94,7 @@ define(function(require, exports, module) {
                 exec: function(editor) {
                     var str = editor.getData();
                     //console.log(str);
-                    editor.showNotification('Flesch Kincaid grade level is: '+TextStatistics.prototype.fleschKincaidGradeLevel(str));
+                    editor.showNotification('Flesch Kincaid grade level is: ' + TextStatistics.prototype.fleschKincaidGradeLevel(str));
                     //console.log(TextStatistics.prototype.fleschKincaidGradeLevel(str));
                 },
                 canUndo: true
@@ -205,6 +205,12 @@ define(function(require, exports, module) {
         } else if (workspacePickerVal.includes("SIT6")) {
             //console.log("SIT6");
             domain = "https://wwwsit6.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT4")) {
+            //console.log("SIT4");
+            domain = "https://wwwsit4.cricketwireless.com";
+        } else if (workspacePickerVal.includes("SIT5")) {
+            //console.log("SIT8");
+            domain = "https://wwwsit5.cricketwireless.com";
         } else if (workspacePickerVal.includes("SIT8")) {
             //console.log("SIT8");
             domain = "https://wwwsit8.cricketwireless.com";

@@ -15,7 +15,7 @@ define(function(require, exports, module) {
     CKEDITOR.plugins.addExternal('balloonpanel', basePluginPath + '/plugins/balloonpanel/');
     CKEDITOR.plugins.addExternal('a11ychecker', basePluginPath + '/plugins/a11ychecker/');
 
-    CKEDITOR.config.skin = 'moono-lisa';
+    CKEDITOR.config.skin = 'kama';
     CKEDITOR.config.customConfig = '';
     CKEDITOR.config.allowedContent = {
         $1: {
@@ -43,7 +43,8 @@ define(function(require, exports, module) {
         { name: 'document', groups: ['mode', 'document', 'doctools'] },
         { name: 'globalContent' },
         { name: 'legalContent' },
-        { name: 'fleschKincaid' }
+        { name: 'fleschKincaid' },
+        {name: 'FilePicker', groups:["cloudcms-link", "cloudcms-image"]}
     ];
 
     CKEDITOR.stylesSet.add('cricket_styles', [

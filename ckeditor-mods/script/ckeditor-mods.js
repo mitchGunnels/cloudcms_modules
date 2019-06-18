@@ -150,9 +150,12 @@ define(function(require, exports, module) {
               $('#modalSlotInsert').off()
               $('#modalSlotContent').modal('show')
               $('#modalSlotInsert').on('click', function () {
-                //add markup
                 //editor.insertHtml('')
-                //write association
+                //get reference to current document (paragraph/whatever, after documents/, before any subsequent slash)
+                //write association to modal
+                $('#modalSlotContent').modal('hide');
+                $('#modalSlotContent #modalSlotResult').empty();
+                $('#searchTermModalSlot').val('');
               })
             }
           })
@@ -275,23 +278,66 @@ define(function(require, exports, module) {
 
     function initModalSlotAutoComplete(argument) {
       var modalSlotContent = []
-      var previewContent = ''
+      var previewContent
+      var modalSlotSuggestion
       //fetch all cricket:slot with slotIsModal of "y"
       var branch = Ratchet.observable('branch').get()
       Chain(branch).queryNodes({_type: 'cricket:slot', slotIsModal: 'y', active: 'y'}).each(function (docId, doc) {
-        modalSlotContent.push(doc)
+        modalSlotSuggestion = {
+          value: doc.title,
+          slotContent: doc.slotContent,
+          slotId: doc.slotId
+        }
+        modalSlotContent.push(modalSlotSuggestion)
       }).then(function () {
         $('#searchTermModalSlot').autocomplete({
           lookup: modalSlotContent,
           onSelect: function (suggestion) {
-            //slotContent will have 1+ paragraph/header/disclaimer/view-multi elements.
-            //for paragraph/header/disclaimer, wrap and append (for header wrap w depth hX elem, others div, text always comes from fields named header/paragraph)
-            //Views may be nested, flatten each view-multi's node array and append
-            $('#modalSlotResult').empty().html('<h4 id="modalTitle">' + suggestion.title + '</h4><p> id="modalBody">' + previewContent + '</p><p><span id="modalId">' + suggestion.slotId + '</span></p>')
+            previewContent = flattenSlotContentMarkupRecursively({node: suggestion, nodeIsRoot: true})
+            $('#modalSlotResult').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><p> id="modalBody">' + previewContent + '</p><p><span id="modalId">' + suggestion.slotId + '</span></p>')
           }
         })
       })
     }
+
+  function flattenSlotContentMarkupRecursively(options) {
+    //slotContent will have 1+ paragraph/header/disclaimer/view-multi elements.
+    //for paragraph/header/disclaimer, wrap and append (for header wrap w depth hX elem, others div, text always comes from fields named header/paragraph)
+    //Views may be nested, flatten each view-multi's node array and append
+
+    if (!options) {
+      throw 'No options passed'
+    }
+    if (!options.node) {
+      throw 'No options.node passed'
+    }
+
+    var depth = options.depth || 1
+
+    if (options.nodeIsRoot) {
+      var previewContent = ''
+      options.node.slotContent.forEach(function(contentItem) {
+        previewContent += flattenSlotContentMarkupRecursively({
+          node: contentItem
+        })
+      })
+      return previewContent;
+    } else if (options.node.view) {
+      var viewContent = ''
+      options.node.view.forEach(function (viewItem) {
+        depth += 1
+        viewContent += flattenSlotContentMarkupRecursively({node: viewItem, depth: depth})
+        depth -= 1
+      })
+      return viewContent;
+    } else if (options.node.header) {
+      return '<h' + depth + '>' + options.node.header + '</h' + depth + '>'
+    } else if (options.node.paragraph) {
+      return '<p>' + options.node.paragraph + '</p>'
+    } else if (options.node.title) {
+      return '<div>' + options.node.title + '</div>'
+    }
+  }
 
     function searchInit() {
         $('#searchTerm').autocomplete({

@@ -1,5 +1,6 @@
 define(function(require, exports, module) {
     var modalContent;
+    var modalSlotId;
     var modalHtml = '<div id="globalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" >Insert Modal</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="searchTerm">Modal Search (by title)</label> <input class="form-control input-lg" id="searchTerm" placeholder="Modal title" type="input" /></div><div id="result"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button" id="insert">Insert</button></div></div></div></div>';
     var modalSlotHtml = '<div id="modalSlotContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" >Insert Modal</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="searchTermModalSlot">Modal Search (by title)</label> <input class="form-control input-lg" id="searchTermModalSlot" placeholder="Modal title" type="input" /></div><div id="modalSlotResult"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button" id="modalSlotInsert">Insert</button></div></div></div></div>';
     var legalHtml = '<div id="legalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" >Insert Legal Content</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="legalSearch">Legal Search (by topic)</label> <input class="form-control input-lg" id="legalSearch" placeholder="Legal topic" type="input" /></div><div id="legalResult"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button" id="legalInsert">Insert</button></div></div></div></div>';
@@ -150,14 +151,36 @@ define(function(require, exports, module) {
               $('#modalSlotInsert').off()
               $('#modalSlotContent').modal('show')
               $('#modalSlotInsert').on('click', function () {
-                //editor.insertHtml('')
+                var slotId = $('#slotId').text()
+                var modalTitle = $('#modalTitle').text()
+                editor.insertHtml('<a href="modalAction/' + slotId + '" title="" pop-modal slotid="' + slotId + '" class="custom-class" data-toggle="modal" data-target="#' + slotId + '">' + modalTitle + '</a>');
                 //get reference to current document (paragraph/whatever, after documents/, before any subsequent slash)
+                var currentDocId = location.href.replace(/^.*\/(\w+)\/properties$/, '$1')
+                var currentDoc
                 //write association to modal
+                var branch = Ratchet.observable('branch').get()
+                var isAssociated = false
+                Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
+                  currentDoc = Chain(this.asArray()[0])
+                  
+                  currentDoc.associations({type: 'a:linked'}).each(function (assocId, association) {
+                    if (association.getSourceNodeId() === currentDocId && association.getTargetNodeId() === modalSlotId) {
+                      isAssociated = true
+                    }
+                  }).then(function () {
+                    if (!isAssociated) {
+                      currentDoc.associate(modalSlotId, 'a:linked')
+                    }
+                  })
+
+                });
+
                 $('#modalSlotContent').modal('hide');
                 $('#modalSlotContent #modalSlotResult').empty();
                 $('#searchTermModalSlot').val('');
               })
-            }
+            },
+            canUndo: true
           })
 
             editor.ui.addButton('fleschKincaid', {
@@ -181,7 +204,7 @@ define(function(require, exports, module) {
             editor.ui.addButton(modalSlot, {
                 label: 'Modal Slot',
                 command: modalSlot,
-                toolbar: 'legalContent,2'
+                toolbar: 'modalSlot,1'
             });
         }
     });
@@ -276,25 +299,33 @@ define(function(require, exports, module) {
         });
     }
 
-    function initModalSlotAutoComplete(argument) {
+    function initModalSlotAutoComplete() {
       var modalSlotContent = []
       var previewContent
       var modalSlotSuggestion
-      //fetch all cricket:slot with slotIsModal of "y"
+      //fetch all cricket:slot with slotIsModal of "y", active, w a slotId and at least 1 slotContent item
       var branch = Ratchet.observable('branch').get()
-      Chain(branch).queryNodes({_type: 'cricket:slot', slotIsModal: 'y', active: 'y'}).each(function (docId, doc) {
+      Chain(branch).queryNodes({
+        _type: 'cricket:slot',
+        slotIsModal: 'y',
+        active: 'y',
+        slotId: {$exists: true},
+        $where: 'this.slotContent && this.slotContent.length'
+      }).each(function (docId, doc) {
         modalSlotSuggestion = {
           value: doc.title,
           slotContent: doc.slotContent,
-          slotId: doc.slotId
+          slotId: doc.slotId,
+          docId: docId
         }
         modalSlotContent.push(modalSlotSuggestion)
       }).then(function () {
         $('#searchTermModalSlot').autocomplete({
           lookup: modalSlotContent,
           onSelect: function (suggestion) {
+            modalSlotId = suggestion.docId
             previewContent = flattenSlotContentMarkupRecursively({node: suggestion, nodeIsRoot: true})
-            $('#modalSlotResult').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><p> id="modalBody">' + previewContent + '</p><p><span id="modalId">' + suggestion.slotId + '</span></p>')
+            $('#modalSlotResult').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><div id="modalBody">' + previewContent + '</div><p><span id="slotId">' + suggestion.slotId + '</span></p>')
           }
         })
       })

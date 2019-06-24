@@ -163,7 +163,7 @@ define(function(require, exports, module) {
                 Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
                   currentDoc = Chain(this.asArray()[0])
                   
-                  currentDoc.associations({type: 'a:linked'}).each(function (assocId, association) {
+                  currentDoc.associations({type: 'a:linked'}).each(function (association) {
                     if (association.getSourceNodeId() === currentDocId && association.getTargetNodeId() === modalSlotId) {
                       isAssociated = true
                     }

@@ -169,9 +169,6 @@ define(function(require, exports, module) {
             canUndo: true
           })
 
-          editor.
-
-
             editor.ui.addButton('fleschKincaid', {
                 label: 'Flesch Kincaid Score',
                 command: fleschKincaid,

@@ -1,12 +1,11 @@
-//HI
 define(function(require, exports, module) {
     var modalContent;
-    var modalSlotId;
     var modalHtml = '<div id="globalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" >Insert Modal</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="searchTerm">Modal Search (by title)</label> <input class="form-control input-lg" id="searchTerm" placeholder="Modal title" type="input" /></div><div id="result"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button" id="insert">Insert</button></div></div></div></div>';
     var modalSlotHtml = '<div id="modalSlotContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" >Insert Modal</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="searchTermModalSlot">Modal Search (by title)</label> <input class="form-control input-lg" id="searchTermModalSlot" placeholder="Modal title" type="input" /></div><div id="modalSlotResult"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button" id="modalSlotInsert">Insert</button></div></div></div></div>';
     var legalHtml = '<div id="legalContent" class="fade modal" role="dialog" tabindex="-1"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"> <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button><h4 class="modal-title" >Insert Legal Content</h4></div><div class="modal-body"><p><form><div class="form-group"> <label for="legalSearch">Legal Search (by topic)</label> <input class="form-control input-lg" id="legalSearch" placeholder="Legal topic" type="input" /></div><div id="legalResult"></div></form></p></div><div class="modal-footer"> <button class="btn btn-default" type="button" data-dismiss="modal">Close</button> <button class="btn btn-primary" type="button" id="legalInsert">Insert</button></div></div></div></div>';
-    var modalCSS = '.cke_maximized {z-index: 9996 !important;} .cke_button__globalcontent_icon, .cke_button__legalcontent_icon, .cke_button__fleschkincaid_icon { display: none !important; } .cke_button__globalcontent_label, .cke_button__legalcontent_label, .cke_button__fleschkincaid_label { display: inline !important; padding: 0px; margin: 0px; } .modal.fade, .modal-scrollable { z-index: 9998 !important; } span#modalID { font-size: 11px; font-style: italic; } .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; z-index: 9999 !important; } .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; } .autocomplete-selected { background: #F0F0F0; } .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; } .autocomplete-group { padding: 2px 5px; } .autocomplete-group strong { display: block; border-bottom: 1px solid #000; } .cke_button__modalslot .cke_button_label { display: inline; }';
+    var modalCSS = '.cke_maximized {z-index: 9996 !important;} .cke_button__globalcontent_icon, .cke_button__legalcontent_icon, .cke_button__fleschkincaid_icon { display: none !important; } .cke_button__globalcontent_label, .cke_button__legalcontent_label, .cke_button__fleschkincaid_label { display: inline !important; padding: 0px; margin: 0px; } .modal.fade, .modal-scrollable { z-index: 9998 !important; } span#modalID { font-size: 11px; font-style: italic; } .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; z-index: 9999 !important; } .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; } .autocomplete-selected { background: #F0F0F0; } .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; } .autocomplete-group { padding: 2px 5px; } .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }';
     var $ = require("jquery");
+    var uri = module.uri;
     uri = uri.substring(0, uri.lastIndexOf('/'));
 
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
@@ -153,27 +152,15 @@ define(function(require, exports, module) {
               $('#modalSlotInsert').on('click', function () {
                 var slotId = $('#slotId').text()
                 var modalTitle = $('#modalTitle').text()
-                editor.insertHtml('<a href="modalAction/' + slotId + '" title="" pop-modal slotid="' + slotId + '" class="custom-class" data-toggle="modal" data-target="#' + slotId + '">' + modalTitle + '</a>');
+
+                //stash editor current content in sessionStorage
+                var str = editor.getData();
+                sessionStorage.setItem('preModalSlotAddContent', str)
+
                 //get reference to current document (paragraph/whatever, after documents/, before any subsequent slash)
                 var currentDocId = location.href.replace(/^.*\/(\w+)\/properties$/, '$1')
-                var currentDoc
-                //write association to modal
-                var branch = Ratchet.observable('branch').get()
-                var isAssociated = false
-                Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
-                  currentDoc = Chain(this.asArray()[0])
-                  
-                  currentDoc.associations({type: 'a:linked'}).each(function (association) {
-                    
-                  }).then(function () {
-                    if (!isAssociated) {
-                      currentDoc.associate(modalSlotId, 'a:linked')
-                    }
-
-                  })
-
-                });
-
+                addModalToAssociations(currentDocId, slotId);
+                editor.insertHtml('<a href="modalAction/' + slotId + '" title="" pop-modal slotid="' + slotId + '" class="custom-class" data-toggle="modal" data-target="#' + slotId + '">' + modalTitle + '</a>');
                 $('#modalSlotContent').modal('hide');
                 $('#modalSlotContent #modalSlotResult').empty();
                 $('#searchTermModalSlot').val('');
@@ -181,6 +168,9 @@ define(function(require, exports, module) {
             },
             canUndo: true
           })
+
+          editor.
+
 
             editor.ui.addButton('fleschKincaid', {
                 label: 'Flesch Kincaid Score',
@@ -200,7 +190,7 @@ define(function(require, exports, module) {
                 toolbar: 'legalContent,1'
             });
 
-            editor.ui.addButton(modalSlot, {
+            editor.ui.addButton('modalSlot', {
                 label: 'Modal Slot',
                 command: modalSlot,
                 toolbar: 'modalSlot,1'
@@ -322,7 +312,6 @@ define(function(require, exports, module) {
         $('#searchTermModalSlot').autocomplete({
           lookup: modalSlotContent,
           onSelect: function (suggestion) {
-            modalSlotId = suggestion.docId
             previewContent = flattenSlotContentMarkupRecursively({node: suggestion, nodeIsRoot: true})
             $('#modalSlotResult').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><div id="modalBody">' + previewContent + '</div><p><span id="slotId">' + suggestion.slotId + '</span></p>')
           }

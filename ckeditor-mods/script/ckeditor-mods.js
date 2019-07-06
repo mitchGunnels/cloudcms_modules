@@ -53,8 +53,8 @@ define(function(require, exports, module) {
             var branch = Ratchet.observable('branch').get()
               Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
                 currentDoc = Chain(this.asArray()[0])
-                currentDoc.associations({type: 'paragraph:has-modal'}).each(function(assoc) {
-                   assoc.del()
+                currentDoc.associations({type: 'paragraph:has-modal'}).each(function(assocId, assoc) {
+                   Chain(assoc).del()
                 })
               })                
           }

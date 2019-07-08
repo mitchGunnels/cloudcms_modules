@@ -202,13 +202,8 @@ define(function(require, exports, module) {
                 var slotDocId = $('#slotDocId').text()
                 var modalTitle = $('#modalTitle').text()
 
-                //stash editor current content in sessionStorage
-                var str = editor.getData();
-                sessionStorage.setItem('preModalSlotAddContent', str)
-                
                 var currentDocId = getCurrentDocId()
-                associateModal(currentDocId, slotDocId);
-                editor.insertHtml('<a href="modalAction/' + slotId + '" title="" pop-modal slotid="' + slotId + '" class="custom-class" data-toggle="modal" data-target="#' + slotId + '">' + modalTitle + '</a>');
+                editor.insertHtml('<a href="modalAction/' + slotId + '" title="" pop-modal slotid="' + slotId + '" class="custom-class" data-toggle="modal" data-target="#' + slotId + '" slotdocid="' + slotDocId + '">' + modalTitle + '</a>');
                 $('#modalSlotContent').modal('hide');
                 $('#modalSlotContent #modalSlotResult').empty();
                 $('#searchTermModalSlot').val('');
@@ -273,12 +268,16 @@ define(function(require, exports, module) {
     });
 
     CKEDITOR.on('instanceDestroyed', function(e) {
-      var editor = e.editor;
-       //remove any paragraph:has-modal links if anchors have been removed/ckeditor field is empty
-      var content = editor.getData();
-      if (content.indexOf('slotid=') === -1) {
-        var currentDocId = getCurrentDocId();
+      var currentDocId = getCurrentDocId();
+      var content = e.editor.getData();
+      var slotDocAttStr = 'slotdocid="';
+      var slotDocIdIndex = content.indexOf(slotDocAttStr);
+
+      if (slotDocIdIndex === -1) {
         removeModalAssociations(currentDocId);
+      } else {
+        var slotId = content.slice(slotDocIdIndex + slotDocAttStr.length).replace(/(\w+)".*/, '$1').trim()
+        associateModal(currentDocId, slotId);
       }
     });
 

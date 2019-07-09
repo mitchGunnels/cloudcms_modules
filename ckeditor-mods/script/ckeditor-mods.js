@@ -31,8 +31,7 @@ define(function(require, exports, module) {
               var docs = this.asArray()
               if (docs.length) {
                 var currentDoc = Chain(docs[0])
-                currentDoc.associations({type: paragraphModalAssociationType}).trap(genericErrorLoggerHalter)
-                  .then(function() {
+                currentDoc.associations({type: paragraphModalAssociationType}).then(function() {
                     var assocCount = this.asArray().length
                     if (0 === assocCount) {
                       currentDoc.associate(slotDocId, paragraphModalAssociationType)
@@ -49,8 +48,7 @@ define(function(require, exports, module) {
                 var docs = this.asArray()
                 if (docs.length) {
                   var currentDoc = Chain(docs[0])
-                  currentDoc.associations({type: paragraphModalAssociationType}).trap(genericErrorLoggerHalter)
-                    .each(function(assocId, assoc) {
+                  currentDoc.associations({type: paragraphModalAssociationType}).each(function(assocId, assoc) {
                     Chain(assoc).del()
                   })
                 }
@@ -348,7 +346,7 @@ define(function(require, exports, module) {
       var modalSlotSuggestion
       //fetch all cricket:slot with slotIsModal of "y", active, w a slotId and at least 1 slotContent item
       var branch = Ratchet.observable('branch').get()
-      Chain(branch).queryNodes({
+      Chain(branch).trap(genericErrorLoggerHalter).queryNodes({
         _type: 'cricket:slot',
         slotIsModal: 'y',
         active: 'y',

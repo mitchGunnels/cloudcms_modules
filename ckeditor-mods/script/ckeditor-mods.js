@@ -12,48 +12,31 @@ define(function(require, exports, module) {
     require('https://cache.cricketwireless.com/ckeditor-plugins/flesch-kincaid.js');
 
     var basePluginPath = "../../.."; // necessary to offset from Cloud CMS plugin location
+  var paragraphModalAssociationType = 'paragraph:has-modal'
 
   function getCurrentDocId () {
     //get reference to current document (paragraph/whatever, after documents/, before any subsequent slash)
     return location.href.replace(/^.*\/(\w+)\/properties$/, '$1')
   }
 
-          function getAssociatedModals (currentDocId) {
-            var associatedLinks = []
+          function associateModal (currentDocId, slotDocId) {
             var branch = Ratchet.observable('branch').get()
             Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
               currentDoc = Chain(this.asArray()[0])
-              currentDoc.associations({type: 'paragraph:has-modal'})    
-              associatedLinks.push(currentDoc)
-            })
-            return associatedLinks;
-          }
-
-          function isModalAssociated(currentDocId, slotDocId) {
-            var associatedLinks = getAssociatedModals(currentDocId)
-            var slotIsAssociated = associatedLinks.some(function(association) {
-              if (association.getSourceNodeId() === currentDocId && association.getTargetNodeId() === slotDocId) {
-                return true
-              }                
-            })
-            return slotIsAssociated              
-          }
-
-          function associateModal (currentDocId, slotDocId) {
-            if(!isModalAssociated(currentDocId, slotDocId)) {
-                var branch = Ratchet.observable('branch').get()
-                Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
-                  currentDoc = Chain(this.asArray()[0])
-                  currentDoc.associate(slotDocId, 'paragraph:has-modal')
-                })                
-            }
+              currentDoc.associations({type: paragraphModalAssociationType}).then(function() {
+                var assocCount = this.asArray().length
+                if (0 === assocCount) {
+                  currentDoc.associate(slotDocId, paragraphModalAssociationType)
+                }
+              })
+            })                
           } 
 
           function removeModalAssociations (currentDocId) {
             var branch = Ratchet.observable('branch').get()
               Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
                 currentDoc = Chain(this.asArray()[0])
-                currentDoc.associations({type: 'paragraph:has-modal'}).each(function(assocId, assoc) {
+                currentDoc.associations({type: paragraphModalAssociationType}).each(function(assocId, assoc) {
                    Chain(assoc).del()
                 })
               })                
@@ -270,14 +253,14 @@ define(function(require, exports, module) {
     CKEDITOR.on('instanceDestroyed', function(e) {
       var currentDocId = getCurrentDocId();
       var content = e.editor.getData();
-      var slotDocAttStr = 'slotdocid="';
-      var slotDocIdIndex = content.indexOf(slotDocAttStr);
+      var contentDom = $('<div>' + content + '</div>')[0];
+      var slot = contentDom.querySelector('a[slotid]');
 
-      if (slotDocIdIndex === -1) {
-        removeModalAssociations(currentDocId);
-      } else {
-        var slotId = content.slice(slotDocIdIndex + slotDocAttStr.length).replace(/(\w+)".*/, '$1').trim()
+      if (slot) {
+        var slotId = slot.getAttribute('slotDocId')
         associateModal(currentDocId, slotId);
+      } else {
+        removeModalAssociations(currentDocId);
       }
     });
 

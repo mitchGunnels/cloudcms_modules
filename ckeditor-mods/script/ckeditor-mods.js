@@ -19,26 +19,41 @@ define(function(require, exports, module) {
     return location.href.replace(/^.*\/(\w+)\/properties$/, '$1')
   }
 
+  function genericErrorLoggerHalter (err) {
+    console.error(err);
+    return false;
+  }
+
           function associateModal (currentDocId, slotDocId) {
             var branch = Ratchet.observable('branch').get()
-            Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
-              currentDoc = Chain(this.asArray()[0])
-              currentDoc.associations({type: paragraphModalAssociationType}).then(function() {
-                var assocCount = this.asArray().length
-                if (0 === assocCount) {
-                  currentDoc.associate(slotDocId, paragraphModalAssociationType)
-                }
-              })
+            Chain(branch).queryNodes({_doc: currentDocId}).trap(genericErrorLoggerHalter)
+            .then(function () {
+              var docs = this.asArray()
+              if (docs.length) {
+                var currentDoc = Chain(docs[0])
+                currentDoc.associations({type: paragraphModalAssociationType}).trap(genericErrorLoggerHalter)
+                  .then(function() {
+                    var assocCount = this.asArray().length
+                    if (0 === assocCount) {
+                      currentDoc.associate(slotDocId, paragraphModalAssociationType)
+                    }
+                  })
+              }
             })                
           } 
 
           function removeModalAssociations (currentDocId) {
             var branch = Ratchet.observable('branch').get()
-              Chain(branch).queryNodes({_doc: currentDocId}).then(function () {
-                currentDoc = Chain(this.asArray()[0])
-                currentDoc.associations({type: paragraphModalAssociationType}).each(function(assocId, assoc) {
-                   Chain(assoc).del()
-                })
+              Chain(branch).queryNodes({_doc: currentDocId}).trap(genericErrorLoggerHalter)
+              .then(function () {
+                var docs = this.asArray()
+                if (docs.length) {
+                  var currentDoc = Chain(docs[0])
+                  currentDoc.associations({type: paragraphModalAssociationType}).trap(genericErrorLoggerHalter)
+                    .each(function(assocId, assoc) {
+                    Chain(assoc).del()
+                  })
+                }
               })                
           }
 

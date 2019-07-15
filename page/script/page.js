@@ -1,21 +1,45 @@
 define(function(require, exports, module) {
+  /*********************
+   * Prevent addition of page/page-* documents with duplicate urls of existing documents
+   * ******************/
+
+
   var $ = require("jquery");
+  var duplicateUrlString = "Oh-Oh, it looks like another page is already using that URL."
+  var errorColor = "#a94442"
   var saveButtonSelector = ".buttonbar .btn.save, .btn-toolbar .btn.save, .btn.btn-success.wizard-next"
-  var urlFieldSelector = ".alpaca-field [data-alpaca-field-name=urlList_0_url]"
+  var urlFieldSelector = ".alpaca-field [data-alpaca-field-name=urlList]"
   var urlTextSelector = ".alpaca-field [name=urlList_0_url]"
-  var createContentButtonSelector = ".list-button-create-content"
+  var helpBlockSelector = ".alpaca-helper.help-block"
+  var duplicateUrlClass = "duplicate-url-message"
+  var duplicateUrlSelector = "." + duplicateUrlClass
   var branch = Ratchet.observable('branch').get()
   var chain = Chain(branch).trap(genericErrorLoggerHalter)
   var latestPagesRequestTime
-  var typing = false
   var docId = null
 
-  function setInvalidUrl() {
+  function disableSave() {
     $(saveButtonSelector).attr("disabled", "disabled")
   }
   
-  function setValidUrl() {
+  function enableSave() {
     $(saveButtonSelector).removeAttr("disabled")
+  }
+
+  function setUrlInvalid() {
+    disableSave()
+    //preemptively remove to prevent occasional double insertion
+    $(urlFieldSelector).find(duplicateUrlSelector).remove()
+    //add message text
+    $(urlFieldSelector).find(helpBlockSelector).after(
+      "<p class='" + duplicateUrlClass + "' style='color: " + errorColor + "'" + 
+      errorColor + "'>" + duplicateUrlString + "</p>")
+  }
+
+  function setUrlValid() {
+    enableSave()
+    //remove message text
+    $(urlFieldSelector).find(duplicateUrlSelector).remove()
   }
 
   function genericErrorLoggerHalter(err) {
@@ -41,23 +65,35 @@ define(function(require, exports, module) {
     })
   }
 
-  function findIdenticalUrlPages() {
+  function findIdenticalUrlPages(event) {
     latestPagesRequestTime = new Date().getTime()
     var pagesRequestTime = new Date().getTime()
-    var url = $(urlTextSelector).val()
+    var url
 
-    queryForPages(url).then(function () {
-      //ensure only final check results in DOM update
-      if (pagesRequestTime === latestPagesRequestTime) {
-        var identicalUrlPages = this.asArray()
-        var pageCount = identicalUrlPages.length
-        if (pageCount) {
-          setInvalidUrl()
-        } else {
-          setValidUrl()
-        }
+    //schedule scrape of url value after current thread has finished
+    //(cut/paste event-driven changes do not reflect until then)
+    setTimeout(function() {
+      url = $(urlTextSelector).val()
+
+      if (url) {
+        //disable early as response timing varies
+        disableSave()
+        queryForPages(url).then(function handleQueryResponse() {
+          //ensure only final check results in DOM update
+          if (pagesRequestTime === latestPagesRequestTime) {
+            var identicalUrlPages = this.asArray()
+            var pageCount = identicalUrlPages.length
+            if (pageCount) {
+              setUrlInvalid()
+            } else {
+              setUrlValid()
+            }
+          }
+        })
+      } else {
+        setUrlValid()
       }
-    })
+    }, 0)
   }
 
   $(document).on('cloudcms-ready', function(event) {
@@ -67,10 +103,10 @@ define(function(require, exports, module) {
     var isPage = pagePattern.test(location.href)
     if (isPage) {
       docId = location.href.replace(pagePattern, '$1')
-      setInvalidUrl()
+      disableSave()
       findIdenticalUrlPages()
     }
 
-    $(document).on('keyup paste', urlTextSelector, findIdenticalUrlPages)
+    $(document).on('keyup paste cut', urlTextSelector, findIdenticalUrlPages)
   })
 });

@@ -16,6 +16,7 @@ define(function(require, exports, module) {
   var branch = Ratchet.observable('branch').get()
   var chain = Chain(branch).trap(genericErrorLoggerHalter)
   var latestPagesRequestTime
+  var timer = undefined
   var docId = null
 
   function disableSave() {
@@ -70,14 +71,21 @@ define(function(require, exports, module) {
     var pagesRequestTime = new Date().getTime()
     var url
 
+    //disable early as response timing varies
+    disableSave()
+
+    //cancel previous request if new event comes in before it completes
+    if (timer) {
+      clearTimeout(timer)
+    }
+
     //schedule scrape of url value after current thread has finished
     //(cut/paste event-driven changes do not reflect until then)
-    setTimeout(function() {
+    timer = setTimeout(function() {
+      timer = undefined
       url = $(urlTextSelector).val()
 
       if (url) {
-        //disable early as response timing varies
-        disableSave()
         queryForPages(url).then(function handleQueryResponse() {
           //ensure only final check results in DOM update
           if (pagesRequestTime === latestPagesRequestTime) {
@@ -93,7 +101,7 @@ define(function(require, exports, module) {
       } else {
         setUrlValid()
       }
-    }, 0)
+    }, 100)
   }
 
   $(document).on('cloudcms-ready', function(event) {

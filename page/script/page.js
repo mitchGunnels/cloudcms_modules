@@ -6,11 +6,15 @@ define(function(require, exports, module) {
 
   var $ = require("jquery");
   var duplicateUrlString = "Oh-Oh, it looks like another page is already using that URL."
+  var validUrlString = "The URL is not being used, you are good to go."
   var errorColor = "#a94442"
+  var validColor = "rgb(39, 174, 96)"
   var saveButtonSelector = ".buttonbar .btn.save, .btn-toolbar .btn.save, .btn.btn-success.wizard-next"
   var urlFieldSelector = ".alpaca-field [data-alpaca-field-name=urlList]"
   var urlTextSelector = ".alpaca-field [name=urlList_0_url]"
   var helpBlockSelector = ".alpaca-helper.help-block"
+  var validUrlClass = "valid-url-message"
+  var validUrlSelector = "." + validUrlClass
   var duplicateUrlClass = "duplicate-url-message"
   var duplicateUrlSelector = "." + duplicateUrlClass
   var branch = Ratchet.observable('branch').get()
@@ -27,20 +31,26 @@ define(function(require, exports, module) {
     $(saveButtonSelector).removeAttr("disabled")
   }
 
+  function clearMessages() {
+    $(duplicateUrlSelector + ", " + validUrlSelector).remove()
+  }
+
   function setUrlInvalid() {
     disableSave()
     //preemptively remove to prevent occasional double insertion
-    $(urlFieldSelector).find(duplicateUrlSelector).remove()
+    clearMessages()
     //add message text
     $(urlFieldSelector).find(helpBlockSelector).after(
-      "<p class='" + duplicateUrlClass + "' style='color: " + errorColor + "'" + 
-      errorColor + "'>" + duplicateUrlString + "</p>")
+      "<p class='" + duplicateUrlClass + "' style='color: " + errorColor + ";'>" + duplicateUrlString + "</p>")
   }
 
   function setUrlValid() {
     enableSave()
     //remove message text
-    $(urlFieldSelector).find(duplicateUrlSelector).remove()
+    clearMessages()
+    //add message text
+    $(urlFieldSelector).find(helpBlockSelector).after(
+      "<p class='" + validUrlClass + "' style='color: " + validColor + ";'>" + validUrlString + "</p>")
   }
 
   function genericErrorLoggerHalter(err) {
@@ -73,6 +83,7 @@ define(function(require, exports, module) {
 
     //disable early as response timing varies
     disableSave()
+    clearMessages()
 
     //cancel previous request if new event comes in before it completes
     if (timer) {
@@ -99,7 +110,7 @@ define(function(require, exports, module) {
           }
         })
       } else {
-        setUrlValid()
+        enableSave()
       }
     }, 100)
   }

@@ -122,7 +122,6 @@ define(function(require, exports, module) {
     var isPage = pagePattern.test(location.href)
     if (isPage) {
       docId = location.href.replace(pagePattern, '$1')
-      disableSave()
       findIdenticalUrlPages()
     }
 

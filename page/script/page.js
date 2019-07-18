@@ -17,7 +17,6 @@ define(function(require, exports, module) {
   var validUrlSelector = "." + validUrlClass
   var duplicateUrlClass = "duplicate-url-message"
   var duplicateUrlSelector = "." + duplicateUrlClass
-  var branch = Ratchet.observable('branch').get()
   var latestPagesRequestTime
   var timer = undefined
   var docId = null
@@ -58,6 +57,7 @@ define(function(require, exports, module) {
   }
 
   function queryForPages(url) {
+    var branch = Ratchet.observable('branch').get()
     var chain = Chain(branch).trap(genericErrorLoggerHalter)
     return chain.queryNodes({
       _type: {

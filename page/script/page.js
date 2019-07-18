@@ -15,18 +15,42 @@ define(function(require, exports, module) {
   var helpBlockSelector = ".alpaca-helper.help-block"
   var validUrlClass = "valid-url-message"
   var validUrlSelector = "." + validUrlClass
+  var disabled = "disabled"
+  var disabledSelector = "." + disabled
+  var hiddenClass = "hidden"
   var duplicateUrlClass = "duplicate-url-message"
   var duplicateUrlSelector = "." + duplicateUrlClass
   var latestPagesRequestTime
   var timer = undefined
   var docId = null
+  var isValid = false
 
   function disableSave() {
-    $(saveButtonSelector).attr("disabled", "disabled")
+    //clear out changes first
+    enableSave()
+
+    //grab all active save buttons
+    var saveButtons = $(saveButtonSelector)
+    saveButtons.filter(disabledSelector).remove()
+    saveButtons.each(function () {
+      var button = $(this)
+      var disabledButton = button.clone()
+
+      //clone button to disable click submit and hide active button
+      disabledButton.attr(disabled, disabled)
+      disabledButton.addClass(disabled)
+
+      button.after(disabledButton)
+      button.addClass(hiddenClass)
+    })
   }
   
   function enableSave() {
-    $(saveButtonSelector).removeAttr("disabled")
+    //remove clone buttons (placeholders)
+    $(saveButtonSelector).filter(disabledSelector).remove()
+    //show active buttons
+    $(saveButtonSelector).removeClass(hiddenClass)
+    //enable submit of form (only for Create dialog)
   }
 
   function clearMessages() {
@@ -34,6 +58,7 @@ define(function(require, exports, module) {
   }
 
   function setUrlInvalid() {
+    isValid = false
     disableSave()
     //preemptively remove to prevent occasional double insertion
     clearMessages()
@@ -43,6 +68,7 @@ define(function(require, exports, module) {
   }
 
   function setUrlValid() {
+    isValid = true
     enableSave()
     //remove message text
     clearMessages()
@@ -77,42 +103,48 @@ define(function(require, exports, module) {
   }
 
   function findIdenticalUrlPages(event) {
-    latestPagesRequestTime = new Date().getTime()
-    var pagesRequestTime = new Date().getTime()
-    var url
+    //if not valid and enter key pressed, do not save!
+    if (!isValid && event && event.key && "Enter" === event.key) {
+      event.stopPropagation()
+      event.preventDefault()
+    } else if (event && "keyup" === event.type) {
+      latestPagesRequestTime = new Date().getTime()
+      var pagesRequestTime = new Date().getTime()
+      var url
 
-    //disable early as response timing varies
-    disableSave()
-    clearMessages()
+      //disable early as response timing varies
+      disableSave()
+      clearMessages()
 
-    //cancel previous request if new event comes in before it completes
-    if (timer) {
-      clearTimeout(timer)
-    }
-
-    //schedule scrape of url value after current thread has finished
-    //(cut/paste event-driven changes do not reflect until then)
-    timer = setTimeout(function() {
-      timer = undefined
-      url = $(urlTextSelector).val()
-
-      if (url) {
-        queryForPages(url).then(function handleQueryResponse() {
-          //ensure only final check results in DOM update
-          if (pagesRequestTime === latestPagesRequestTime) {
-            var identicalUrlPages = this.asArray()
-            var pageCount = identicalUrlPages.length
-            if (pageCount) {
-              setUrlInvalid()
-            } else {
-              setUrlValid()
-            }
-          }
-        })
-      } else {
-        enableSave()
+      //cancel previous request if new event comes in before it completes
+      if (timer) {
+        clearTimeout(timer)
       }
-    }, 100)
+
+      //schedule scrape of url value after current thread has finished
+      //(cut/paste event-driven changes do not reflect until then)
+      timer = setTimeout(function() {
+        timer = undefined
+        url = $(urlTextSelector).val()
+
+        if (url) {
+          queryForPages(url).then(function handleQueryResponse() {
+            //ensure only final check results in DOM update
+            if (pagesRequestTime === latestPagesRequestTime) {
+              var identicalUrlPages = this.asArray()
+              var pageCount = identicalUrlPages.length
+              if (pageCount) {
+                setUrlInvalid()
+              } else {
+                setUrlValid()
+              }
+            }
+          })
+        } else {
+          enableSave()
+        }
+      }, 100)
+    }
   }
 
   $(document).on('cloudcms-ready', function(event) {
@@ -125,6 +157,6 @@ define(function(require, exports, module) {
       findIdenticalUrlPages()
     }
 
-    $(document).on('keyup paste cut', urlTextSelector, findIdenticalUrlPages)
+    $(document).on('keyup keydown paste cut change', urlTextSelector, findIdenticalUrlPages)
   })
 });

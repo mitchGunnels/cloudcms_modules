@@ -106,7 +106,7 @@ define(function(require, exports, module) {
     if (!isValid && event && event.key && "Enter" === event.key) {
       event.stopPropagation()
       event.preventDefault()
-    } else if (event && "keyup" === event.type) {
+    } else {
       latestPagesRequestTime = new Date().getTime()
       var pagesRequestTime = new Date().getTime()
       var url

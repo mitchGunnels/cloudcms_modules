@@ -97,8 +97,7 @@ define(function(require, exports, module) {
         $elemMatch: {
           url: url
         }
-      },
-      active: 'y'
+      }
     })
   }
 
@@ -150,11 +149,14 @@ define(function(require, exports, module) {
   $(document).on('cloudcms-ready', function(event) {
     $(urlTextSelector).off()
     //detect if current page is edit properties
-    var pagePattern = /^.*\/documents\/(\w+)\/properties$/
-    var isPage = pagePattern.test(location.href)
-    if (isPage) {
-      docId = location.href.replace(pagePattern, '$1')
+    var editPropertiesPattern = /^.*\/documents\/(\w+)\/properties$/
+    var isEditProperties = editPropertiesPattern.test(location.href)
+    if (isEditProperties) {
+      docId = location.href.replace(editPropertiesPattern, '$1')
       findIdenticalUrlPages()
+    } else {
+      //if not on edit properties, clear docId
+      docId = null
     }
 
     $(document).on('keyup keydown paste cut change', urlTextSelector, findIdenticalUrlPages)

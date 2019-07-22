@@ -11,13 +11,17 @@ define(function(require, exports, module) {
   var errorColor = "#a94442"
   var validColor = "rgb(39, 174, 96)"
 
+  var activeClass = "active"
+
   var tabsClass = "activation-tabs"
+  var tabsTabClass = "tab"
   var tabsSelector = dashletSelector + " ." + tabsClass
-  var tabs = '<div class="' + tabsClass + '"><div class="tab active device">Device</div><div class="tab page">Page</div></div>'
+  var tabs = '<div class="' + tabsClass + '"><div class="' + tabsTabClass + ' ' + activeClass + ' device">Device</div><div class="tab page">Page</div></div>'
 
   var tabContentClass = "tab-content"
   var tabContentSelector = dashletSelector + " ." + tabContentClass
-  var tabContent = '<div class="' + tabContentClass + '"><div class="content active device"></div><div class="content page"></div></div>'
+  var tabContentContentClass = "content"
+  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentClass + ' ' + activeClass + ' device"></div><div class="' + tabContentContentClass + ' page"></div></div>'
 
   var typeClass = "activation-page-type"
   var typeSelector = dashletSelector + " ." + typeClass + " select"
@@ -50,10 +54,10 @@ define(function(require, exports, module) {
 
   var activationStyles = tabsSelector + " { position: relative; top: 1px; }" +
     tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #ccc; border: 1px solid #ccc; border-bottom: none; }" +
-    tabsSelector + " .tab.active { background: #fff; }" +
+    tabsSelector + " .tab." + activeClass + " { background: #fff; }" +
     tabContentSelector + " { background: #fff; border: 1px solid #ccc; border-bottom: none; padding: 10px; }" +
     tabContentSelector + " .content { display: none; }" +
-    tabContentSelector + " .content.active { display: block; }" +
+    tabContentSelector + " .content." + activeClass + " { display: block; }" +
     buttonsSelector + " { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0 10px 10px; text-align: right; }" +
     activateSelector + ", " + deactivateSelector + " { display: inline-block; margin-left: 10px }"
     
@@ -147,7 +151,15 @@ define(function(require, exports, module) {
   })
 
   function handleTabChange() {
-    debugger
+    var activeTab = $(this)
+    var tabs = $(tabsSelector + " ." + tabsTabClass)
+    var activeIndex = tabs.index(activeTab)
+    var contents = $(tabContentSelector + " ." + tabContentContentClass)
+
+    tabs.removeClass(activeClass)
+    activeTab.addClass(activeClass)
+    contents.removeClass(activeClass)
+    contents.eq(activeIndex).addClass(activeClass)
   }
 
   function handlePageTypeChange() {

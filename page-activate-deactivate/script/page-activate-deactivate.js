@@ -19,16 +19,17 @@ define(function(require, exports, module) {
   var tabsTabClass = "tab"
   var tabsSelector = dashletSelector + " ." + tabsClass
   var tabsTabSelector = tabsSelector + " ." + tabsTabClass
-  var tabs = '<div class="' + tabsClass + '"><div class="' + tabsTabClass + ' ' + activeClass + ' device">Phone/Accessory</div><div class="tab page">Page</div></div>'
+  var tabs = '<div class="' + tabsClass + '"><div class="' + tabsTabClass + ' ' + activeClass + ' phone">Phone</div><div class="' + tabsTabClass + ' accessory">Accessory</div><div class="tab page">Page</div></div>'
 
   var tabContentClass = "tab-content"
   var tabContentSelector = dashletSelector + " ." + tabContentClass
   var tabContentContentClass = "content"
   var tabContentContentSelector = tabContentSelector + " ." + tabContentContentClass
   var tabContentContentActiveSelector = tabContentContentSelector + activeSelector
-  var tabContentContentDeviceClass = tabContentContentClass + " device"
+  var tabContentContentPhoneClass = tabContentContentClass + " phone"
+  var tabContentContentAccessoryClass = tabContentContentClass + " accessory"
   var tabContentContentPageClass = tabContentContentClass + " page"
-  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentDeviceClass + ' ' + activeClass + '"></div><div class="' + tabContentContentPageClass + '"></div></div>'
+  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentPhoneClass + ' ' + activeClass + '"></div><div class="' + tabContentContentAccessoryClass + '"></div><div class="' + tabContentContentPageClass + '"></div></div>'
 
   var typeClass = "activation-page-type"
   var typeSelector = dashletSelector + " ." + typeClass + " select"
@@ -63,8 +64,8 @@ define(function(require, exports, module) {
   var buttons = '<div class="' + buttonsClass + '">' + activateButton + deactivateButton + '</div>'
 
   var activationStyles = tabsSelector + " { position: relative; top: 1px; }" +
-    tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #ccc; border: 1px solid #ccc; border-bottom: none; }" +
-    tabsSelector + " .tab" + activeSelector + " { background: #fff; }" +
+    tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #e9e9e9; border: 1px solid #ccc; border-bottom: none; }" +
+    tabsSelector + " .tab" + activeSelector + " { background: #fff; border-bottom: 1px solid #fff; }" +
     tabContentSelector + " { background: #fff; border: 1px solid #ccc; border-bottom: none; padding: 10px; }" +
     tabContentSelector + " .content { display: none; }" +
     tabContentSelector + " .content" + activeSelector + " { display: block; }" +
@@ -94,42 +95,31 @@ define(function(require, exports, module) {
 
     chain.queryNodes(query).then(function () {
       var pages = this.asArray()
-      var pageListSelect = '<div class="' + pageListClass + '"><label>Page Title<select name="">'
-
-      //populate options inside select
-      pages.forEach(function (page, index) {
-        pageListSelect += '<option value="' + page._doc + '">' + page.title + '</option>'
-      })
-      pageListSelect += '</select></label></div>'
-
-      //insert into DOM
-      $(typeSelector).after(pageListSelect)
+      populateSelect(pages)
     })
   }
 
-  function updatePage(isActive) {
-    var branch = Ratchet.observable('branch').get()
-    var chain = Chain(branch).trap(genericErrorLoggerHalter)
-    var pageType = $(typeSelector).val()
-    var url = $(urlSelector).val()
-    var sku = $(skuSelector).val()
-    var query = {
-      _type: "cricket:" + pageType,
-    }
-
-    if ("page-shop" === pageType) {
-      query.urlList = {
-        $elemMatch: {
-          url: url
-        }
-      }
-    } else {
-      query._doc = docId
-    }
+  //activate/deactivate
+  function update() {
+    //show error message if sku/details url missing
+    //get sku
+    //get page(s)
+    //get product if parent page entered (not for accessories) or if product associated 
+    //(ensure that pages and sku are connected, potentially by way of product)
+    //set active flag 
   }
 
-  function populateSelect() {
-    
+  function populateSelect(pages) {
+    var pageListSelect = '<div class="' + pageListClass + '"><label>Page Title<select name="">'
+
+    //populate options inside select
+    pages.forEach(function (page, index) {
+      pageListSelect += '<option value="' + page._doc + '">' + page.title + '</option>'
+    })
+    pageListSelect += '</select></label></div>'
+
+    //insert into DOM
+    $(typeSelector).after(pageListSelect)
   }
 
   $(document).on('cloudcms-ready', function(event) {
@@ -145,10 +135,8 @@ define(function(require, exports, module) {
     $(dashletSelector).append(tabContent)
 
     //in first tab...
-    var tab = $(dashletSelector).find(".content.device")
-    //text input for SKU (-shop)
+    var tab = $(dashletSelector).find(".content.phone")
     tab.append(skuTextInput)
-    //text input for URL (-shop)
     var details = $(urlTextInput).addClass(detailsClass)
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
@@ -157,6 +145,13 @@ define(function(require, exports, module) {
     tab.append(parent)
 
     //in second tab...
+    tab = $(dashletSelector).find(".content.accessory")
+    tab.append(skuTextInput)
+    var details = $(urlTextInput).addClass(detailsClass)
+    details.find("label").html("Details URL" + textInput)
+    tab.append(details)
+
+    //in third tab...
     tab = $(dashletSelector).find(".content.page")
     tab.append(typeSelect)
     var pageUrl = $(urlTextInput).addClass(pageClass)
@@ -183,7 +178,7 @@ define(function(require, exports, module) {
   function handlePageTypeChange() {
     var pageType = $(this).val()
     var pageList = $(pageListSelector)
-    var pageUrl = $(tabContentContentActiveSelector).find("." + pageClass)
+    var pageUrl = $(urlTextPageSelector)
 
     if ("page-shop" === pageType) {
     //for shop, provide url field
@@ -196,7 +191,7 @@ define(function(require, exports, module) {
   }
 
   function handleActivate() {
-    //pu
+
   }
 
   function handleDeactivate() {

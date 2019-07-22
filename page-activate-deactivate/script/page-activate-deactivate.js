@@ -25,18 +25,18 @@ define(function(require, exports, module) {
 
   var typeClass = "activation-page-type"
   var typeSelector = dashletSelector + " ." + typeClass + " select"
-  var typeSelect = '<div class="' + typeClass + '"><label for="activation-page-type-select">Page Type</label><select id="activation-page-type-select"><option value="page">Page</option><option value="page-shop">Shop Page</option><option value="page-support-article">Support Article Page</option><option value="page-support-category">Support Category Page</option><option value="page-support-home">Support Home Page</option></select></div>'
+  var typeSelect = '<div class="' + typeClass + '"><label>Page Type</label><select><option value="page">Page</option><option value="page-shop">Shop Page</option><option value="page-support-article">Support Article Page</option><option value="page-support-category">Support Category Page</option><option value="page-support-home">Support Home Page</option></select></div>'
 
   var pageListClass = "activation-page-list"
   var pageListSelector = dashletSelector + " ." + pageListClass
 
   var urlTextClass = "activation-url"
   var urlSelector = dashletSelector + " ." + urlTextClass + " input"
-  var urlTextInput = '<div class="' + urlTextClass + '"><label for="activation-url-input">URL</label><input id="activation-url-input" type="text"></div>'
+  var urlTextInput = '<div class="' + urlTextClass + '"><label>URL</label><input type="text"></div>'
 
   var skuTextClass = "activation-sku"
   var skuSelector = dashletSelector + " ." + skuTextClass + " input"
-  var skuTextInput = '<div class="' + skuTextClass + '"><label for="activation-sku-input">SKU</label><input id="activation-sku-input" type="text"></div>'
+  var skuTextInput = '<div class="' + skuTextClass + '"><label>SKU</label><input type="text"></div>'
 
   var activateClass = "activation-activate"
   var activateSelector = dashletSelector + " ." + activateClass
@@ -80,7 +80,7 @@ define(function(require, exports, module) {
 
     chain.queryNodes(query).then(function () {
       var pages = this.asArray()
-      var pageListSelect = '<div class="' + pageListClass + '"><label for="activation-page-list-select">Page Title</label><select id="activation-page-list-select" name="">'
+      var pageListSelect = '<div class="' + pageListClass + '"><label>Page Title</label><select name="">'
 
       //populate options inside select
       pages.forEach(function (page, index) {

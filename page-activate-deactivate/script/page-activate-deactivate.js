@@ -12,17 +12,23 @@ define(function(require, exports, module) {
   var validColor = "rgb(39, 174, 96)"
 
   var activeClass = "active"
+  var activeSelector = "." + activeClass
   var textInput = '<input type="text" />'
 
   var tabsClass = "activation-tabs"
   var tabsTabClass = "tab"
   var tabsSelector = dashletSelector + " ." + tabsClass
-  var tabs = '<div class="' + tabsClass + '"><div class="' + tabsTabClass + ' ' + activeClass + ' device">Device</div><div class="tab page">Page</div></div>'
+  var tabsTabSelector = tabsSelector + " ." + tabsTabClass
+  var tabs = '<div class="' + tabsClass + '"><div class="' + tabsTabClass + ' ' + activeClass + ' device">Phone/Accessory</div><div class="tab page">Page</div></div>'
 
   var tabContentClass = "tab-content"
   var tabContentSelector = dashletSelector + " ." + tabContentClass
   var tabContentContentClass = "content"
-  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentClass + ' ' + activeClass + ' device"></div><div class="' + tabContentContentClass + ' page"></div></div>'
+  var tabContentContentSelector = tabContentSelector + " ." + tabContentContentClass
+  var tabContentContentActiveSelector = tabContentContentSelector + activeSelector
+  var tabContentContentDeviceClass = tabContentContentClass + " device"
+  var tabContentContentPageClass = tabContentContentClass + " page"
+  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentDeviceClass + ' ' + activeClass + '"></div><div class="' + tabContentContentPageClass + '"></div></div>'
 
   var typeClass = "activation-page-type"
   var typeSelector = dashletSelector + " ." + typeClass + " select"
@@ -32,12 +38,15 @@ define(function(require, exports, module) {
   var pageListSelector = dashletSelector + " ." + pageListClass
 
   var urlTextClass = "activation-url"
-  var urlSelector = dashletSelector + " ." + urlTextClass + " input"
+  var detailsClass = "details"
+  var parentClass = "parent"
+  var pageClass = "page"
+  var urlTextPageSelector = dashletSelector + " ." + urlTextClass + "." + pageClass
   var urlTextInput = '<div class="' + urlTextClass + '"><label>URL' + textInput + '</label></div>'
 
   var skuTextClass = "activation-sku"
   var skuSelector = dashletSelector + " ." + skuTextClass + " input"
-  var skuTextInput = '<div class="' + skuTextClass + '"><label>SKU' + textInput + '</label></div>'
+  var skuTextInput = '<div class="' + skuTextClass + '"><label>Phone or Accessory SKU' + textInput + '</label></div>'
 
   var activateClass = "activation-activate"
   var activateSelector = dashletSelector + " ." + activateClass
@@ -55,12 +64,13 @@ define(function(require, exports, module) {
 
   var activationStyles = tabsSelector + " { position: relative; top: 1px; }" +
     tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #ccc; border: 1px solid #ccc; border-bottom: none; }" +
-    tabsSelector + " .tab." + activeClass + " { background: #fff; }" +
+    tabsSelector + " .tab" + activeSelector + " { background: #fff; }" +
     tabContentSelector + " { background: #fff; border: 1px solid #ccc; border-bottom: none; padding: 10px; }" +
     tabContentSelector + " .content { display: none; }" +
-    tabContentSelector + " .content." + activeClass + " { display: block; }" +
+    tabContentSelector + " .content" + activeSelector + " { display: block; }" +
     buttonsSelector + " { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0 10px 10px; text-align: right; }" +
-    activateSelector + ", " + deactivateSelector + " { display: inline-block; margin-left: 10px }"
+    activateSelector + ", " + deactivateSelector + " { display: inline-block; margin-left: 10px }" +
+    dashletSelector + " label { width: 100%; display: flex; flex-direction: column; }"
     
 
   function genericErrorLoggerHalter(err) {
@@ -75,9 +85,12 @@ define(function(require, exports, module) {
     var query = {
       _type: "cricket:" + pageType,
     }
+    var pageUrl = $(urlTextPageSelector)
 
     //remove select from DOM
     $(pageListSelector).remove()
+    //and hide url field
+    pageUrl.hide()
 
     chain.queryNodes(query).then(function () {
       var pages = this.asArray()
@@ -136,26 +149,30 @@ define(function(require, exports, module) {
     //text input for SKU (-shop)
     tab.append(skuTextInput)
     //text input for URL (-shop)
-    var details = $(urlTextInput).addClass("details")
+    var details = $(urlTextInput).addClass(detailsClass)
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
-    var parent = $(urlTextInput).addClass("parent")
+    var parent = $(urlTextInput).addClass(parentClass)
     parent.find("label").html("Parent URL" + textInput)
     tab.append(parent)
 
     //in second tab...
     tab = $(dashletSelector).find(".content.page")
-    tab.append(urlTextInput)
+    tab.append(typeSelect)
+    var pageUrl = $(urlTextInput).addClass(pageClass)
+    tab.append(pageUrl)
 
     //after tab contents...
     $(dashletSelector).append(buttons)
+    //populate initial page title select
+    getPages()
   })
 
   function handleTabChange() {
     var activeTab = $(this)
-    var tabs = $(tabsSelector + " ." + tabsTabClass)
+    var tabs = $(tabsTabSelector)
     var activeIndex = tabs.index(activeTab)
-    var contents = $(tabContentSelector + " ." + tabContentContentClass)
+    var contents = $(tabContentContentSelector)
 
     tabs.removeClass(activeClass)
     activeTab.addClass(activeClass)
@@ -165,12 +182,16 @@ define(function(require, exports, module) {
 
   function handlePageTypeChange() {
     var pageType = $(this).val()
-    if ("page-shop" === pageType) {
-    //for shop, provide url/sku fields only
+    var pageList = $(pageListSelector)
+    var pageUrl = $(tabContentContentActiveSelector).find("." + pageClass)
 
+    if ("page-shop" === pageType) {
+    //for shop, provide url field
+      pageList.hide()
+      pageUrl.show()
     } else {
-    //for all others, populate select options of page titles
-      
+    //for all others, populate select options with page titles
+      getPages()
     }
   }
 
@@ -182,7 +203,7 @@ define(function(require, exports, module) {
     
   }
 
-  $(document).on('click', tabsSelector + " .tab", handleTabChange)
+  $(document).on('click', tabsTabSelector, handleTabChange)
   $(document).on('change', typeSelector, handlePageTypeChange)
   $(document).on('click', activateButtonSelector, handleActivate)
   $(document).on('click', deactivateButtonSelector, handleDeactivate)

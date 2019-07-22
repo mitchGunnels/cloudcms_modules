@@ -12,6 +12,7 @@ define(function(require, exports, module) {
   var validColor = "rgb(39, 174, 96)"
 
   var activeClass = "active"
+  var textInput = '<input type="text" />'
 
   var tabsClass = "activation-tabs"
   var tabsTabClass = "tab"
@@ -25,18 +26,18 @@ define(function(require, exports, module) {
 
   var typeClass = "activation-page-type"
   var typeSelector = dashletSelector + " ." + typeClass + " select"
-  var typeSelect = '<div class="' + typeClass + '"><label>Page Type</label><select><option value="page">Page</option><option value="page-shop">Shop Page</option><option value="page-support-article">Support Article Page</option><option value="page-support-category">Support Category Page</option><option value="page-support-home">Support Home Page</option></select></div>'
+  var typeSelect = '<div class="' + typeClass + '"><label>Page Type<select><option value="page">Page</option><option value="page-shop">Shop Page</option><option value="page-support-article">Support Article Page</option><option value="page-support-category">Support Category Page</option><option value="page-support-home">Support Home Page</option></select></label></div>'
 
   var pageListClass = "activation-page-list"
   var pageListSelector = dashletSelector + " ." + pageListClass
 
   var urlTextClass = "activation-url"
   var urlSelector = dashletSelector + " ." + urlTextClass + " input"
-  var urlTextInput = '<div class="' + urlTextClass + '"><label>URL</label><input type="text"></div>'
+  var urlTextInput = '<div class="' + urlTextClass + '"><label>URL' + textInput + '</label></div>'
 
   var skuTextClass = "activation-sku"
   var skuSelector = dashletSelector + " ." + skuTextClass + " input"
-  var skuTextInput = '<div class="' + skuTextClass + '"><label>SKU</label><input type="text"></div>'
+  var skuTextInput = '<div class="' + skuTextClass + '"><label>SKU' + textInput + '</label></div>'
 
   var activateClass = "activation-activate"
   var activateSelector = dashletSelector + " ." + activateClass
@@ -80,13 +81,13 @@ define(function(require, exports, module) {
 
     chain.queryNodes(query).then(function () {
       var pages = this.asArray()
-      var pageListSelect = '<div class="' + pageListClass + '"><label>Page Title</label><select name="">'
+      var pageListSelect = '<div class="' + pageListClass + '"><label>Page Title<select name="">'
 
       //populate options inside select
       pages.forEach(function (page, index) {
         pageListSelect += '<option value="' + page._doc + '">' + page.title + '</option>'
       })
-      pageListSelect += '</select></div>'
+      pageListSelect += '</select></label></div>'
 
       //insert into DOM
       $(typeSelector).after(pageListSelect)
@@ -136,10 +137,10 @@ define(function(require, exports, module) {
     tab.append(skuTextInput)
     //text input for URL (-shop)
     var details = $(urlTextInput).addClass("details")
-    details.find("label").text("Details URL")
+    details.find("label").html("Details URL" + textInput)
     tab.append(details)
     var parent = $(urlTextInput).addClass("parent")
-    parent.find("label").text("Parent URL")
+    parent.find("label").html("Parent URL" + textInput)
     tab.append(parent)
 
     //in second tab...

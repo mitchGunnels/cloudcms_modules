@@ -1,13 +1,13 @@
 define(function(require, exports, module) {
   /*********************
-   * Allow for activation/deactivation of various page types from Dashboard
+   * Allow for activation/deactivation of various page types 
+   * and associated documents from Dashboard
    * ******************/
 
   var $ = require("jquery");
   var dashletSelector = ".htmldashlet .body .cricket-activation-deactivation"
   var successMessage = "The page was successfully updated."
   var failureMessage = "There was an error."
-  var checkUrlSkuMessage = "Double-check the URL and SKU."
   var errorColor = "#a94442"
   var validColor = "rgb(39, 174, 96)"
 
@@ -26,10 +26,10 @@ define(function(require, exports, module) {
   var tabContentContentClass = "content"
   var tabContentContentSelector = tabContentSelector + " ." + tabContentContentClass
   var tabContentContentActiveSelector = tabContentContentSelector + activeSelector
-  var tabContentContentPhoneClass = tabContentContentClass + " phone"
-  var tabContentContentAccessoryClass = tabContentContentClass + " accessory"
-  var tabContentContentPageClass = tabContentContentClass + " page"
-  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentPhoneClass + ' ' + activeClass + '"></div><div class="' + tabContentContentAccessoryClass + '"></div><div class="' + tabContentContentPageClass + '"></div></div>'
+  var tabContentContentPhoneClass = "phone"
+  var tabContentContentAccessoryClass = "accessory"
+  var tabContentContentPageClass = "page"
+  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentClass + ' ' + tabContentContentPhoneClass + ' ' + activeClass + '"></div><div class="' + tabContentContentClass + ' ' +tabContentContentAccessoryClass + '"></div><div class="' + tabContentContentClass + ' ' + tabContentContentPageClass + '"></div></div>'
 
   var typeClass = "activation-page-type"
   var typeSelector = dashletSelector + " ." + typeClass + " select"
@@ -37,6 +37,7 @@ define(function(require, exports, module) {
 
   var pageListClass = "activation-page-list"
   var pageListSelector = dashletSelector + " ." + pageListClass
+  var pageListSelectSelector = pageListSelector + " select"
 
   var urlTextClass = "activation-url"
   var detailsClass = "details"
@@ -59,6 +60,10 @@ define(function(require, exports, module) {
   var deactivateButtonSelector = deactivateSelector + " input"
   var deactivateButton = '<div class="' + deactivateClass + '"><input type="button" value="Deactivate" /></div>'
 
+  var messageClass = "activation-message"
+  var messageSelector = dashletSelector + " ." + messageClass
+  var messageMessage = '<div class=' + messageClass + '></div>'
+
   var buttonsClass = "activation-buttons"
   var buttonsSelector = dashletSelector + " ." + buttonsClass
   var buttons = '<div class="' + buttonsClass + '">' + activateButton + deactivateButton + '</div>'
@@ -71,7 +76,10 @@ define(function(require, exports, module) {
     tabContentSelector + " .content" + activeSelector + " { display: block; }" +
     buttonsSelector + " { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0 10px 10px; text-align: right; }" +
     activateSelector + ", " + deactivateSelector + " { display: inline-block; margin-left: 10px }" +
-    dashletSelector + " label { width: 100%; display: flex; flex-direction: column; }"
+    dashletSelector + " label { width: 100%; display: flex; flex-direction: column; }" +
+    messageSelector + " { border: 1px solid #ccc; border-width: 0 1px;  }" +
+    ".error { color: #a94442; }" +
+    ".valid { color: rgb(39, 174, 96); }"
     
 
   function genericErrorLoggerHalter(err) {
@@ -79,6 +87,15 @@ define(function(require, exports, module) {
     return false;
   }
 
+  function disableButtons() {
+    $(activateButtonSelector + ", " + deactivateButtonSelector).attr("disabled", "disabled")
+  }
+
+  function enableButtons() {
+    $(activateButtonSelector + ", " + deactivateButtonSelector).removeAttr("disabled")
+  }
+
+  var getPagesLoaded
   function getPages() {
     var branch = Ratchet.observable('branch').get()
     var chain = Chain(branch).trap(genericErrorLoggerHalter)
@@ -88,25 +105,28 @@ define(function(require, exports, module) {
     }
     var pageUrl = $(urlTextPageSelector)
 
-    //remove select from DOM
-    $(pageListSelector).remove()
-    //and hide url field
-    pageUrl.hide()
-
-    chain.queryNodes(query).then(function () {
-      var pages = this.asArray()
-      populateSelect(pages)
-    })
+    if (!getPagesLoaded || getPagesLoaded !== pageType) {
+      disableButtons()
+      //remove select from DOM
+      $(pageListSelector).remove()
+      if (chain.queryNodes) {
+        chain.queryNodes(query).then(function () {
+          var pages = this.asArray()
+          populateSelect(pages)
+          enableButtons()
+          getPagesLoaded = pageType
+        })
+      }
+    }
   }
 
-  //activate/deactivate
-  function update() {
-    //show error message if sku/details url missing
-    //get sku
-    //get page(s)
-    //get product if parent page entered (not for accessories) or if product associated 
-    //(ensure that pages and sku are connected, potentially by way of product)
-    //set active flag 
+  function getDoc(query) {
+    var branch = Ratchet.observable('branch').get()
+    var chain = Chain(branch).trap(genericErrorLoggerHalter)
+
+    if (chain.queryOne) {
+      return chain.queryOne(query)
+    } 
   }
 
   function populateSelect(pages) {
@@ -120,6 +140,8 @@ define(function(require, exports, module) {
 
     //insert into DOM
     $(typeSelector).after(pageListSelect)
+    //enable buttons
+    enableButtons()
   }
 
   $(document).on('cloudcms-ready', function(event) {
@@ -165,6 +187,9 @@ define(function(require, exports, module) {
 
   function handleTabChange() {
     var activeTab = $(this)
+    if (activeTab.hasClass(tabContentContentPageClass)) {
+      hideShowUrlFieldForPageType()
+    }
     var tabs = $(tabsTabSelector)
     var activeIndex = tabs.index(activeTab)
     var contents = $(tabContentContentSelector)
@@ -176,7 +201,11 @@ define(function(require, exports, module) {
   }
 
   function handlePageTypeChange() {
-    var pageType = $(this).val()
+    hideShowUrlFieldForPageType()
+  }
+
+  function hideShowUrlFieldForPageType() {
+    var pageType = $(typeSelector).val()
     var pageList = $(pageListSelector)
     var pageUrl = $(urlTextPageSelector)
 
@@ -186,20 +215,38 @@ define(function(require, exports, module) {
       pageUrl.show()
     } else {
     //for all others, populate select options with page titles
+      pageUrl.hide()
       getPages()
     }
   }
 
-  function handleActivate() {
+  function handleActivateDeactivate() {
+    var activeVal = "Activate" === $(this).val() ? "y": "n"
+    var activeTabContentContent = $(tabContentContentActiveSelector) 
 
-  }
+    //for page tab
+    if (activeTabContentContent.hasClass(tabContentContentPageClass)) {
+      var pageType = $(typeSelector).val()
+      var docId = $(pageListSelectSelector).val()
+      getDoc({_type: "cricket:" + pageType, _doc: docId}).then(function() {
+        var page = Chain(this)
+        page.active = activeVal
+        page.update().then(function () {
+          console.error(`SAVED ACTIVE FOR ${this.urlList[0].url} is ${this.active}`);
+        })
+      })
+    }
+    //for accessory tab
+    if (activeTabContentContent.hasClass(tabContentContentAccessoryClass)) {
 
-  function handleDeactivate() {
-    
+    }
+    //for phone tab
+    if (activeTabContentContent.hasClass(tabContentContentPhoneClass)) {
+      
+    }
   }
 
   $(document).on('click', tabsTabSelector, handleTabChange)
   $(document).on('change', typeSelector, handlePageTypeChange)
-  $(document).on('click', activateButtonSelector, handleActivate)
-  $(document).on('click', deactivateButtonSelector, handleDeactivate)
+  $(document).on('click', activateButtonSelector + ', ' + deactivateButtonSelector, handleActivateDeactivate)
 });

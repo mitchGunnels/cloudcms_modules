@@ -28,7 +28,8 @@ define(function(require, exports, module) {
   var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentClass + ' ' + tabContentContentPhoneClass + ' ' + activeClass + '"></div><div class="' + tabContentContentClass + ' ' +tabContentContentAccessoryClass + '"></div><div class="' + tabContentContentClass + ' ' + tabContentContentPageClass + '"></div></div>'
 
   var typeClass = "activation-page-type"
-  var typeSelector = dashletSelector + " ." + typeClass + " select"
+  var typeSelector = dashletSelector + " ." + typeClass
+  var typeSelectSelector = typeSelector + " select"
   var typeSelect = '<div class="' + typeClass + '"><label>Page Type<select><option value="page">Page</option><option value="page-shop">Shop Page</option><option value="page-support-article">Support Article Page</option><option value="page-support-category">Support Category Page</option><option value="page-support-home">Support Home Page</option></select></label></div>'
 
   var pageListClass = "activation-page-list"
@@ -76,9 +77,9 @@ define(function(require, exports, module) {
     tabContentSelector + " .content { display: none; }" +
     tabContentSelector + " .content" + activeSelector + " { display: block; }" +
     buttonsSelector + " { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0 10px 10px; text-align: right; }" +
-    activateSelector + ", " + deactivateSelector + " { display: inline-block; margin-left: 10px }" +
+    activateSelector + ", " + deactivateSelector + " { display: inline-block; margin: 10px 0 0 10px; }" +
     dashletSelector + " label { width: 100%; display: flex; flex-direction: column; }" +
-    messageSelector + " { border: 1px solid #ccc; border-width: 0 1px;  }" +
+    messageSelector + " { border: 1px solid #ccc; border-width: 0 1px; padding: 0 10px; }" +
     errorMessageSelector + " { color: #a94442; }" +
     successMessageSelector + " { color: rgb(39, 174, 96); }"
 
@@ -108,12 +109,12 @@ define(function(require, exports, module) {
   }
 
   function clearMessage() {
-    $(messageSelector).removeClass([errorMessageClass, successMessageClass].join(" "))
+    $(messageSelector).removeClass([errorMessageClass, successMessageClass].join(" ")).empty()
   }
 
   function getPages() {
     var chain = getChain()
-    var pageType = $(typeSelector).val()
+    var pageType = $(typeSelectSelector).val()
     var query = {
       _type: "cricket:" + pageType,
     }
@@ -201,6 +202,8 @@ define(function(require, exports, module) {
     activeTab.addClass(activeClass)
     contents.removeClass(activeClass)
     contents.eq(activeIndex).addClass(activeClass)
+
+    clearMessage()
   }
 
   function handlePageTypeChange() {
@@ -208,7 +211,7 @@ define(function(require, exports, module) {
   }
 
   function isShopPage() {
-    var pageType = $(typeSelector).val()
+    var pageType = $(typeSelectSelector).val()
     return "page-shop" === pageType
   }
 
@@ -231,12 +234,13 @@ define(function(require, exports, module) {
     var chain = getChain()
     var activeVal = "Activate" === $(this).val() ? "y": "n"
     var activeTabContentContent = $(tabContentContentActiveSelector) 
+    var updateVerb = ("y" === activeVal) ? "activated" : "deactivated"
 
     clearMessage()
 
     //for page tab
     if (activeTabContentContent.hasClass(tabContentContentPageClass)) {
-      var pageType = $(typeSelector).val()
+      var pageType = $(typeSelectSelector).val()
       var query = {_type: "cricket:" + pageType}
 
       if (isShopPage()) {
@@ -263,13 +267,12 @@ define(function(require, exports, module) {
           //error messaging for failed update
           //handle err.message 
           console.error(err)
-          if (/validate/.test(err.message)) {
-            setMessage("There is a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
-          }
+          //TODO handle /validation/.test(err.message)) differently?
+          setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
           enableButtons()
         }).update().then(function () {
           //success messaging
-          setMessage(this.title + " has been updated successfully", successMessageClass)
+          setMessage(this.title + " has been " + updateVerb + " successfully", successMessageClass)
           enableButtons()
         })
       })
@@ -285,6 +288,6 @@ define(function(require, exports, module) {
   }
 
   $(document).on('click', tabsTabSelector, handleTabChange)
-  $(document).on('change', typeSelector, handlePageTypeChange)
+  $(document).on('change', typeSelectSelector, handlePageTypeChange)
   $(document).on('click', activateButtonSelector + ', ' + deactivateButtonSelector, handleActivateDeactivate)
 });

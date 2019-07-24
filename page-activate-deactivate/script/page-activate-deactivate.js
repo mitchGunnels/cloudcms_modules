@@ -6,10 +6,6 @@ define(function(require, exports, module) {
 
   var $ = require("jquery");
   var dashletSelector = ".htmldashlet .body .cricket-activation-deactivation"
-  var successMessage = "The page was successfully updated."
-  var failureMessage = "There was an error."
-  var errorColor = "#a94442"
-  var validColor = "rgb(39, 174, 96)"
 
   var activeClass = "active"
   var activeSelector = "." + activeClass
@@ -62,11 +58,16 @@ define(function(require, exports, module) {
 
   var messageClass = "activation-message"
   var messageSelector = dashletSelector + " ." + messageClass
-  var messageMessage = '<div class=' + messageClass + '></div>'
+  var message = '<div class=' + messageClass + '></div>'
+  var errorMessageClass = "errorMessage"
+  var errorMessageSelector = messageSelector + "." + errorMessageClass
+  var successMessageClass = "successMessage"
+  var successMessageSelector = messageSelector + "." + successMessageClass
 
   var buttonsClass = "activation-buttons"
   var buttonsSelector = dashletSelector + " ." + buttonsClass
   var buttons = '<div class="' + buttonsClass + '">' + activateButton + deactivateButton + '</div>'
+
 
   var activationStyles = tabsSelector + " { position: relative; top: 1px; }" +
     tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #e9e9e9; border: 1px solid #ccc; border-bottom: none; }" +
@@ -78,13 +79,19 @@ define(function(require, exports, module) {
     activateSelector + ", " + deactivateSelector + " { display: inline-block; margin-left: 10px }" +
     dashletSelector + " label { width: 100%; display: flex; flex-direction: column; }" +
     messageSelector + " { border: 1px solid #ccc; border-width: 0 1px;  }" +
-    ".error { color: #a94442; }" +
-    ".valid { color: rgb(39, 174, 96); }"
-    
+    errorMessageSelector + " { color: #a94442; }" +
+    successMessageSelector + " { color: rgb(39, 174, 96); }"
+
 
   function genericErrorLoggerHalter(err) {
     console.error(err);
     return false;
+  }
+
+  function getChain() {
+    var branch = Ratchet.observable('branch').get()
+    var chain = Chain(branch)
+    return chain;
   }
 
   function disableButtons() {
@@ -95,38 +102,33 @@ define(function(require, exports, module) {
     $(activateButtonSelector + ", " + deactivateButtonSelector).removeAttr("disabled")
   }
 
-  var getPagesLoaded
+  function setMessage(msg, msgClass) {
+    clearMessage()
+    $(messageSelector).addClass(msgClass).text(msg)
+  }
+
+  function clearMessage() {
+    $(messageSelector).removeClass([errorMessageClass, successMessageClass].join(" "))
+  }
+
   function getPages() {
-    var branch = Ratchet.observable('branch').get()
-    var chain = Chain(branch).trap(genericErrorLoggerHalter)
+    var chain = getChain()
     var pageType = $(typeSelector).val()
     var query = {
       _type: "cricket:" + pageType,
     }
     var pageUrl = $(urlTextPageSelector)
 
-    if (!getPagesLoaded || getPagesLoaded !== pageType) {
-      disableButtons()
-      //remove select from DOM
-      $(pageListSelector).remove()
-      if (chain.queryNodes) {
-        chain.queryNodes(query).then(function () {
-          var pages = this.asArray()
-          populateSelect(pages)
-          enableButtons()
-          getPagesLoaded = pageType
-        })
-      }
+    disableButtons()
+    //remove select from DOM
+    $(pageListSelector).remove()
+    if (chain.queryNodes) {
+      chain.trap(genericErrorLoggerHalter).queryNodes(query).then(function () {
+        var pages = this.asArray()
+        populateSelect(pages)
+        enableButtons()
+      })
     }
-  }
-
-  function getDoc(query) {
-    var branch = Ratchet.observable('branch').get()
-    var chain = Chain(branch).trap(genericErrorLoggerHalter)
-
-    if (chain.queryOne) {
-      return chain.queryOne(query)
-    } 
   }
 
   function populateSelect(pages) {
@@ -180,6 +182,7 @@ define(function(require, exports, module) {
     tab.append(pageUrl)
 
     //after tab contents...
+    $(dashletSelector).append(message)
     $(dashletSelector).append(buttons)
     //populate initial page title select
     getPages()
@@ -204,12 +207,16 @@ define(function(require, exports, module) {
     hideShowUrlFieldForPageType()
   }
 
-  function hideShowUrlFieldForPageType() {
+  function isShopPage() {
     var pageType = $(typeSelector).val()
+    return "page-shop" === pageType
+  }
+
+  function hideShowUrlFieldForPageType() {
     var pageList = $(pageListSelector)
     var pageUrl = $(urlTextPageSelector)
 
-    if ("page-shop" === pageType) {
+    if (isShopPage()) {
     //for shop, provide url field
       pageList.hide()
       pageUrl.show()
@@ -221,24 +228,55 @@ define(function(require, exports, module) {
   }
 
   function handleActivateDeactivate() {
+    var chain = getChain()
     var activeVal = "Activate" === $(this).val() ? "y": "n"
     var activeTabContentContent = $(tabContentContentActiveSelector) 
+
+    clearMessage()
 
     //for page tab
     if (activeTabContentContent.hasClass(tabContentContentPageClass)) {
       var pageType = $(typeSelector).val()
-      var docId = $(pageListSelectSelector).val()
-      getDoc({_type: "cricket:" + pageType, _doc: docId}).then(function() {
+      var query = {_type: "cricket:" + pageType}
+
+      if (isShopPage()) {
+        var url = $(urlTextPageSelector).find("input").val()
+        query.urlList = {
+          $elemMatch: {
+            url: url
+          }
+        }
+      } else {
+        var docId = $(pageListSelectSelector).val()
+        query._doc = docId
+      }
+
+      chain.trap(function (err) {
+        //error messaging for page not found
+        console.error(err)
+
+      }).queryOne(query).then(function() {
         var page = Chain(this)
+        disableButtons()
         page.active = activeVal
-        page.update().then(function () {
-          console.error(`SAVED ACTIVE FOR ${this.urlList[0].url} is ${this.active}`);
+        page.trap(function(err) {
+          //error messaging for failed update
+          //handle err.message 
+          console.error(err)
+          if (/validate/.test(err.message)) {
+            setMessage("There is a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
+          }
+          enableButtons()
+        }).update().then(function () {
+          //success messaging
+          setMessage(this.title + " has been updated successfully", successMessageClass)
+          enableButtons()
         })
       })
     }
     //for accessory tab
     if (activeTabContentContent.hasClass(tabContentContentAccessoryClass)) {
-
+      
     }
     //for phone tab
     if (activeTabContentContent.hasClass(tabContentContentPhoneClass)) {

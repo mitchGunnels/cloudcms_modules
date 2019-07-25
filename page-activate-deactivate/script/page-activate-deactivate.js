@@ -23,8 +23,11 @@ define(function(require, exports, module) {
   var tabContentContentSelector = tabContentSelector + " ." + tabContentContentClass
   var tabContentContentActiveSelector = tabContentContentSelector + activeSelector
   var tabContentContentPhoneClass = "phone"
+  var tabContentContentPhoneSelector = tabContentContentSelector + " ." + tabContentContentPhoneClass
   var tabContentContentAccessoryClass = "accessory"
+  var tabContentContentAccessorySelector = tabContentContentSelector + " ." + tabContentContentAccessoryClass
   var tabContentContentPageClass = "page"
+  var tabContentContentPageSelector = tabContentContentSelector + " ." + tabContentContentPageClass
   var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentClass + ' ' + tabContentContentPhoneClass + ' ' + activeClass + '"></div><div class="' + tabContentContentClass + ' ' +tabContentContentAccessoryClass + '"></div><div class="' + tabContentContentClass + ' ' + tabContentContentPageClass + '"></div></div>'
 
   var typeClass = "activation-page-type"
@@ -41,6 +44,9 @@ define(function(require, exports, module) {
   var parentClass = "parent"
   var pageClass = "page"
   var urlTextPageSelector = dashletSelector + " ." + urlTextClass + "." + pageClass
+  var urlTextAccessorySelector = dashletSelector + " ." + urlTextClass + "." + pageClass
+  var urlTextPhoneDetailsSelector = dashletSelector + "." + tabContentContentPhoneClass + "." + detailsClass + " ." + urlTextClass + "." + pageClass
+  var urlTextPhoneParentSelector = dashletSelector + " ." + urlTextClass + "." + pageClass
   var urlTextInput = '<div class="' + urlTextClass + '"><label>URL' + textInput + '</label></div>'
 
   var skuTextClass = "activation-sku"
@@ -116,13 +122,10 @@ define(function(require, exports, module) {
     var chain = getChain()
     var pageType = $(typeSelectSelector).val()
     var query = {
-      _type: "cricket:" + pageType,
+      "_type": "cricket:" + pageType,
     }
-    var pageUrl = $(urlTextPageSelector)
 
     disableButtons()
-    //remove select from DOM
-    $(pageListSelector).remove()
     if (chain.queryNodes) {
       chain.trap(genericErrorLoggerHalter).queryNodes(query).then(function () {
         var pages = this.asArray()
@@ -134,6 +137,7 @@ define(function(require, exports, module) {
 
   function populateSelect(pages) {
     var pageListSelect = '<div class="' + pageListClass + '"><label>Page Title<select name="">'
+    var pageList = $(pageListSelector)
 
     //populate options inside select
     pages.forEach(function (page, index) {
@@ -141,6 +145,8 @@ define(function(require, exports, module) {
     })
     pageListSelect += '</select></label></div>'
 
+    //remove the old list
+    pageList.remove()
     //insert into DOM
     $(typeSelector).after(pageListSelect)
     //enable buttons
@@ -230,60 +236,107 @@ define(function(require, exports, module) {
     }
   }
 
+  function activateDeactivatePage(options) {
+    var chain = options.chain
+    var activeVal = options.activeVal
+    var updateVerb = options.updateVerb
+    var pageType = $(typeSelectSelector).val()
+    var query = {"_type": "cricket:" + pageType}
+
+    if (isShopPage()) {
+      var url = $(tabContentContentPageSelector).find(urlTextPageSelector).val()
+      query.urlList = {
+        $elemMatch: {
+          url: url
+        }
+      }
+    } else {
+      var docId = $(pageListSelectSelector).val()
+      query._doc = docId
+    }
+
+    chain.trap(function (err) {
+      //error messaging for page not found
+      console.error(err)
+
+    }).queryOne(query).then(function() {
+      var page = Chain(this)
+      disableButtons()
+      page.active = activeVal
+      page.trap(function(err) {
+        //error messaging for failed update
+        //handle err.message 
+        console.error(err)
+        //TODO handle /validation/.test(err.message)) differently?
+        setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
+        enableButtons()
+      }).update().then(function () {
+        //success messaging
+        setMessage(this.title + " has been " + updateVerb + " successfully", successMessageClass)
+        enableButtons()
+      })
+    })
+  }
+
+  function activateDeactivateAccessory(options) {
+    var chain = options.chain
+    var activeVal = options.activeVal
+    var updateVerb = options.updateVerb
+    var url = $(tabContentContentAccessorySelector).find(urlTextAccessorySelector).val()
+
+    var query = {
+      "$or":[{
+        "_type":  {
+          "$regex": "cricket:page(-.+)?"
+        },
+        "skus": {
+          "$elemMatch": {
+            "typeQName": "cricket:sku",
+            "skuId": "AALF7077"
+          }
+        }
+      }, {
+        "_type": "cricket:sku",
+        "skuId": "AALF7077"
+      }]
+    } 
+  }
+
+  function activateDeactivatePhone(options) {
+    
+  }
+
   function handleActivateDeactivate() {
     var chain = getChain()
     var activeVal = "Activate" === $(this).val() ? "y": "n"
-    var activeTabContentContent = $(tabContentContentActiveSelector) 
     var updateVerb = ("y" === activeVal) ? "activated" : "deactivated"
+    var activeTabContentContent = $(tabContentContentActiveSelector) 
 
     clearMessage()
 
     //for page tab
     if (activeTabContentContent.hasClass(tabContentContentPageClass)) {
-      var pageType = $(typeSelectSelector).val()
-      var query = {_type: "cricket:" + pageType}
-
-      if (isShopPage()) {
-        var url = $(urlTextPageSelector).find("input").val()
-        query.urlList = {
-          $elemMatch: {
-            url: url
-          }
-        }
-      } else {
-        var docId = $(pageListSelectSelector).val()
-        query._doc = docId
-      }
-
-      chain.trap(function (err) {
-        //error messaging for page not found
-        console.error(err)
-
-      }).queryOne(query).then(function() {
-        var page = Chain(this)
-        disableButtons()
-        page.active = activeVal
-        page.trap(function(err) {
-          //error messaging for failed update
-          //handle err.message 
-          console.error(err)
-          //TODO handle /validation/.test(err.message)) differently?
-          setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
-          enableButtons()
-        }).update().then(function () {
-          //success messaging
-          setMessage(this.title + " has been " + updateVerb + " successfully", successMessageClass)
-          enableButtons()
-        })
+      activateDeactivatePage({
+        chain: chain,
+        activeVal: activeVal,
+        updateVerb: updateVerb
       })
     }
     //for accessory tab
     if (activeTabContentContent.hasClass(tabContentContentAccessoryClass)) {
-      
+      activateDeactivateAccessory({
+        chain: chain,
+        activeVal: activeVal,
+        updateVerb: updateVerb
+      })   
     }
     //for phone tab
     if (activeTabContentContent.hasClass(tabContentContentPhoneClass)) {
-      
+      activateDeactivatePhone({
+        chain: chain,
+        activeVal: activeVal,
+        updateVerb: updateVerb
+      })
     }
   }
 

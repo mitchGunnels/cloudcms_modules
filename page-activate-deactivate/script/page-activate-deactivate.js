@@ -23,9 +23,9 @@ define(function(require, exports, module) {
   var tabContentContentSelector = tabContentSelector + " ." + tabContentContentClass
   var tabContentContentActiveSelector = tabContentContentSelector + activeSelector
   var tabContentContentPhoneClass = "phone"
-  var tabContentContentPhoneSelector = tabContentContentSelector + " ." + tabContentContentPhoneClass
+  var tabContentContentPhoneSelector = tabContentContentSelector + "." + tabContentContentPhoneClass
   var tabContentContentAccessoryClass = "accessory"
-  var tabContentContentAccessorySelector = tabContentContentSelector + " ." + tabContentContentAccessoryClass
+  var tabContentContentAccessorySelector = tabContentContentSelector + "." + tabContentContentAccessoryClass
   var tabContentContentPageClass = "page"
   var tabContentContentPageSelector = tabContentContentSelector + " ." + tabContentContentPageClass
   var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentClass + ' ' + tabContentContentPhoneClass + ' ' + activeClass + '"></div><div class="' + tabContentContentClass + ' ' +tabContentContentAccessoryClass + '"></div><div class="' + tabContentContentClass + ' ' + tabContentContentPageClass + '"></div></div>'
@@ -40,17 +40,19 @@ define(function(require, exports, module) {
   var pageListSelectSelector = pageListSelector + " select"
 
   var urlTextClass = "activation-url"
+  var accessoryClass = "accessory"
   var detailsClass = "details"
   var parentClass = "parent"
   var pageClass = "page"
-  var urlTextPageSelector = dashletSelector + " ." + urlTextClass + "." + pageClass
-  var urlTextAccessorySelector = dashletSelector + " ." + urlTextClass + "." + pageClass
-  var urlTextPhoneDetailsSelector = dashletSelector + "." + tabContentContentPhoneClass + "." + detailsClass + " ." + urlTextClass + "." + pageClass
-  var urlTextPhoneParentSelector = dashletSelector + " ." + urlTextClass + "." + pageClass
+  var urlTextPageInputSelector = dashletSelector + " ." + urlTextClass + "." + pageClass + " input"
+  var urlTextAccessoryInputSelector = dashletSelector + " ." + urlTextClass + "." + accessoryClass + " input"
+  var urlTextPhoneDetailsInputSelector = dashletSelector + "." + urlTextClass + "." + detailsClass + " input"
+  var urlTextPhoneParentInputSelector = dashletSelector + " ." + urlTextClass + "." + parentClass + " input"
   var urlTextInput = '<div class="' + urlTextClass + '"><label>URL' + textInput + '</label></div>'
 
   var skuTextClass = "activation-sku"
-  var skuSelector = dashletSelector + " ." + skuTextClass + " input"
+  var skuAccessorySelector = tabContentContentAccessorySelector + " ." + skuTextClass + " input"
+  var skuPhoneSelector = tabContentContentPhoneSelector + " ." + skuTextClass + " input"
   var skuTextInput = '<div class="' + skuTextClass + '"><label>Phone or Accessory SKU' + textInput + '</label></div>'
 
   var activateClass = "activation-activate"
@@ -178,7 +180,7 @@ define(function(require, exports, module) {
     //in second tab...
     tab = $(dashletSelector).find(".content.accessory")
     tab.append(skuTextInput)
-    var details = $(urlTextInput).addClass(detailsClass)
+    var details = $(urlTextInput).addClass(accessoryClass)
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
 
@@ -282,24 +284,60 @@ define(function(require, exports, module) {
     var chain = options.chain
     var activeVal = options.activeVal
     var updateVerb = options.updateVerb
-    var url = $(tabContentContentAccessorySelector).find(urlTextAccessorySelector).val()
+    var url = $(urlTextAccessoryInputSelector).val()
+    var sku = $(skuAccessorySelector).val()
 
     var query = {
       "$or":[{
         "_type":  {
           "$regex": "cricket:page(-.+)?"
         },
+        "url": url,
         "skus": {
           "$elemMatch": {
             "typeQName": "cricket:sku",
-            "skuId": "AALF7077"
+            "skuId": sku
           }
         }
       }, {
         "_type": "cricket:sku",
-        "skuId": "AALF7077"
+        "skuId": sku
+      }, {
+        "_type": "cricket:product",
+        "productType": "accessory",
+        "skus": {
+          "$elemMatch": {
+            "skuId": sku
+          }
+        }
       }]
     } 
+
+    var results = chain.trap(function (err) {
+      //error messaging for docs not found
+      console.error(err)
+    }).queryNodes(query)
+
+    results.done(function () {
+      setMessage("The SKU and URL do not appear to be related. Please check the fields again.", errorMessageClass)
+      return false
+    })
+    
+    results.each(function () {
+      this.active = activeVal
+      this.trap(function(err) {
+        //error messaging for failed update
+        //handle err.message 
+        console.error(err)
+        //TODO handle /validation/.test(err.message)) differently?
+        setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
+        enableButtons()
+      }).update()
+    }).then(function () {
+      //success messaging
+      setMessage(sku + " and " + url + " have been " + updateVerb + " successfully", successMessageClass)
+      enableButtons()
+    })
   }
 
   function activateDeactivatePhone(options) {

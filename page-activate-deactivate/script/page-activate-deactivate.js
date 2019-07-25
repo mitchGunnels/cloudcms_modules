@@ -48,7 +48,7 @@ define(function(require, exports, module) {
   var urlTextPageInputSelector = dashletSelector + " ." + urlTextClass + "." + pageClass + " input"
   var urlTextAccessoryInputSelector = dashletSelector + " ." + urlTextClass + "." + accessoryClass + " input"
   var urlTextPhoneDetailsInputSelector = dashletSelector + "." + urlTextClass + "." + detailsClass + " input"
-  var urlTextPhoneParentInputSelector = dashletSelector + " ." + urlTextClass + "." + parentClass + " input"
+  var urlTextProductParentInputSelector = dashletSelector + " ." + urlTextClass + "." + parentClass + " input"
   var urlTextInput = '<div class="' + urlTextClass + '"><label>URL' + textInput + '</label></div>'
 
   var skuTextClass = "activation-sku"
@@ -159,6 +159,12 @@ define(function(require, exports, module) {
   }
 
   $(document).on('cloudcms-ready', function(event) {
+    var branch = Ratchet.observable('branch').get()
+    //BAIL if user on master branch
+    if (branch.isMaster()) {
+      return;
+    }
+
     //inject styles
     $(dashletSelector).append("<style>" + activationStyles + "</style>")
 
@@ -179,9 +185,10 @@ define(function(require, exports, module) {
     var details = $(urlTextInput).addClass(detailsClass)
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
-    var parent = $(urlTextInput).addClass(parentClass)
-    parent.find("label").html('<div class="label-text">Parent URL <em>(optional)</em></div>' + textInput)
-    tab.append(parent)
+    //TODO product tab with parent field only
+    //var parent = $(urlTextInput).addClass(parentClass)
+    //parent.find("label").html('<div class="label-text">Parent URL <em>(optional)</em></div>' + textInput)
+    //tab.append(parent)
 
     //in second tab...
     tab = $(dashletSelector).find(".content.accessory")
@@ -256,8 +263,9 @@ define(function(require, exports, module) {
     if (isShopPage()) {
       var url = $(urlTextPageInputSelector).val()
       query.urlList = {
-        $elemMatch: {
-          url: url
+        "$elemMatch": {
+          "url": url,
+          "shopIsPromo": "yes"
         }
       }
     } else {
@@ -318,7 +326,6 @@ define(function(require, exports, module) {
           },
           "skus": {
             "$elemMatch": {
-              "typeQName": "cricket:sku",
               "id": this._doc
             }
           }
@@ -370,7 +377,7 @@ define(function(require, exports, module) {
     var chain = options.chain
     var activeVal = options.activeVal
     var updateVerb = options.updateVerb
-    var url = $(urlTextAccessoryInputSelector).val()
+    var detailsUrl = $(urlTextPhoneDetailsInputSelector).val()
     var sku = $(skuAccessorySelector).val()
     var skuDoc
 
@@ -391,18 +398,11 @@ define(function(require, exports, module) {
           },
           "urlList": {
             "$elemMatch": {
-              "url": url
+              "url": {
+                "$or": [detailsUrl]
+              }
             }
           },
-          "skus": {
-            "$elemMatch": {
-              "typeQName": "cricket:sku",
-              "id": this._doc
-            }
-          }
-        }, {
-          "_type": "cricket:product",
-          "productType": "accessory",
           "skus": {
             "$elemMatch": {
               "id": this._doc

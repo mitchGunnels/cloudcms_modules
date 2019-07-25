@@ -78,6 +78,7 @@ define(function(require, exports, module) {
   var buttonsSelector = dashletSelector + " ." + buttonsClass
   var buttons = '<div class="' + buttonsClass + '">' + activateButton + deactivateButton + '</div>'
 
+  var labelTextSelector = dashletSelector + " label, " + dashletSelector + " label .label-text"
 
   var activationStyles = tabsSelector + " { position: relative; top: 1px; }" +
     tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #e9e9e9; border: 1px solid #ccc; border-bottom: none; }" +
@@ -88,6 +89,7 @@ define(function(require, exports, module) {
     buttonsSelector + " { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0 10px 10px; text-align: right; }" +
     activateSelector + ", " + deactivateSelector + " { display: inline-block; margin: 10px 0 0 10px; }" +
     dashletSelector + " label { width: 100%; display: flex; flex-direction: column; }" +
+    labelTextSelector + " { font-weight: 700; }" +
     messageSelector + " { border: 1px solid #ccc; border-width: 0 1px; padding: 0 10px; }" +
     errorMessageSelector + " { color: #a94442; }" +
     successMessageSelector + " { color: rgb(39, 174, 96); }"
@@ -178,7 +180,7 @@ define(function(require, exports, module) {
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
     var parent = $(urlTextInput).addClass(parentClass)
-    parent.find("label").html("Parent URL" + textInput)
+    parent.find("label").html('<div class="label-text">Parent URL <em>(optional)</em></div>' + textInput)
     tab.append(parent)
 
     //in second tab...
@@ -365,7 +367,81 @@ define(function(require, exports, module) {
   }
 
   function activateDeactivatePhone(options) {
-    
+    var chain = options.chain
+    var activeVal = options.activeVal
+    var updateVerb = options.updateVerb
+    var url = $(urlTextAccessoryInputSelector).val()
+    var sku = $(skuAccessorySelector).val()
+    var skuDoc
+
+    var skuQuery = {
+      "_type": "cricket:sku",
+      "skuId": sku
+    } 
+
+    chain.trap(function (err) {
+      //error messaging for docs not found
+      console.error(err)
+    }).queryOne(skuQuery).then(function() {
+      var skuDoc = this
+      var pageAndProductQuery = {
+        "$or":[{
+          "_type":  {
+            "$regex": "cricket:page(-.+)?"
+          },
+          "urlList": {
+            "$elemMatch": {
+              "url": url
+            }
+          },
+          "skus": {
+            "$elemMatch": {
+              "typeQName": "cricket:sku",
+              "id": this._doc
+            }
+          }
+        }, {
+          "_type": "cricket:product",
+          "productType": "accessory",
+          "skus": {
+            "$elemMatch": {
+              "id": this._doc
+            }
+          }
+        }]
+      }
+      getChain().trap(function(err) {
+        //handle message for neither page nor product found
+        console.error(err)
+      }).queryNodes(pageAndProductQuery).then(function() {
+        var docs = this.asArray()
+        if (2 !== docs.length) {
+          setMessage("The SKU and URL do not appear to be related. Please check the fields again.", errorMessageClass)
+          return false
+        }
+      }).each(function () {
+        this.active = activeVal
+        this.trap(function(err) {
+          //error messaging for failed update of page/product
+          //handle err.message 
+          console.error(err)
+          //TODO handle /validation/.test(err.message)) differently?
+          setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
+          enableButtons()
+        }).update()
+      }).then(function () {
+        //product + page written
+        skuDoc.active = activeVal
+        skuDoc.trap(function(err) {
+          //handle err for failed update of sku
+          console.error(err)
+        }).update().then(function() {
+          //success messaging
+          setMessage(sku + " and " + url + " have been " + updateVerb + " successfully", successMessageClass)
+          enableButtons()
+        })
+      })
+    })   
   }
 
   function handleActivateDeactivate() {

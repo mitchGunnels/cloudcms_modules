@@ -44,6 +44,7 @@ define(function(require, exports, module) {
   var detailsClass = "details"
   var parentClass = "parent"
   var pageClass = "page"
+  var urlTextPageSelector = dashletSelector + " ." + urlTextClass + "." + pageClass
   var urlTextPageInputSelector = dashletSelector + " ." + urlTextClass + "." + pageClass + " input"
   var urlTextAccessoryInputSelector = dashletSelector + " ." + urlTextClass + "." + accessoryClass + " input"
   var urlTextPhoneDetailsInputSelector = dashletSelector + "." + urlTextClass + "." + detailsClass + " input"
@@ -53,7 +54,7 @@ define(function(require, exports, module) {
   var skuTextClass = "activation-sku"
   var skuAccessorySelector = tabContentContentAccessorySelector + " ." + skuTextClass + " input"
   var skuPhoneSelector = tabContentContentPhoneSelector + " ." + skuTextClass + " input"
-  var skuTextInput = '<div class="' + skuTextClass + '"><label>Phone or Accessory SKU' + textInput + '</label></div>'
+  var skuText = '<div class="' + skuTextClass + '"><label>Phone or Accessory SKU' + textInput + '</label></div>'
 
   var activateClass = "activation-activate"
   var activateSelector = dashletSelector + " ." + activateClass
@@ -169,7 +170,10 @@ define(function(require, exports, module) {
 
     //in first tab...
     var tab = $(dashletSelector).find(".content.phone")
-    tab.append(skuTextInput)
+
+    var sku = $(skuText)
+    sku.find("label").html("Phone SKU" + textInput)
+    tab.append(sku)
     var details = $(urlTextInput).addClass(detailsClass)
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
@@ -179,8 +183,10 @@ define(function(require, exports, module) {
 
     //in second tab...
     tab = $(dashletSelector).find(".content.accessory")
-    tab.append(skuTextInput)
-    var details = $(urlTextInput).addClass(accessoryClass)
+    sku = $(skuText)
+    sku.find("label").html("Accessory SKU" + textInput)
+    tab.append(sku)
+    details = $(urlTextInput).addClass(accessoryClass)
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
 
@@ -246,7 +252,7 @@ define(function(require, exports, module) {
     var query = {"_type": "cricket:" + pageType}
 
     if (isShopPage()) {
-      var url = $(tabContentContentPageSelector).find(urlTextPageSelector).val()
+      var url = $(urlTextPageInputSelector).val()
       query.urlList = {
         $elemMatch: {
           url: url
@@ -286,58 +292,76 @@ define(function(require, exports, module) {
     var updateVerb = options.updateVerb
     var url = $(urlTextAccessoryInputSelector).val()
     var sku = $(skuAccessorySelector).val()
+    var skuDoc
 
-    var query = {
-      "$or":[{
-        "_type":  {
-          "$regex": "cricket:page(-.+)?"
-        },
-        "url": url,
-        "skus": {
-          "$elemMatch": {
-            "typeQName": "cricket:sku",
-            "skuId": sku
-          }
-        }
-      }, {
-        "_type": "cricket:sku",
-        "skuId": sku
-      }, {
-        "_type": "cricket:product",
-        "productType": "accessory",
-        "skus": {
-          "$elemMatch": {
-            "skuId": sku
-          }
-        }
-      }]
+    var skuQuery = {
+      "_type": "cricket:sku",
+      "skuId": sku
     } 
 
-    var results = chain.trap(function (err) {
+    chain.trap(function (err) {
       //error messaging for docs not found
       console.error(err)
-    }).queryNodes(query)
-
-    results.done(function () {
-      setMessage("The SKU and URL do not appear to be related. Please check the fields again.", errorMessageClass)
-      return false
-    })
-    
-    results.each(function () {
-      this.active = activeVal
-      this.trap(function(err) {
-        //error messaging for failed update
-        //handle err.message 
+    }).queryOne(skuQuery).then(function() {
+      var skuDoc = this
+      var pageAndProductQuery = {
+        "$or":[{
+          "_type":  {
+            "$regex": "cricket:page(-.+)?"
+          },
+          "urlList": {
+            "$elemMatch": {
+              "url": url
+            }
+          },
+          "skus": {
+            "$elemMatch": {
+              "typeQName": "cricket:sku",
+              "id": this._doc
+            }
+          }
+        }, {
+          "_type": "cricket:product",
+          "productType": "accessory",
+          "skus": {
+            "$elemMatch": {
+              "id": this._doc
+            }
+          }
+        }]
+      }
+      getChain().trap(function(err) {
+        //handle message for neither page nor product found
         console.error(err)
-        //TODO handle /validation/.test(err.message)) differently?
-        setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
-        enableButtons()
-      }).update()
-    }).then(function () {
-      //success messaging
-      setMessage(sku + " and " + url + " have been " + updateVerb + " successfully", successMessageClass)
-      enableButtons()
-    })
+      }).queryNodes(pageAndProductQuery).then(function() {
+        var docs = this.asArray()
+        if (2 !== docs.length) {
+          setMessage("The SKU and URL do not appear to be related. Please check the fields again.", errorMessageClass)
+          return false
+        }
+      }).each(function () {
+        this.active = activeVal
+        this.trap(function(err) {
+          //error messaging for failed update of page/product
+          //handle err.message 
+          console.error(err)
+          //TODO handle /validation/.test(err.message)) differently?
+          setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
+          enableButtons()
+        }).update()
+      }).then(function () {
+        //product + page written
+        skuDoc.active = activeVal
+        skuDoc.trap(function(err) {
+          //handle err for failed update of sku
+          console.error(err)
+        }).update().then(function() {
+          //success messaging
+          setMessage(sku + " and " + url + " have been " + updateVerb + " successfully", successMessageClass)
+          enableButtons()
+        })
+      })
+    })   
   }
 
   function activateDeactivatePhone(options) {

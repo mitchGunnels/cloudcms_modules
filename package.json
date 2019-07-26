@@ -1,0 +1,22 @@
+{
+  "name": "cloudcms_modules",
+  "version": "1.0.0",
+  "description": "",
+  "main": "flesch-kincaid.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thynctank/cloudcms_modules.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thynctank/cloudcms_modules/issues"
+  },
+  "homepage": "https://github.com/thynctank/cloudcms_modules#readme",
+  "devDependencies": {
+    "eslint": "^6.1.0"
+  }
+}

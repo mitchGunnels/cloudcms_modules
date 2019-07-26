@@ -15,7 +15,12 @@ define(function(require, exports, module) {
   var tabsTabClass = "tab"
   var tabsSelector = dashletSelector + " ." + tabsClass
   var tabsTabSelector = tabsSelector + " ." + tabsTabClass
-  var tabs = '<div class="' + tabsClass + '"><div class="' + tabsTabClass + ' ' + activeClass + ' phone">Phone</div><div class="' + tabsTabClass + ' accessory">Accessory</div><div class="tab page">Page</div></div>'
+  var tabs = '<div class="' + tabsClass + '">' +
+    '<div class="' + tabsTabClass + ' ' + activeClass + ' phone">Phone</div>' +
+    '<div class="' + tabsTabClass + ' product">Product</div>' +
+    '<div class="' + tabsTabClass + ' accessory">Accessory</div>' +
+    '<div class="tab page">Page</div>' +
+    '</div>'
 
   var tabContentClass = "tab-content"
   var tabContentSelector = dashletSelector + " ." + tabContentClass
@@ -24,11 +29,17 @@ define(function(require, exports, module) {
   var tabContentContentActiveSelector = tabContentContentSelector + activeSelector
   var tabContentContentPhoneClass = "phone"
   var tabContentContentPhoneSelector = tabContentContentSelector + "." + tabContentContentPhoneClass
+  var tabContentContentProductClass = "product"
+  var tabContentContentProductSelector = tabContentContentSelector + "." + tabContentContentProductClass
   var tabContentContentAccessoryClass = "accessory"
   var tabContentContentAccessorySelector = tabContentContentSelector + "." + tabContentContentAccessoryClass
   var tabContentContentPageClass = "page"
   var tabContentContentPageSelector = tabContentContentSelector + " ." + tabContentContentPageClass
-  var tabContent = '<div class="' + tabContentClass + '"><div class="' + tabContentContentClass + ' ' + tabContentContentPhoneClass + ' ' + activeClass + '"></div><div class="' + tabContentContentClass + ' ' +tabContentContentAccessoryClass + '"></div><div class="' + tabContentContentClass + ' ' + tabContentContentPageClass + '"></div></div>'
+  var tabContent = '<div class="' + tabContentClass + '">' +
+    '<div class="' + tabContentContentClass + ' ' + tabContentContentPhoneClass + ' ' + activeClass + '"></div>' +
+    '<div class="' + tabContentContentClass + ' ' + tabContentContentProductClass + '"></div>' +
+    '<div class="' + tabContentContentClass + ' ' +tabContentContentAccessoryClass + '"></div>' +
+    '<div class="' + tabContentContentClass + ' ' + tabContentContentPageClass + '"></div></div>'
 
   var typeClass = "activation-page-type"
   var typeSelector = dashletSelector + " ." + typeClass
@@ -78,10 +89,8 @@ define(function(require, exports, module) {
   var buttonsSelector = dashletSelector + " ." + buttonsClass
   var buttons = '<div class="' + buttonsClass + '">' + activateButton + deactivateButton + '</div>'
 
-  var labelTextSelector = dashletSelector + " label, " + dashletSelector + " label .label-text"
-
-  var activationStyles = tabsSelector + " { position: relative; top: 1px; }" +
-    tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #e9e9e9; border: 1px solid #ccc; border-bottom: none; }" +
+  var activationStyles = tabsSelector + " .tab { display: inline-block; padding: 10px; cursor: pointer; background: #e9e9e9; border: 1px solid #ccc; border-bottom: none; }" +
+    tabsSelector + " { position: relative; top: 1px; }" +
     tabsSelector + " .tab" + activeSelector + " { background: #fff; border-bottom: 1px solid #fff; }" +
     tabContentSelector + " { background: #fff; border: 1px solid #ccc; border-bottom: none; padding: 10px; }" +
     tabContentSelector + " .content { display: none; }" +
@@ -89,7 +98,6 @@ define(function(require, exports, module) {
     buttonsSelector + " { background: #fff; border: 1px solid #ccc; border-top: none; padding: 0 10px 10px; text-align: right; }" +
     activateSelector + ", " + deactivateSelector + " { display: inline-block; margin: 10px 0 0 10px; }" +
     dashletSelector + " label { width: 100%; display: flex; flex-direction: column; }" +
-    labelTextSelector + " { font-weight: 700; }" +
     messageSelector + " { border: 1px solid #ccc; border-width: 0 1px; padding: 0 10px; }" +
     errorMessageSelector + " { color: #a94442; }" +
     successMessageSelector + " { color: rgb(39, 174, 96); }"
@@ -98,6 +106,13 @@ define(function(require, exports, module) {
   function genericErrorLoggerHalter(err) {
     console.error(err);
     return false;
+  }
+
+  function genericMessagingErrorLoggerHalter(err) {
+    setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
+    enableButtons()
+    console.error(err)
+    return false
   }
 
   function getChain() {
@@ -158,13 +173,7 @@ define(function(require, exports, module) {
     enableButtons()
   }
 
-  $(document).on('cloudcms-ready', function(event) {
-    var branch = Ratchet.observable('branch').get()
-    //BAIL if user on master branch
-    if (branch.isMaster()) {
-      return;
-    }
-
+  function populateDashlet() {
     //inject styles
     $(dashletSelector).append("<style>" + activationStyles + "</style>")
 
@@ -176,21 +185,22 @@ define(function(require, exports, module) {
     //tab content areas
     $(dashletSelector).append(tabContent)
 
-    //in first tab...
+    //in phone tab...
     var tab = $(dashletSelector).find(".content.phone")
-
     var sku = $(skuText)
     sku.find("label").html("Phone SKU" + textInput)
     tab.append(sku)
     var details = $(urlTextInput).addClass(detailsClass)
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
-    //TODO product tab with parent field only
-    //var parent = $(urlTextInput).addClass(parentClass)
-    //parent.find("label").html('<div class="label-text">Parent URL <em>(optional)</em></div>' + textInput)
-    //tab.append(parent)
 
-    //in second tab...
+    //in product tab...
+    tab = $(dashletSelector).find(".content.product")
+    var parent = $(urlTextInput).addClass(parentClass)
+    parent.find("label").html('Parent URL' + textInput)
+    tab.append(parent)
+
+    //in accessory tab...
     tab = $(dashletSelector).find(".content.accessory")
     sku = $(skuText)
     sku.find("label").html("Accessory SKU" + textInput)
@@ -199,7 +209,7 @@ define(function(require, exports, module) {
     details.find("label").html("Details URL" + textInput)
     tab.append(details)
 
-    //in third tab...
+    //in page tab...
     tab = $(dashletSelector).find(".content.page")
     tab.append(typeSelect)
     var pageUrl = $(urlTextInput).addClass(pageClass)
@@ -210,6 +220,17 @@ define(function(require, exports, module) {
     $(dashletSelector).append(buttons)
     //populate initial page title select
     getPages()
+  }
+
+  $(document).on('cloudcms-ready', function(event) {
+    var branch
+    if (Ratchet) {
+      branch = Ratchet.observable('branch').get()
+    }
+    //only inject form if user is on branch
+    if (branch && !branch.isMaster()) {
+      populateDashlet()
+    }
   })
 
   function handleTabChange() {
@@ -254,9 +275,9 @@ define(function(require, exports, module) {
   }
 
   function activateDeactivatePage(options) {
-    var chain = options.chain
-    var activeVal = options.activeVal
-    var updateVerb = options.updateVerb
+    /***
+     * update page only
+     */
     var pageType = $(typeSelectSelector).val()
     var query = {"_type": "cricket:" + pageType}
 
@@ -273,33 +294,25 @@ define(function(require, exports, module) {
       query._doc = docId
     }
 
-    chain.trap(function (err) {
-      //error messaging for page not found
+    options.chain.trap(function (err) {
+      //page not found
       console.error(err)
-
+      setMessage("Page not found", errorMessageClass)
+      enableButtons()
     }).queryOne(query).then(function() {
       var page = Chain(this)
-      disableButtons()
-      page.active = activeVal
-      page.trap(function(err) {
-        //error messaging for failed update
-        //handle err.message 
-        console.error(err)
-        //TODO handle /validation/.test(err.message)) differently?
-        setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
-        enableButtons()
-      }).update().then(function () {
-        //success messaging
-        setMessage(this.title + " has been " + updateVerb + " successfully", successMessageClass)
+      page.active = options.activeVal
+      page.trap(genericMessagingErrorLoggerHalter).update().then(function () {
+        setMessage(this.title + " has been " + options.updateVerb + " successfully", successMessageClass)
         enableButtons()
       })
     })
   }
 
   function activateDeactivateAccessory(options) {
-    var chain = options.chain
-    var activeVal = options.activeVal
-    var updateVerb = options.updateVerb
+    /*
+     * update sku, page and product
+     */
     var url = $(urlTextAccessoryInputSelector).val()
     var sku = $(skuAccessorySelector).val()
     var skuDoc
@@ -309,11 +322,13 @@ define(function(require, exports, module) {
       "skuId": sku
     } 
 
-    chain.trap(function (err) {
-      //error messaging for docs not found
+    options.chain.trap(function (err) {
+      //sku not found
       console.error(err)
+      setMessage("SKU not found", errorMessageClass)
+      enableButtons()
     }).queryOne(skuQuery).then(function() {
-      var skuDoc = this
+      skuDoc = this
       var pageAndProductQuery = {
         "$or":[{
           "_type":  {
@@ -340,33 +355,25 @@ define(function(require, exports, module) {
         }]
       }
       getChain().trap(function(err) {
-        //handle message for neither page nor product found
+        //neither page nor product found
         console.error(err)
+        setMessage("Page and/or Product not found", errorMessageClass)
+        enableButtons()
       }).queryNodes(pageAndProductQuery).then(function() {
         var docs = this.asArray()
         if (2 !== docs.length) {
           setMessage("The SKU and URL do not appear to be related. Please check the fields again.", errorMessageClass)
+          enableButtons()
           return false
         }
       }).each(function () {
-        this.active = activeVal
-        this.trap(function(err) {
-          //error messaging for failed update of page/product
-          //handle err.message 
-          console.error(err)
-          //TODO handle /validation/.test(err.message)) differently?
-          setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
-          enableButtons()
-        }).update()
+        this.active = options.activeVal
+        this.trap(genericMessagingErrorLoggerHalter).update()
       }).then(function () {
-        //product + page written
-        skuDoc.active = activeVal
-        skuDoc.trap(function(err) {
-          //handle err for failed update of sku
-          console.error(err)
-        }).update().then(function() {
-          //success messaging
-          setMessage(sku + " and " + url + " have been " + updateVerb + " successfully", successMessageClass)
+        //product + page written, update sku
+        skuDoc.active = options.activeVal
+        skuDoc.trap(genericMessagingErrorLoggerHalter).update().then(function() {
+          setMessage(sku + " and " + url + " have been " + options.updateVerb + " successfully", successMessageClass)
           enableButtons()
         })
       })
@@ -374,9 +381,9 @@ define(function(require, exports, module) {
   }
 
   function activateDeactivatePhone(options) {
-    var chain = options.chain
-    var activeVal = options.activeVal
-    var updateVerb = options.updateVerb
+    /*
+     * update sku, page
+     */
     var detailsUrl = $(urlTextPhoneDetailsInputSelector).val()
     var sku = $(skuAccessorySelector).val()
     var skuDoc
@@ -386,58 +393,105 @@ define(function(require, exports, module) {
       "skuId": sku
     } 
 
-    chain.trap(function (err) {
-      //error messaging for docs not found
+    options.chain.trap(function (err) {
+      //docs not found
       console.error(err)
+      setMessage("SKU not found", errorMessageClass)
+      enableButtons()
     }).queryOne(skuQuery).then(function() {
-      var skuDoc = this
-      var pageAndProductQuery = {
-        "$or":[{
-          "_type":  {
-            "$regex": "cricket:page(-.+)?"
-          },
-          "urlList": {
-            "$elemMatch": {
-              "url": {
-                "$or": [detailsUrl]
-              }
-            }
-          },
-          "skus": {
-            "$elemMatch": {
-              "id": this._doc
-            }
+      skuDoc = this
+      var pageQuery = {
+        "_type":  {
+          "$regex": "cricket:page(-.+)?"
+        },
+        "urlList": {
+          "$elemMatch": {
+            "url": detailsUrl
           }
-        }]
+        },
+        "skus": {
+          "$elemMatch": {
+            "id": this._doc
+          }
+        }
       }
       getChain().trap(function(err) {
-        //handle message for neither page nor product found
+        //page not found
         console.error(err)
+        setMessage("Page not found", errorMessageClass)
+        enableButtons()
+      }).queryOne(pageQuery).then(function() {
+        this.active = options.activeVal
+        this.trap(genericMessagingErrorLoggerHalter).update()
+      }).then(function () {
+        //page written, update sku
+        skuDoc.active = options.activeVal
+        skuDoc.trap(genericMessagingErrorLoggerHalter).update().then(function() {
+          //success messaging
+          setMessage(sku + " and " + url + " have been " + options.updateVerb + " successfully", successMessageClass)
+          enableButtons()
+        })
+      })
+    })   
+  }
+
+  function activateDeactivateProduct(options) {
+    /*
+     * update page, product
+     * when options.activeVal is "n", also deactivate all skus and their details pages
+     */
+    var parentUrl = $(urlTextProductParentInputSelector).val()
+    var product
+    var pageQuery = {
+      "_type":  {
+        "$regex": "cricket:page(-.+)?"
+      },
+      "urlList": {
+        "$elemMatch": {
+          "url": parentUrl
+        }
+      }
+    }
+
+    options.chain.trap(function (err) {
+      //docs not found
+      console.error(err)
+      setMessage("Page not found", errorMessageClass)
+      enableButtons()
+    }).queryOne(skuQuery).then(function() {
+      product = this
+      var productAndSkusQuery = {
+        "_type":  {
+          "$regex": "cricket:product",
+          "productType": "accessory"
+        },
+        "urlList": {
+          "$elemMatch": {
+            "url": parentUrl
+          }
+        }
+      }
+      options.chain.trap(function(err) {
+        //page not found
+        console.error(err)
+        setMessage("Page not found", errorMessageClass)
+        enableButtons()
       }).queryNodes(pageAndProductQuery).then(function() {
         var docs = this.asArray()
         if (2 !== docs.length) {
           setMessage("The SKU and URL do not appear to be related. Please check the fields again.", errorMessageClass)
+          enableButtons()
           return false
         }
       }).each(function () {
-        this.active = activeVal
-        this.trap(function(err) {
-          //error messaging for failed update of page/product
-          //handle err.message 
-          console.error(err)
-          //TODO handle /validation/.test(err.message)) differently?
-          setMessage("There was a problem. Please contact the CMS team about the document(s) you are trying to modify", errorMessageClass)
-          enableButtons()
-        }).update()
+        this.active = options.activeVal
+        this.trap(genericMessagingErrorLoggerHalter).update()
       }).then(function () {
-        //product + page written
-        skuDoc.active = activeVal
-        skuDoc.trap(function(err) {
-          //handle err for failed update of sku
-          console.error(err)
-        }).update().then(function() {
+        //product + page written, update sku
+        skuDoc.active = options.activeVal
+        skuDoc.trap(genericMessagingErrorLoggerHalter).update().then(function() {
           //success messaging
-          setMessage(sku + " and " + url + " have been " + updateVerb + " successfully", successMessageClass)
+          setMessage(sku + " and " + url + " have been " + options.updateVerb + " successfully", successMessageClass)
           enableButtons()
         })
       })
@@ -445,36 +499,30 @@ define(function(require, exports, module) {
   }
 
   function handleActivateDeactivate() {
-    var chain = getChain()
-    var activeVal = "Activate" === $(this).val() ? "y": "n"
-    var updateVerb = ("y" === activeVal) ? "activated" : "deactivated"
+    var options = {
+      chain: getChain(),
+      activeVal: "Activate" === $(this).val() ? "y": "n",
+      updateVerb: "Activate" === $(this).val() ? "activated" : "deactivated"
+    }
     var activeTabContentContent = $(tabContentContentActiveSelector) 
 
     clearMessage()
+    disableButtons()
 
     //for page tab
     if (activeTabContentContent.hasClass(tabContentContentPageClass)) {
-      activateDeactivatePage({
-        chain: chain,
-        activeVal: activeVal,
-        updateVerb: updateVerb
-      })
+      activateDeactivatePage(options)
     }
     //for accessory tab
     if (activeTabContentContent.hasClass(tabContentContentAccessoryClass)) {
-      activateDeactivateAccessory({
-        chain: chain,
-        activeVal: activeVal,
-        updateVerb: updateVerb
-      })   
+      activateDeactivateAccessory(options)   
     }
     //for phone tab
     if (activeTabContentContent.hasClass(tabContentContentPhoneClass)) {
-      activateDeactivatePhone({
-        chain: chain,
-        activeVal: activeVal,
-        updateVerb: updateVerb
-      })
+      activateDeactivatePhone(options)
+    }
+    if (activeTabContentContent.hasClass(tabContentContentProductClass)) {
+      activateDeactivateProduct(options)
     }
   }
 

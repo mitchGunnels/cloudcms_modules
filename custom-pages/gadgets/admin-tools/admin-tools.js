@@ -33,14 +33,6 @@ define(function (require, exports, module) {
             
             // get the current project
             branch = this.observable('branch').get();
-            if (!branch.isMaster()) {
-                const repository = branch.getRepository();
-            
-                repository.readBranch('master').then(function () {
-                    branch = this;
-                });
-            }
-            
             
             // call into base method and then set up the model
             this.base(el, model, function () {
@@ -82,12 +74,27 @@ define(function (require, exports, module) {
                     
                     e.preventDefault();
     
-                    UI.showPopupModal({
-                        'title': 'Created Snapshot of: ' + branch.getTitle(),
-                        'body': '<div style="text-align:center">' + branch.getId() + '</div>'
+                    if (!branch.isMaster()) {
+                        const repository = branch.getRepository();
+        
+                        repository.readBranch('master').then(function () {
+                            branch = this;
+                        });
+                    }
+    
+                    branch.trap(function (error) {
+                        UI.showError({
+                            'title': 'Failed creating a anapshot of: ' + branch.getTitle(),
+                            'body': `<div style="text-align:center">${error.message}</div>`
+                        });
+                    }).createSnapshot(branch.getTip()).then(function () {
+                        UI.showPopupModal({
+                            'title': 'Created Snapshot of: ' + branch.getTitle(),
+                            'body': `<div style="text-align:center">Snapshot Id:${this.getId()}</div>`
+                        });
                     });
+                    callback();
                 });
-                callback();
             });
         }
     

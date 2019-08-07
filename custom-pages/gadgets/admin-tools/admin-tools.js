@@ -72,7 +72,7 @@ define(function (require, exports, module) {
                 console.log('afterSwap()');
     
                 // eslint-disable-next-line no-undef
-                $(el).find('.btn.btn-default').click(function (e) {
+                $(el).find('.btn.btn-primary').click(function (e) {
                     
                     e.preventDefault();
         

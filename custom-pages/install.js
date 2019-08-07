@@ -1,6 +1,6 @@
 define(function(require) {
-
-    var r = {};
+    
+    const r = {};
 
     r.install = function(observableHolder, project, callback) {
 

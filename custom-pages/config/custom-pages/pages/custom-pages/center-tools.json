@@ -1,0 +1,8 @@
+{
+    "type": "tools",
+    "config": {
+        "chrome": {
+            "title": "Tools"
+        }
+    }
+}

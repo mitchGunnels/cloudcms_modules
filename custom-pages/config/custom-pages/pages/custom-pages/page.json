@@ -1,6 +1,0 @@
-{
-    "title": "Flesch Kincaid",
-    "uri": "/projects/{projectId}/flesch-kincaid",
-    "extends": "project/_project",
-    "template": "flesch-kincaid"
-}

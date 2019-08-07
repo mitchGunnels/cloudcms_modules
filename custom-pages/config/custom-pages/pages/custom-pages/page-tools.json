@@ -1,0 +1,6 @@
+{
+    "title": "Tools",
+    "uri": "/projects/{projectId}/tools",
+    "extends": "project/_project",
+    "template": "tools"
+}

@@ -1,25 +1,25 @@
 define(function(require, exports, module) {
-
-    require("css!./flesch-kincaid.css");
-    var html = require("text!./flesch-kincaid.html");
-
-    var Empty = require("ratchet/dynamic/empty");
-
-    var UI = require("ui");
-
-    return UI.registerGadget("flesch-kincaid", Empty.extend({
+    
+    require('css!./tools.css');
+    const html = require('text!./tools.html');
+    
+    const Empty = require('ratchet/dynamic/empty');
+    
+    const UI = require('ui');
+    
+    return UI.registerGadget('tools', Empty.extend({
 
         TEMPLATE: html,
 
         /**
-         * Binds this gadget to the /flesch-kincaid route
+         * Binds this gadget to the /tools route
          */
         setup: function() {
-            this.get("/projects/{projectId}/flesch-kincaid", this.index);
+            this.get('/projects/{projectId}/tools', this.index);
         },
 
         /**
-         * Puts variables into the model for rendering within our template.
+         * Puts constiables into the model for rendering within our template.
          * Once we've finished setting up the model, we must fire callback().
          *
          * @param el
@@ -29,9 +29,9 @@ define(function(require, exports, module) {
         prepareModel: function(el, model, callback) {
 
             // get the current project
-            var project = this.observable("project").get();
-            var branch = this.observable("branch").get();
-            var repository = branch.getRepository();
+            const project = this.observable('project').get();
+            const branch = this.observable('branch').get();
+            const repository = branch.getRepository();
 
             console.log(Gitana.MergeConflict(repository));
 
@@ -44,8 +44,8 @@ define(function(require, exports, module) {
                 "branch": branch._doc
             }).each(function() {
                 console.log("Found changeset: " + this.getId());
-
-                var changesetId = this.getId();
+    
+                const changesetId = this.getId();
 
                 repository.listChangesetChildren(changesetId).each(function() {
                     console.log("The changeset: " + changesetId + " has child: " + this.getId());
@@ -70,9 +70,9 @@ define(function(require, exports, module) {
                 //console.log('repo', this.observable("repository").id);
 
                 // assume we have a repository
-                //var repository = "fe6166ac8042240542f8";
+                //const repository = "fe6166ac8042240542f8";
                 // here is our branch id
-                //var branchId = branch._doc;
+                //const branchId = branch._doc;
 
 
                 callback();
@@ -85,9 +85,9 @@ define(function(require, exports, module) {
 
                 //     // add "imageUrl" attribute to each product
                 //     // add "browseUrl" attribute to each product
-                //     for (var i = 0; i < model.products.length; i++)
+                //     for (const i = 0; i < model.products.length; i++)
                 //     {
-                //         var product = model.products[i];
+                //         const product = model.products[i];
 
                 //         product.imageUrl256 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=256&name=preview256&force=true";
                 //         product.imageUrl128 = "/preview/repository/" + product.getRepositoryId() + "/branch/" + product.getBranchId() + "/node/" + product.getId() + "/default?size=128&name=preview128&force=true";
@@ -130,9 +130,9 @@ define(function(require, exports, module) {
                 // $(el).find(".media-popup").click(function(e) {
 
                 //     e.preventDefault();
-
-                //     var productIndex = $(this).attr("data-media-index");
-                //     var product = model.products[productIndex];
+    
+                //     const productIndex = $(this).attr("data-media-index");
+                //     const product = model.products[productIndex];
 
                 //     UI.showPopupModal({
                 //         "title": "Viewing: " + product.title,

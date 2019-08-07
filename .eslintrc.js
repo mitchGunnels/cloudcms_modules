@@ -7,12 +7,16 @@ module.exports = {
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
-        "define": "readonly"
+        'define': 'readonly',
+        'Gitana': 'readonly',
+        'Chain': 'readonly',
+        'Ratchet': 'readonly',
+        'CKEDITOR': 'readonly'
     },
     "parserOptions": {
         "ecmaVersion": 2018
     },
     "rules": {
-      "no-unused-vars": false
+        'no-unused-vars': 0
     }
 };

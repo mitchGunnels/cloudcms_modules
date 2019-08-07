@@ -13,9 +13,9 @@
                 "rejectAuthority": [],
                 "rejectPermission": [],
                 "items": [{
-                    "key": "custom-pages/fleschKincaid",
+                    "key": "custom-pages/tools",
                     "title": "Flesch Kincaid",
-                    "uri": "#/projects/{projectId}/flesch-kincaid",
+                    "uri": "#/projects/{projectId}/tools",
                     "iconClass": "fa fa-pencil",
                     "allowPermission": []
                 }]

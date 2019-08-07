@@ -18,5 +18,8 @@
   "homepage": "https://github.com/thynctank/cloudcms_modules#readme",
   "devDependencies": {
     "eslint": "^6.1.0"
+  },
+  "dependencies": {
+    "gitana": "^1.0.305"
   }
 }

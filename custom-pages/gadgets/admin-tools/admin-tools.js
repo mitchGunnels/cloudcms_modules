@@ -20,7 +20,7 @@ define(function (require, exports, module) {
         },
     
         /**
-         * Puts constiables into the model for rendering within our template.
+         * Puts variables into the model for rendering within our template.
          * Once we've finished setting up the model, we must fire callback().
          *
          * @param el

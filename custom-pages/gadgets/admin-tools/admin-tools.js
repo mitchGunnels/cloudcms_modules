@@ -73,8 +73,8 @@ define(function (require, exports, module) {
             this.base(el, model, originalContext, function () {
                 console.log('afterSwap()');
     
-                $(el).find('.admin-tools-btn-group').click(function (e) {
-        
+                $(el).find('.btn.btn-default').click(function (e) {
+                    
                     e.preventDefault();
         
                     UI.showPopupModal({

@@ -35,8 +35,6 @@ define(function (require, exports, module) {
             // get the current project
             branch = this.observable('branch').get();
             repository = branch.getRepository();
-            
-            console.log('model', model);
         
             // call into base method and then set up the model
             this.base(el, model, function () {
@@ -73,6 +71,7 @@ define(function (require, exports, module) {
             this.base(el, model, originalContext, function () {
                 console.log('afterSwap()');
     
+                // eslint-disable-next-line no-undef
                 $(el).find('.btn.btn-default').click(function (e) {
                     
                     e.preventDefault();

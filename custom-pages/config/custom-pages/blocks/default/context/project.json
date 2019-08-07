@@ -14,7 +14,7 @@
                 "rejectPermission": [],
                 "items": [{
                     "key": "custom-pages/admin-tools",
-                    "title": "Tools",
+                    "title": "Admin Tools",
                     "uri": "#/projects/{projectId}/admin-tools",
                     "iconClass": "fa fa-pencil",
                     "allowPermission": []

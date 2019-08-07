@@ -1,7 +1,7 @@
 define(function (require, exports, module) {
     
     require('css!./styles/admin-tools.css');
-    const html = require('text!./templates/admin-tools.hbs');
+    const html = require('text!./templates/admin-tools.html');
     
     const Empty = require('ratchet/dynamic/empty');
     
@@ -32,12 +32,7 @@ define(function (require, exports, module) {
             // get the current project
             const branch = this.observable('branch').get();
             const repository = branch.getRepository();
-        
-            console.log(Gitana.MergeConflict(repository));
-        
-            console.log('project', project);
-            console.log('branch ', branch);
-            console.log('repository ', repository);
+    
             console.log('model', model);
         
             // call into base method and then set up the model

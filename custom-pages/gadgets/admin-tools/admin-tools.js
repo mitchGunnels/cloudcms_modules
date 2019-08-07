@@ -7,6 +7,9 @@ define(function (require, exports, module) {
     
     const UI = require('ui');
     
+    let branch;
+    let repository;
+    
     return UI.registerGadget('admin-tools', Empty.extend({
     
         TEMPLATE: html,
@@ -30,15 +33,14 @@ define(function (require, exports, module) {
         prepareModel: function (el, model, callback) {
             
             // get the current project
-            const branch = this.observable('branch').get();
-            const repository = branch.getRepository();
-    
+            branch = this.observable('branch').get();
+            repository = branch.getRepository();
+            
             console.log('model', model);
         
             // call into base method and then set up the model
             this.base(el, model, function () {
                 console.log('prepareModel()');
-                model.branch = branch;
                 callback();
     
             });
@@ -70,6 +72,16 @@ define(function (require, exports, module) {
         afterSwap: function (el, model, originalContext, callback) {
             this.base(el, model, originalContext, function () {
                 console.log('afterSwap()');
+    
+                $(el).find('.admin-tools-btn-group').click(function (e) {
+        
+                    e.preventDefault();
+        
+                    UI.showPopupModal({
+                        'title': 'Viewing: ' + branch.getTitle(),
+                        'body': '<div style=\'text-align:center\'><img src=\'' + branch.getId() + '\'></div>'
+                    });
+                });
                 callback();
             });
         }

@@ -88,11 +88,11 @@ define(function (require, exports, module) {
                             'title': 'Failed creating a snapshot of: ' + branch.getTitle(),
                             'body': `<div style="text-align:center">${error}</div>`
                         });
-                    }).createSnapshot(branch.getTip()).then(function () {
-                        UI.showPopupModal({
-                            'title': 'Created Snapshot of: ' + branch.getTitle(),
-                            'body': `<div style="text-align:center">Snapshot Id:${this.getId()}</div>`
-                        });
+                    }).createSnapshot(branch.getTip());
+    
+                    UI.showPopupModal({
+                        'title': 'Executing Snapshot Creation for : ' + branch.getTitle().toUpperCase(),
+                        'body': '<div style="text-align:center">Check the Development project for in ~20 minutes</div>'
                     });
                     callback();
                 });

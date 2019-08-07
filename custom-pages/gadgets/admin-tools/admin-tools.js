@@ -79,7 +79,7 @@ define(function (require, exports, module) {
         
                     UI.showPopupModal({
                         'title': 'Viewing: ' + branch.getTitle(),
-                        'body': '<div style=\'text-align:center\'><img src=\'' + branch.getId() + '\'></div>'
+                        'body': '<div style="text-align:center">' + branch.getId() + '</div>'
                     });
                 });
                 callback();

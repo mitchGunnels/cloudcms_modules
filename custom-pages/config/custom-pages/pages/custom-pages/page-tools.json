@@ -1,6 +1,6 @@
 {
-    "title": "Tools",
-    "uri": "/projects/{projectId}/tools",
+    "title": "Admin Tools",
+    "uri": "/projects/{projectId}/admin-tools",
     "extends": "project/_project",
     "template": "tools"
 }

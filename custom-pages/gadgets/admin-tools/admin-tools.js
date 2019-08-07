@@ -1,21 +1,21 @@
 define(function(require, exports, module) {
     
-    require('css!./tools.css');
-    const html = require('text!./tools.html');
+    require('css!./styles/admin-tools.css');
+    const html = require('text!./templates/admin-tools.html');
     
     const Empty = require('ratchet/dynamic/empty');
     
     const UI = require('ui');
     
-    return UI.registerGadget('tools', Empty.extend({
+    return UI.registerGadget('admin-tools', Empty.extend({
 
         TEMPLATE: html,
 
         /**
-         * Binds this gadget to the /tools route
+         * Binds this gadget to the /admin-tools route
          */
         setup: function() {
-            this.get('/projects/{projectId}/tools', this.index);
+            this.get('/projects/{projectId}/admin-tools', this.index);
         },
 
         /**

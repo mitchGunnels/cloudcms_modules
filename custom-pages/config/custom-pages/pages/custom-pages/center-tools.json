@@ -1,8 +1,8 @@
 {
-    "type": "tools",
+    "type": "Admin Tools",
     "config": {
         "chrome": {
-            "title": "Tools"
+            "title": "Admin Tools"
         }
     }
 }

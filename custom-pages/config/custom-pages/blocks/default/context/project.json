@@ -13,9 +13,9 @@
                 "rejectAuthority": [],
                 "rejectPermission": [],
                 "items": [{
-                    "key": "custom-pages/tools",
+                    "key": "custom-pages/admin-tools",
                     "title": "Tools",
-                    "uri": "#/projects/{projectId}/tools",
+                    "uri": "#/projects/{projectId}/admin-tools",
                     "iconClass": "fa fa-pencil",
                     "allowPermission": []
                 }]

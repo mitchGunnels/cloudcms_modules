@@ -85,8 +85,8 @@ define(function (require, exports, module) {
     
                     repository.trap(function (error) {
                         UI.showError({
-                            'title': 'Failed creating a anapshot of: ' + branch.getTitle(),
-                            'body': `<div style="text-align:center">${error.message}</div>`
+                            'title': 'Failed creating a snapshot of: ' + branch.getTitle(),
+                            'body': `<div style="text-align:center">${error}</div>`
                         });
                     }).createSnapshot(branch.getTip()).then(function () {
                         UI.showPopupModal({

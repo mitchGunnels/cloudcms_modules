@@ -4,7 +4,7 @@
         "project-context": {
             "items": [{
                 "key": "cricket/header",
-                "title": "Cricket",
+                "title": "Admin",
                 "order": 1,
                 "header": true,
                 "iconClass": "fa fa-dashboard",
@@ -14,7 +14,7 @@
                 "rejectPermission": [],
                 "items": [{
                     "key": "custom-pages/tools",
-                    "title": "Flesch Kincaid",
+                    "title": "Tools",
                     "uri": "#/projects/{projectId}/tools",
                     "iconClass": "fa fa-pencil",
                     "allowPermission": []

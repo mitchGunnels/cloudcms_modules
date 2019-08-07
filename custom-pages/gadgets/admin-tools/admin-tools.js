@@ -81,8 +81,9 @@ define(function (require, exports, module) {
                             branch = this;
                         });
                     }
+                    const repository = branch.getRepository();
     
-                    branch.trap(function (error) {
+                    repository.trap(function (error) {
                         UI.showError({
                             'title': 'Failed creating a anapshot of: ' + branch.getTitle(),
                             'body': `<div style="text-align:center">${error.message}</div>`

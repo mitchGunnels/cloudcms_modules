@@ -8,7 +8,6 @@ define(function (require, exports, module) {
     const UI = require('ui');
     
     let branch;
-    let repository;
     
     return UI.registerGadget('admin-tools', Empty.extend({
     
@@ -34,8 +33,15 @@ define(function (require, exports, module) {
             
             // get the current project
             branch = this.observable('branch').get();
-            repository = branch.getRepository();
-        
+            if (!branch.isMaster()) {
+                const repository = branch.getRepository();
+            
+                repository.readBranch('master').then(function () {
+                    branch = this;
+                });
+            }
+            
+            
             // call into base method and then set up the model
             this.base(el, model, function () {
                 console.log('prepareModel()');
@@ -75,9 +81,9 @@ define(function (require, exports, module) {
                 $(el).find('.btn.btn-primary').click(function (e) {
                     
                     e.preventDefault();
-        
+    
                     UI.showPopupModal({
-                        'title': 'Viewing: ' + branch.getTitle(),
+                        'title': 'Created Snapshot of: ' + branch.getTitle(),
                         'body': '<div style="text-align:center">' + branch.getId() + '</div>'
                     });
                 });

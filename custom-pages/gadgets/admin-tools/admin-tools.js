@@ -1,7 +1,7 @@
 define(function (require, exports, module) {
     
     require('css!./styles/admin-tools.css');
-    const html = require('text!./templates/admin-tools.html');
+    const html = require('text!./templates/admin-tools.hbs');
     
     const Empty = require('ratchet/dynamic/empty');
     
@@ -30,7 +30,6 @@ define(function (require, exports, module) {
         prepareModel: function (el, model, callback) {
             
             // get the current project
-            const project = this.observable('project').get();
             const branch = this.observable('branch').get();
             const repository = branch.getRepository();
         
@@ -44,8 +43,9 @@ define(function (require, exports, module) {
             // call into base method and then set up the model
             this.base(el, model, function () {
                 console.log('prepareModel()');
+                model.branch = branch;
                 callback();
-            
+    
             });
         },
     

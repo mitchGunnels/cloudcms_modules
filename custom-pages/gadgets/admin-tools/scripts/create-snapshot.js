@@ -9,53 +9,54 @@ define(function (require, exports, module) {
     const currentHours = currentDate.getHours();
     const currentMins = currentDate.getMinutes();
     const UI = require('ui');
-    
-    
-    exports.run = (callback) => {
+    return {
         
-        // eslint-disable-next-line no-undef
-        $(el).find('.btn.btn-primary').click(() => {
+        run: (callback) => {
             
-            Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
-                'Yes',
-                'btn btn-default',
-                () => {
-                    
-                    // blocking clicks
-                    
-                    $('body').css('pointer-events', 'none');
-                    
-                    Ratchet.block('Working...', 'Creating the Snapshot', () => {
+            // eslint-disable-next-line no-undef
+            $(el).find('.btn.btn-primary').click(() => {
+                
+                Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
+                    `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
+                    'Yes',
+                    'btn btn-default',
+                    () => {
                         
-                        Chain(repository).trap((error) => {
-                            UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
-                                callback();
+                        // blocking clicks
+                        
+                        $('body').css('pointer-events', 'none');
+                        
+                        Ratchet.block('Working...', 'Creating the Snapshot', () => {
+                            
+                            Chain(repository).trap((error) => {
+                                UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
+                                    callback();
+                                });
+                            }).startCreateBranch(branch.getId(), branch.getTip(), {
+                                title: `From: "${branch.getTitle()}" - ${currentMonth}.${currentDay}.${currentYear} @ ${currentHours}:${currentMins}`,
+                                snapshot: true
+                            }, (jobId) => {
+                                
+                                
+                                Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
+                                    // all done
+                                    $('body').css('pointer-events', 'all');
+                                    
+                                    Ratchet.unblock();
+                                    
+                                    Ratchet.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
+                                        `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`
+                                    );
+                                    
+                                    callback();
+                                });
+                                
                             });
-                        }).startCreateBranch(branch.getId(), branch.getTip(), {
-                            title: `From: "${branch.getTitle()}" - ${currentMonth}.${currentDay}.${currentYear} @ ${currentHours}:${currentMins}`,
-                            snapshot: true
-                        }, (jobId) => {
-                            
-                            
-                            Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
-                                // all done
-                                $('body').css('pointer-events', 'all');
-                                
-                                Ratchet.unblock();
-                                
-                                Ratchet.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
-                                    `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`
-                                );
-                                
-                                callback();
-                            });
-                            
                         });
-                    });
-                    
-                }
-            );
-        });
+                        
+                    }
+                );
+            });
+        }
     };
 });

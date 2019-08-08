@@ -83,18 +83,22 @@ define(function (require, exports, module) {
                     }
                     const repository = branch.getRepository();
     
-                    repository.trap(function (error) {
+                    Chain(repository).trap((error) => {
                         UI.showError({
                             'title': 'Failed creating a snapshot of: ' + branch.getTitle(),
                             'body': `<div style="text-align:center">${error}</div>`
                         });
                         callback();
-                    }).startCreateBranch(branch.getId(), branch.getTip(), function () {
-                        UI.showPopupModal({
-                            'title': `Executing Branch Creation from: ${branch.getTitle().toUpperCase()}`,
-                            'body': `<div style="text-align:center"> ${this.getTitle()} </div>`
+                    }).startCreateBranch(branch.getId(), branch.getTip(), (jobId) => {
+        
+                        Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
+                            UI.showPopupModal({
+                                'title': `Executing Branch Creation from: ${branch.getTitle().toUpperCase()}`,
+                                'body': `<div style="text-align:center"> ${job.getState()} </div>`
+                            });
+                            callback();
                         });
-                        callback();
+        
                     });
     
                 });

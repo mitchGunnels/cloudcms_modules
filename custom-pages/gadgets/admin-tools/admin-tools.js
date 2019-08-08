@@ -8,6 +8,8 @@ define(function (require, exports, module) {
     const UI = require('ui');
     
     let branch;
+    let repository;
+    
     
     return UI.registerGadget('admin-tools', Empty.extend({
         
@@ -17,7 +19,7 @@ define(function (require, exports, module) {
          * Binds this gadget to the /admin-tools route
          */
         setup: function () {
-            console.log('setup()');
+            
             this.get('/projects/{projectId}/admin-tools', this.index);
         },
         
@@ -33,10 +35,11 @@ define(function (require, exports, module) {
             
             // get the current project
             branch = this.observable('branch').get();
+            repository = branch.getRepository();
             
             // call into base method and then set up the model
             this.base(el, model, function () {
-                console.log('prepareModel()');
+                
                 callback();
                 
             });
@@ -51,7 +54,6 @@ define(function (require, exports, module) {
          */
         beforeSwap: function (el, model, callback) {
             this.base(el, model, function () {
-                console.log('beforeSwap()');
                 callback();
             });
         },
@@ -67,54 +69,31 @@ define(function (require, exports, module) {
          */
         afterSwap: function (el, model, originalContext, callback) {
             this.base(el, model, originalContext, () => {
-                console.log('afterSwap()');
                 
                 // eslint-disable-next-line no-undef
-                $(el).find('.btn.btn-primary').click((e) => {
-                    
-                    Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                        `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
-                        'Yes',
-                        'btn btn-default',
-                        () => {
-                            
-                            // blocking clicks
-                            
-                            $('body').css('pointer-events', 'none');
-                            
-                            Ratchet.block('Working...', 'Creating the Snapshot', () => {
-                                const repository = branch.getRepository();
-                                const currentApplyDate = new Date(Date.now());
-                                Chain(repository).trap((error) => {
-                                    UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
-                                        callback();
-                                    });
-                                }).startCreateBranch(branch.getId(), branch.getTip(), {
-                                    title: `From: ${branch.getTitle()} - ${currentApplyDate.getMonth() + 1}:${currentApplyDate.getDate()}:${currentApplyDate.getFullYear()}`,
-                                    snapshot: true
-                                }, (jobId) => {
+                $(el).find('.btn.btn-primary').click(() => {
+                        
+                        Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
+                            `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
+                            'Yes',
+                            'btn btn-default',
+                            () => {
+                                
+                                // blocking clicks
+                                
+                                $('body').css('pointer-events', 'none');
+                                
+                                Ratchet.block('Working...', 'Creating the Snapshot', () => {
                                     
-                                    
-                                    Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
-                                        // all done
-                                        $('body').css('pointer-events', 'all');
-                                        
-                                        Ratchet.unblock();
-                                        
-                                        Ratchet.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
-                                            `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`
-                                        );
-                                        callback();
-                                    });
+                                    require('./scripts/create-snapshot')(require, branch, repository, callback);
                                     
                                 });
                             });
-                            
-                        }
-                    );
-                    
-                    
-                });
+                        
+                    }
+                );
+                
+                
             });
             
         }

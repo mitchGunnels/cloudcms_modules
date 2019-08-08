@@ -7,9 +7,6 @@ define(function (require, exports, module) {
     
     const UI = require('ui');
     
-    let branch;
-    let repository;
-    
     
     return UI.registerGadget('admin-tools', Empty.extend({
         
@@ -33,9 +30,6 @@ define(function (require, exports, module) {
          */
         prepareModel: function (el, model, callback) {
             
-            // get the current project
-            branch = this.observable('branch').get();
-            repository = branch.getRepository();
             
             // call into base method and then set up the model
             this.base(el, model, function () {
@@ -70,30 +64,9 @@ define(function (require, exports, module) {
         afterSwap: function (el, model, originalContext, callback) {
             this.base(el, model, originalContext, () => {
                 
-                // eslint-disable-next-line no-undef
-                $(el).find('.btn.btn-primary').click(() => {
-                        
-                        Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                            `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
-                            'Yes',
-                            'btn btn-default',
-                            () => {
-                                
-                                // blocking clicks
-                                
-                                $('body').css('pointer-events', 'none');
-                                
-                                Ratchet.block('Working...', 'Creating the Snapshot', () => {
-                                    
-                                    require('./scripts/create-snapshot')(require, branch, repository, callback);
-                                    
-                                });
-                            });
-                        
-                    }
-                );
-                
-                
+                require(['./scripts/create-snapshot'], (snapshot) => {
+                    snapshot.run(callback);
+                });
             });
             
         }

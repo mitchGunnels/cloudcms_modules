@@ -82,7 +82,7 @@ define(function (require, exports, module) {
                             
                             $('body').css('pointer-events', 'none');
     
-                            Ratchet.blocks('Working...', 'Creating the Snapshot', () => {
+                            Ratchet.block('Working...', 'Creating the Snapshot', () => {
                                 const repository = branch.getRepository();
                                 const currentApplyDate = new Date(Date.now()).toISOString();
                                 Chain(repository).trap((error) => {

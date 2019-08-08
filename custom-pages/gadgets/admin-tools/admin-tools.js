@@ -72,7 +72,7 @@ define(function (require, exports, module) {
                 // eslint-disable-next-line no-undef
                 $(el).find('.btn.btn-primary').click((e) => {
                     
-                    this.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
+                    Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
                         `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
                         'Yes',
                         'btn btn-default',
@@ -81,8 +81,8 @@ define(function (require, exports, module) {
                             // blocking clicks
                             
                             $('body').css('pointer-events', 'none');
-                            
-                            this.blocks('Working...', 'Creating the Snapshot', () => {
+    
+                            Ratchet.blocks('Working...', 'Creating the Snapshot', () => {
                                 const repository = branch.getRepository();
                                 const currentApplyDate = new Date(Date.now()).toISOString();
                                 Chain(repository).trap((error) => {
@@ -98,10 +98,10 @@ define(function (require, exports, module) {
                                     Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
                                         // all done
                                         $('body').css('pointer-events', 'all');
-                                        
-                                        this.blockingModal = null;
-                                        
-                                        this.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
+    
+                                        Ratchet.blockingModal = null;
+    
+                                        Ratchet.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
                                             `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`
                                         );
                                         callback();

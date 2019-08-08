@@ -66,11 +66,11 @@ define(function (require, exports, module) {
          * @param callback
          */
         afterSwap: function (el, model, originalContext, callback) {
-            this.base(el, model, originalContext, function () {
+            this.base(el, model, originalContext, () => {
                 console.log('afterSwap()');
                 
                 // eslint-disable-next-line no-undef
-                $(el).find('.btn.btn-primary').click(function (e) {
+                $(el).find('.btn.btn-primary').click((e) => {
                     
                     this.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
                         `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
@@ -95,14 +95,14 @@ define(function (require, exports, module) {
                                 }, (jobId) => {
                                     
                                     
-                                    Chain(repository.getCluster()).waitForJobCompletion(jobId, function (job) {
+                                    Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
                                         // all done
                                         $('body').css('pointer-events', 'all');
                                         
                                         this.blockingModal = null;
                                         
                                         this.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
-                                            `<div style="text-align:center"> Please check the branches in a minute </div>`
+                                            `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`
                                         );
                                         callback();
                                     });

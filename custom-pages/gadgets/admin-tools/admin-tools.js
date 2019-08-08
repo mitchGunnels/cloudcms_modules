@@ -89,8 +89,8 @@ define(function (require, exports, module) {
                             'body': `<div style="text-align:center">${error}</div>`
                         });
                         callback();
-                    }).startCreateBranch(branch.getId(), branch.getTip(), (jobId) => {
-        
+                    }).startCreateBranch('master', (jobId) => {
+                        
                         Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
                             UI.showPopupModal({
                                 'title': `Executing Branch Creation from: ${branch.getTitle().toUpperCase()}`,

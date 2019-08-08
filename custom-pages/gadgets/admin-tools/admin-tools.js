@@ -10,9 +10,9 @@ define(function (require, exports, module) {
     let branch;
     
     return UI.registerGadget('admin-tools', Empty.extend({
-    
+        
         TEMPLATE: html,
-    
+        
         /**
          * Binds this gadget to the /admin-tools route
          */
@@ -20,7 +20,7 @@ define(function (require, exports, module) {
             console.log('setup()');
             this.get('/projects/{projectId}/admin-tools', this.index);
         },
-    
+        
         /**
          * Puts variables into the model for rendering within our template.
          * Once we've finished setting up the model, we must fire callback().
@@ -38,10 +38,10 @@ define(function (require, exports, module) {
             this.base(el, model, function () {
                 console.log('prepareModel()');
                 callback();
-    
+                
             });
         },
-    
+        
         /**
          * This method gets called before the rendered DOM element is injected into the page.
          *
@@ -55,8 +55,8 @@ define(function (require, exports, module) {
                 callback();
             });
         },
-    
-    
+        
+        
         /**
          * This method gets called after the rendered DOM element has been injected into the page.
          *
@@ -68,43 +68,40 @@ define(function (require, exports, module) {
         afterSwap: function (el, model, originalContext, callback) {
             this.base(el, model, originalContext, function () {
                 console.log('afterSwap()');
-    
+                
                 // eslint-disable-next-line no-undef
                 $(el).find('.btn.btn-primary').click(function (e) {
                     
                     e.preventDefault();
-    
+                    
                     if (!branch.isMaster()) {
                         const repository = branch.getRepository();
-        
+                        
                         repository.readBranch('master').then(function () {
                             branch = this;
                         });
                     }
                     const repository = branch.getRepository();
-    
+                    const currentApplyDate = new Date(Date.now()).toISOString();
                     Chain(repository).trap((error) => {
                         UI.showError({
                             'title': 'Failed creating a snapshot of: ' + branch.getTitle(),
                             'body': `<div style="text-align:center">${error}</div>`
                         });
                         callback();
-                    }).startCreateBranch('master', (jobId) => {
-                        
-                        Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
-                            UI.showPopupModal({
-                                'title': `Executing Branch Creation from: ${branch.getTitle().toUpperCase()}`,
-                                'body': `<div style="text-align:center"> ${job.getState()} </div>`
-                            });
-                            callback();
-                        });
-        
+                    }).createSnapshot(branch.getTip(), {
+                        title: currentApplyDate,
+                        workspace: false
                     });
-    
+                    
+                    UI.showModal({
+                        'title': `Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
+                        'body': `<div style="text-align:center"> Please check the branches in a minute </div>`
+                    });
+                    callback();
                 });
-            });
-        }
-    
-    }));
+            }
+            
+        }));
     
 });

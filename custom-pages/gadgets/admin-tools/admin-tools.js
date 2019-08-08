@@ -87,16 +87,18 @@ define(function (require, exports, module) {
                         UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
                             callback();
                         });
-                    }).createSnapshot(branch.getTip(), {
+                    }).startCreateBranch(branch.getId(), branch.getTip(), {
                         title: currentApplyDate,
-                        workspace: false
+                        snapshot: true
+                    }, (jobId) => {
+                        UI.showModal({
+                            'title': `Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
+                            'body': `<div style="text-align:center"> Please check the branches in a minute </div>`
+                        });
+                        callback();
+                        
+
                     });
-                    
-                    UI.showModal({
-                        'title': `Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
-                        'body': `<div style="text-align:center"> Please check the branches in a minute </div>`
-                    });
-                    callback();
                 });
             });
             

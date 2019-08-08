@@ -84,7 +84,9 @@ define(function (require, exports, module) {
                     const repository = branch.getRepository();
                     const currentApplyDate = new Date(Date.now()).toISOString();
                     Chain(repository).trap((error) => {
-                        UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, callback);
+                        UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
+                            callback();
+                        });
                     }).createSnapshot(branch.getTip(), {
                         title: currentApplyDate,
                         workspace: false

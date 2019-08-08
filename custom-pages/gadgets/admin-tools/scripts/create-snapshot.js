@@ -14,7 +14,7 @@ define(function (require, exports, module) {
         run: (callback) => {
             
             // eslint-disable-next-line no-undef
-            $(el).find('.btn.btn-primary').click(() => {
+            $(document).find('.btn.btn-primary').click(() => {
                 
                 Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
                     `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,

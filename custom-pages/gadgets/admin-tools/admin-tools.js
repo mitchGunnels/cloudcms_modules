@@ -72,33 +72,35 @@ define(function (require, exports, module) {
                 // eslint-disable-next-line no-undef
                 $(el).find('.btn.btn-primary').click(function (e) {
                     
-                    e.preventDefault();
+                    UI.showConfirmationModal('<div style="text-align:center">Please Confirm</div>',
+                        `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
+                        'Yes',
+                        () => {
+                            const repository = branch.getRepository();
+                            const currentApplyDate = new Date(Date.now()).toISOString();
+                            Chain(repository).trap((error) => {
+                                UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
+                                    callback();
+                                });
+                            }).startCreateBranch(branch.getId(), branch.getTip(), {
+                                title: currentApplyDate,
+                                snapshot: true
+                            }, (jobId) => {
+    
+                                Chain(repository.getCluster()).waitForJobCompletion(jobId, function(job) {
+                                    // all done
+                                    UI.showModal({
+                                        'title': `Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
+                                        'body': `<div style="text-align:center"> Please check the branches in a minute </div>`
+                                    });
+                                    callback();
+                                });
+    
+                            });
+                        }
+                    );
                     
-                    if (!branch.isMaster()) {
-                        const repository = branch.getRepository();
-                        
-                        repository.readBranch('master').then(function () {
-                            branch = this;
-                        });
-                    }
-                    const repository = branch.getRepository();
-                    const currentApplyDate = new Date(Date.now()).toISOString();
-                    Chain(repository).trap((error) => {
-                        UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
-                            callback();
-                        });
-                    }).startCreateBranch(branch.getId(), branch.getTip(), {
-                        title: currentApplyDate,
-                        snapshot: true
-                    }, (jobId) => {
-                        UI.showModal({
-                            'title': `Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
-                            'body': `<div style="text-align:center"> Please check the branches in a minute </div>`
-                        });
-                        callback();
-                        
-
-                    });
+                    
                 });
             });
             

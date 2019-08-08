@@ -64,9 +64,8 @@ define(function (require, exports, module) {
         afterSwap: function (el, model, originalContext, callback) {
             this.base(el, model, originalContext, () => {
                 
-                require(['./scripts/create-snapshot'], (snapshot) => {
-                    snapshot.run(callback);
-                });
+                const createSnapshot = require('./scripts/create-snapshot');
+                createSnapshot.run(callback);
             });
             
         }

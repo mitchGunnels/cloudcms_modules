@@ -72,31 +72,44 @@ define(function (require, exports, module) {
                 // eslint-disable-next-line no-undef
                 $(el).find('.btn.btn-primary').click(function (e) {
                     
-                    UI.showConfirmationModal('<div style="text-align:center">Please Confirm</div>',
+                    this.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
                         `<div style="text-align:center">Are you sure you want to create a snapshot from ${branch.getTitle()} ?</div>`,
                         'Yes',
+                        'btn btn-default',
                         () => {
-                            const repository = branch.getRepository();
-                            const currentApplyDate = new Date(Date.now()).toISOString();
-                            Chain(repository).trap((error) => {
-                                UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
-                                    callback();
-                                });
-                            }).startCreateBranch(branch.getId(), branch.getTip(), {
-                                title: currentApplyDate,
-                                snapshot: true
-                            }, (jobId) => {
-    
-                                Chain(repository.getCluster()).waitForJobCompletion(jobId, function(job) {
-                                    // all done
-                                    UI.showModal({
-                                        'title': `Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
-                                        'body': `<div style="text-align:center"> Please check the branches in a minute </div>`
+                            
+                            // blocking clicks
+                            
+                            $('body').css('pointer-events', 'none');
+                            
+                            this.blocks('Working...', 'Creating the Snapshot', () => {
+                                const repository = branch.getRepository();
+                                const currentApplyDate = new Date(Date.now()).toISOString();
+                                Chain(repository).trap((error) => {
+                                    UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
+                                        callback();
                                     });
-                                    callback();
+                                }).startCreateBranch(branch.getId(), branch.getTip(), {
+                                    title: currentApplyDate,
+                                    snapshot: true
+                                }, (jobId) => {
+                                    
+                                    
+                                    Chain(repository.getCluster()).waitForJobCompletion(jobId, function (job) {
+                                        // all done
+                                        $('body').css('pointer-events', 'all');
+                                        
+                                        this.blockingModal = null;
+                                        
+                                        this.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
+                                            `<div style="text-align:center"> Please check the branches in a minute </div>`
+                                        );
+                                        callback();
+                                    });
+                                    
                                 });
-    
                             });
+                            
                         }
                     );
                     

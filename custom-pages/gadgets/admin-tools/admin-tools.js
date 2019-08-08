@@ -81,16 +81,16 @@ define(function (require, exports, module) {
                             // blocking clicks
                             
                             $('body').css('pointer-events', 'none');
-    
+                            
                             Ratchet.block('Working...', 'Creating the Snapshot', () => {
                                 const repository = branch.getRepository();
-                                const currentApplyDate = new Date(Date.now()).toISOString();
+                                const currentApplyDate = new Date(Date.now());
                                 Chain(repository).trap((error) => {
                                     UI.showError(`Failed creating a snapshot of:${branch.getTitle()}`, `<div style="text-align:center">${error}</div>`, () => {
                                         callback();
                                     });
                                 }).startCreateBranch(branch.getId(), branch.getTip(), {
-                                    title: currentApplyDate,
+                                    title: `From: ${branch.getTitle()} - ${currentApplyDate.getMonth() + 1}:${currentApplyDate.getDate()}:${currentApplyDate.getFullYear()}`,
                                     snapshot: true
                                 }, (jobId) => {
                                     
@@ -98,9 +98,9 @@ define(function (require, exports, module) {
                                     Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
                                         // all done
                                         $('body').css('pointer-events', 'all');
-    
-                                        Ratchet.blockingModal = null;
-    
+                                        
+                                        Ratchet.unblock();
+                                        
                                         Ratchet.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`,
                                             `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`
                                         );

@@ -1,0 +1,8 @@
+{
+    "type": "reports",
+    "config": {
+        "chrome": {
+            "title": "Reports"
+        }
+    }
+}

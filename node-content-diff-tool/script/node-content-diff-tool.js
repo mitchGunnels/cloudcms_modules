@@ -1,5 +1,8 @@
 define(function(require, exports, module) {
     const $ = require("jquery");
+    require("./diff-match-patch.js");
+    require('css!./style.css');
+    const dmp = new diff_match_patch();
 
     const windowHref = window.location.href;
     const dropdownToggleButton = ".dropdown-toggle";
@@ -56,15 +59,17 @@ define(function(require, exports, module) {
         $('#DataTables_Table_0').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function() {
             const $this = $(this);
             const id = $this.attr('id');
+            // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
 
             selectedListItems.push(id);
         });
 
         Ratchet.observable("document").get()
-            .listVersions({full:true, limit:-1})
+            .listVersions({full:true, limit:-1, sort: {"_system.modified_on.ms": -1}}) // return all, no limit, sort with newest on top
             .then(function() {
                 const versions = this.asArray() // <-- this is the content as an array
                 const matchingResults = versions.filter(version => selectedListItems.includes(version._doc));
+
                 const matchingResultsOneJson = matchingResults[0].json();
                 const matchingResultsTwoJson = matchingResults[1].json();
 
@@ -74,27 +79,13 @@ define(function(require, exports, module) {
                 const formattedResultOne = formatResult(matchingResultsOneJson);
                 const formattedResultTwo = formatResult(matchingResultsTwoJson);
 
-                // const left = {
-                //     title: 'foobar one two three',
-                //     paragraph: 'this is the paragrah.  we are going to make some changes here.'
-                // };
-                // const right = {
-                //     title: 'foobar one tw3o three',
-                //     paragraph: 'this is the paragrah.  We are going to make some changes now.'
-                // };
-                const customDiffPatch = jsondiffpatch.create({
-                    textDiff: {
-                      minLength: 1, // show diffs one character at a time
-                    }
-                });
 
-                const left = "Lorem ipsum dolor sit amet";
-                const right = "Loremx ipsum dolor sit amet";
 
-                jsondiffpatch.formatters.html.showUnchanged();
-                const delta = customDiffPatch.diff(left, right);
 
-                showModal(jsondiffpatch.formatters.html.format(delta));
+
+                const delta = dmp.diff_main(left, right);
+                dmp.diff_cleanupSemantic(delta); // makes the diff human readable
+                showModal(dmp.diff_prettyHtml(delta));
             });
     });
 

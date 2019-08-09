@@ -2,8 +2,8 @@ define(function(require, exports, module) {
     const $ = require("jquery");
     require("./diff-match-patch.js");
     require('css!./style.css');
-    const dmp = new diff_match_patch();
 
+    const dmp = new diff_match_patch();
     const windowHref = window.location.href;
     const dropdownToggleButton = ".dropdown-toggle";
     const dropdownMenu = ".dropdown-menu";
@@ -46,17 +46,17 @@ define(function(require, exports, module) {
         return formattedResult;
     }
 
-    function showModal(content) {
+    function showModal(title, content) {
         Ratchet.showModalMessage(
-            `Showing Diffs`,
-            `<div id='diff-modal'>${content ? content : 'No differences between selected versions.'}</div>`
+            `<div id='diff-modal-title'>${title}</div>`,
+            `<div id='diff-modal-content'>${content ? content : 'No differences between selected versions.'}</div>`
         );
     }
 
     $(document).on('click', 'li.diff-tool.active', function() {
         let selectedListItems = [];
 
-        $('#DataTables_Table_0').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function() {
+        $('.document-versions .table').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function() {
             const $this = $(this);
             const id = $this.attr('id');
             // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
@@ -65,13 +65,16 @@ define(function(require, exports, module) {
         });
 
         Ratchet.observable("document").get()
-            .listVersions({full:true, limit:-1, sort: {"_system.modified_on.ms": -1}}) // return all, no limit, sort with newest on top
+            // return all info, no limit, sort with newest first
+            .listVersions({full:true, limit:-1, sort: {"_system.modified_on.ms": -1}})
             .then(function() {
                 const versions = this.asArray() // <-- this is the content as an array
                 const matchingResults = versions.filter(version => selectedListItems.includes(version._doc));
 
-                const matchingResultsOneJson = matchingResults[0].json();
-                const matchingResultsTwoJson = matchingResults[1].json();
+                const newDocumentVersion = matchingResults[0].json();
+                const oldDocumentVersion = matchingResults[1].json();
+
+                const pageTitle = newDocumentVersion.title;
 
                 console.log('Version 1 => ', matchingResultsOneJson);
                 console.log('Version 2 => ', matchingResultsTwoJson);
@@ -79,13 +82,9 @@ define(function(require, exports, module) {
                 const formattedResultOne = formatResult(matchingResultsOneJson);
                 const formattedResultTwo = formatResult(matchingResultsTwoJson);
 
-
-
-
-
-                const delta = dmp.diff_main(left, right);
+                const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
                 dmp.diff_cleanupSemantic(delta); // makes the diff human readable
-                showModal(dmp.diff_prettyHtml(delta));
+                showModal(pageTitle, dmp.diff_prettyHtml(delta));
             });
     });
 

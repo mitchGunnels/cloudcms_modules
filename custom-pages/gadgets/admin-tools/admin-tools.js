@@ -7,6 +7,8 @@ define(function (require, exports, module) {
     
     const UI = require('ui');
     
+    const createSnapshot = require('./scripts/create-snapshot.js');
+    
     
     return UI.registerGadget('admin-tools', Empty.extend({
         
@@ -64,8 +66,10 @@ define(function (require, exports, module) {
         afterSwap: function (el, model, originalContext, callback) {
             this.base(el, model, originalContext, () => {
                 
-                const createSnapshot = require('./scripts/create-snapshot.js');
-                createSnapshot.run(callback);
+                //Creates a snapshot
+                $(el).find('.btn.btn-primary').click(() => {
+                    createSnapshot.run(callback);
+                });
             });
             
         }

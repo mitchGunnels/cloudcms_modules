@@ -1,6 +1,5 @@
 define(function(require, exports, module) {
     const $ = require("jquery");
-    const UI = require("ui");
 
     const windowHref = window.location.href;
     const dropdownToggleButton = ".dropdown-toggle";
@@ -20,8 +19,8 @@ define(function(require, exports, module) {
     }
 
     function disableDiffTool() {
-        $(listItem).addClass(disabled);
         $(listItem).removeClass(activeListItem);
+        $(listItem).addClass(disabled);
         $(listItemAnchor).css({cursor:"not-allow"});
     }
 
@@ -38,17 +37,20 @@ define(function(require, exports, module) {
 
     function formatResult(result) {
         const formattedResult = {
-            title: result.title
+            title: result.title,
+            pararaph: result.content.node[1].paragraph
         }
         return formattedResult;
     }
 
-    $(document).on('click', 'li.diff-tool.active', function() {
-        UI.showModal({
-            'title': `Executed Snapshot Creation from: whatever`,
-            'body': `<div style="text-align:center"> Please check the branches in a minute </div>`
-        });
+    function showModal(content) {
+        Ratchet.showModalMessage(
+            `Showing Diffs`,
+            `<div id='diff-modal'>${content ? content : 'No differences between selected versions.'}</div>`
+        );
+    }
 
+    $(document).on('click', 'li.diff-tool.active', function() {
         let selectedListItems = [];
 
         $('#DataTables_Table_0').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function() {
@@ -63,13 +65,36 @@ define(function(require, exports, module) {
             .then(function() {
                 const versions = this.asArray() // <-- this is the content as an array
                 const matchingResults = versions.filter(version => selectedListItems.includes(version._doc));
-                const resultOne = matchingResults[0].json();
-                const resultTwo = matchingResults[1].json();
+                const matchingResultsOneJson = matchingResults[0].json();
+                const matchingResultsTwoJson = matchingResults[1].json();
 
-                const formattedResultOne = formatResult(resultOne);
-                const formattedResultTwo = formatResult(resultTwo);
+                console.log('Version 1 => ', matchingResultsOneJson);
+                console.log('Version 2 => ', matchingResultsTwoJson);
 
+                const formattedResultOne = formatResult(matchingResultsOneJson);
+                const formattedResultTwo = formatResult(matchingResultsTwoJson);
 
+                // const left = {
+                //     title: 'foobar one two three',
+                //     paragraph: 'this is the paragrah.  we are going to make some changes here.'
+                // };
+                // const right = {
+                //     title: 'foobar one tw3o three',
+                //     paragraph: 'this is the paragrah.  We are going to make some changes now.'
+                // };
+                const customDiffPatch = jsondiffpatch.create({
+                    textDiff: {
+                      minLength: 1, // show diffs one character at a time
+                    }
+                });
+
+                const left = "Lorem ipsum dolor sit amet";
+                const right = "Loremx ipsum dolor sit amet";
+
+                jsondiffpatch.formatters.html.showUnchanged();
+                const delta = customDiffPatch.diff(left, right);
+
+                showModal(jsondiffpatch.formatters.html.format(delta));
             });
     });
 

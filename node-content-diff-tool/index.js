@@ -1,3 +1,3 @@
-define(function(require, exports, module) {
+define(function(require) {
     require("./script/node-content-diff-tool.js");
 });

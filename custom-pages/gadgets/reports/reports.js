@@ -8,6 +8,36 @@ define(function (require, exports, module) {
     const UI = require('ui');
     
     let branch;
+
+    function buildQuery(report) {
+        let query = {}
+        switch (report) {
+            case 'page':
+                query._type = {
+                    "$regex": "cricket:page(-.+)?"
+                }
+                query._fields = {
+                    title: 1,
+                    _type: 1,
+                    url: 1,
+                    active: 1,
+                    _system: {
+                        created_on: 1,
+                        created_by: 1,
+                        edited_on: 1,
+                        edited_by: 1,
+                    }
+                }
+                break
+            case 'product':
+                query._type = "cricket:product"
+                break
+            
+            default:
+                console.error('Invalid report type provided')
+        }
+    }
+
     
     return UI.registerGadget('reports', Empty.extend({
         

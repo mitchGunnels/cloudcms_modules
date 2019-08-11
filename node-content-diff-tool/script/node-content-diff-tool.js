@@ -38,19 +38,17 @@ define(function(require, exports, module) {
         return $(selectedItems).length === 2;
     }
 
-    function formatResult(result) {
-        const formattedResult = {
-            title: result.title,
-            pararaph: result.content.node[1].paragraph
-        }
-        return formattedResult;
-    }
-
     function showModal(title, content) {
         Ratchet.showModalMessage(
             `<div id='diff-modal-title'>${title}</div>`,
             `<div id='diff-modal-content'>${content ? content : 'No differences between selected versions.'}</div>`
         );
+    }
+
+    function renderDiff(oldDocumentVersion, newDocumentVersion) {
+        const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
+        dmp.diff_cleanupSemantic(delta); // makes the diff human readable
+        return dmp.diff_prettyHtml(delta); // returns pretty html content
     }
 
     $(document).on('click', 'li.diff-tool.active', function() {
@@ -68,23 +66,56 @@ define(function(require, exports, module) {
             // return all info, no limit, sort with newest first
             .listVersions({full:true, limit:-1, sort: {"_system.modified_on.ms": -1}})
             .then(function() {
-                const versions = this.asArray() // <-- this is the content as an array
+                // convert the returned map to an array
+                const versions = this.asArray()
+
+                // given the array of all the versions on the page, find the ones we put a checkmark on
                 const matchingResults = versions.filter(version => selectedListItems.includes(version._doc));
 
+                // remove all the superfluous functions and stuff, just give us the JSON
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
-                const pageTitle = newDocumentVersion.title;
+                console.log('new version 1 => ', newDocumentVersion);
+                console.log('old version 2 => ', oldDocumentVersion);
 
-                console.log('Version 1 => ', matchingResultsOneJson);
-                console.log('Version 2 => ', matchingResultsTwoJson);
+                // convert the node array to a hash map
+                const oldNodeHash = {};
+                oldDocumentVersion.content.node.forEach(element => {
+                    oldNodeHash[element.id] = element;
+                });
 
-                const formattedResultOne = formatResult(matchingResultsOneJson);
-                const formattedResultTwo = formatResult(matchingResultsTwoJson);
+                let modalContent = '';
+                let fieldDiff = '';
+                let isError = false;
 
-                const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
-                dmp.diff_cleanupSemantic(delta); // makes the diff human readable
-                showModal(pageTitle, dmp.diff_prettyHtml(delta));
+                const newPageTitle = newDocumentVersion.title;
+                newDocumentVersion.content.node.forEach(element => {
+                    if (isError) {
+                        return;
+                    }
+                    let newFieldValue;
+                    let fieldName;
+
+                    if (element.typeQName === 'cricket:header') {
+                        fieldName = 'header';
+                        newFieldValue = element.header;
+                    } else if (element.typeQName === 'cricket:paragraph') {
+                        fieldName = 'paragraph';
+                        newFieldValue = element.paragraph;
+                    }
+                    try {
+                        fieldDiff = renderDiff(newFieldValue, oldNodeHash[element.id][fieldName]);
+                    } catch (err) {
+                        showModal('Error', `Relators are broken with error: ${err}`);
+                        isError = true;
+                    }
+
+                    modalContent += `<div class='field-name'>${fieldName}</div><div class='field-content'>${fieldDiff}</div>`;
+                });
+                if (!isError) {
+                    showModal(newPageTitle, modalContent);
+                }
             });
     });
 

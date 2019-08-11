@@ -5,3 +5,19 @@ del {
 ins {
     background-color: #bdffbd !important;
 }
+
+.modal-body {
+    height: 500px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+.field-name {
+    font-size: 24px;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+
+.field-content {
+    margin-bottom: 20px;
+}

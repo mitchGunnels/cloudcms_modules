@@ -32,8 +32,15 @@ define(function(require, exports, module) {
     function isThisPageVersionsTool() {
         // TODO: Figure out how to detect if we're on a page vs. any other kind of document
         // determines if we're on the correct page
-        // var isPage = windowHref.indexOf('cricket:page') > -1;
-        return windowHref.indexOf("versions") > -1;
+        const regex = /cricket:page(-.*)?/;
+
+        // check list-row-info class innerHTML for anything that contains cricket:page*
+        const arrayOfInfoElements = $('#document-summary .list-row-info a');
+        const isPage = $.grep(arrayOfInfoElements, function(element) {
+            return regex.test(element.innerHTML);
+        }).length;
+
+        return isPage && windowHref.indexOf("versions") > -1;
     }
 
     function isTwoItemsSelected() {
@@ -126,7 +133,7 @@ define(function(require, exports, module) {
     });
 
     $(document).on('cloudcms-ready', function() {
-        if (isThisPageVersionsTool) {
+        if (isThisPageVersionsTool()) {
             // insert a new option to the top of the select dropdown
             $(dropdownMenu).prepend(newDropdownOption);
 

@@ -17,10 +17,69 @@ define(function (require, exports, module) {
     const ReportBtnClasses = [PAGE, PRODUCT, SKU, PRICESHEET]
 
     const QueryTypes = {
-        PAGE: {
+        [PAGE]: {
             "$regex": "cricket:page(-.+)?"
         },
-        PRODUCT: "cricket:product"
+        [PRODUCT]: "cricket:product",
+        [SKU]: "cricket:sku",
+        [PRICESHEET]: "cricket:price-list"
+    }
+
+    const TypeFields = {
+        [PAGE]: [                        
+            "title",
+            "_type",
+            "urlList[0]/url",
+            "active",
+            "_system/created_on/timestamp",
+            "_system/created_by",
+            "_system/edited_on/timestamp",
+            "_system/edited_by"
+        ],
+        [PRODUCT]: [
+            "title",
+            "sol",
+            "soli",
+            "eol",
+            "eoli",
+            "active",
+            "_system/created_on/timestamp",
+            "_system/created_by",
+            "_system/edited_on/timestamp",
+            "_system/edited_by"
+        ],
+        [SKU]: [
+            "title",
+            "skuId",
+            "sol",
+            "soli",
+            "eol",
+            "eoli",
+            "color[0]/hexValue",
+            "active",
+            "_system/created_on/timestamp",
+            "_system/created_by",
+            "_system/edited_on/timestamp",
+            "_system/edited_by"
+        ],
+        [PRICESHEET]: [
+            "title",
+            "priceSkuList[0]/price[0]/priceType",
+            "priceSkuList[0]/price[0]/priceValue",
+            "priceSkuList[0]/price[1]/priceType",
+            "priceSkuList[0]/price[1]/priceValue",
+            "priceSkuList[0]/price[2]/priceType",
+            "priceSkuList[0]/price[2]/priceValue",
+            "priceSkuList[0]/sku[0]/sol",
+            "priceSkuList[0]/sku[0]/soli",
+            "priceSkuList[0]/sku[0]/eol",
+            "priceSkuList[0]/sku[0]/eoli",
+            "active",
+            "_system/created_on/timestamp",
+            "_system/created_by",
+            "_system/edited_on/timestamp",
+            "_system/edited_by"
+        ]
     }
     
     let branch;
@@ -28,26 +87,10 @@ define(function (require, exports, module) {
 
     function buildQuery(reportType) {
         let query = { }
-        switch (reportType) {
-            case PAGE:
-                query._type = QueryTypes.PAGE,
-                query._fields = {
-                    title: 1,
-                    _type: 1,
-                    "urlList.0.url": 1,
-                    active: 1,
-                    "_system.created_on": 1,
-                    "_system.created_by": 1,
-                    "_system.edited_on": 1,
-                    "_system.edited_by": 1
-                }
-                break
-            case PRODUCT:
-                query._type = QueryTypes.PRODUCT
-                break
-            
-            default:
-                console.error('Invalid report type provided')
+        if (reportType in QueryTypes) {
+            query._type = QueryTypes[reportType]
+        } else {
+            console.error('Invalid report type provided')
         }
 
         if (query._type) {
@@ -55,6 +98,24 @@ define(function (require, exports, module) {
         } else {
             return false
         }
+    }
+
+    function buildFields(reportType, nodes) {
+        let extendedFields = []
+        if (PRODUCT === reportType) {
+            let maxSkus = 0
+            nodes.asArray().forEach(function (node) {
+                if (node.skus.length > maxSkus) {
+                    maxSkus = node.skus.length
+                }
+            })
+            for(let index = 0; index < maxSkus; index++ ) {
+                extendedFields.push(`skus[${index}]/skuId`)
+            }
+        }
+
+        let fields = (TypeFields[reportType] || []).concat(extendedFields)
+        return fields
     }
 
     function genericErrorLoggerHalter(err) {
@@ -70,20 +131,13 @@ define(function (require, exports, module) {
 
             Chain(branch).trap(genericErrorLoggerHalter).queryNodes(query, {limit: -1}).then(function() {
                 nodes = this
+                let fields = buildFields(reportType, nodes)
                 this.subchain(platform).trap(genericErrorLoggerHalter).runExport(nodes, {
                     package: "CSV",
                     includeMetadata: true,
-                    fields: [                        
-                        "title",
-                        "_type",
-                        "urlList[0]/url",
-                        "active",
-                        "_system/created_on/timestamp",
-                        "_system/created_by",
-                        "_system/edited_on/timestamp",
-                        "_system/edited_by"
-                    ]
+                    fields: fields
                 }, function (_exportId, _status) {
+                    Ratchet.unblock()
                     window.location.href = "/proxy/ref/exports/" + _exportId + "/download?a=true&download=" + reportType + ".csv"
                 })
 
@@ -101,7 +155,9 @@ define(function (require, exports, module) {
                 }
             })
             if (report) {
-                exportReport(report)
+                Ratchet.block('Generating Report', 'This may take a while...', () => {
+                    exportReport(report)
+                })
             } else {
                 console.error('Invalid report type provided')
             }

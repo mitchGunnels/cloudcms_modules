@@ -8,23 +8,25 @@ define(function(require, exports, module) {
     const dropdownToggleButton = ".dropdown-toggle";
     const dropdownMenu = ".dropdown-menu";
     const newDropdownOption = '<li class="diff-tool"><a title="Compare Text Versions">'+
-                            '<i class="fa fa-object-group"></i>&nbsp;Compare Text Versions</a></li>';
+                              '<i class="fa fa-object-group"></i>&nbsp;Compare Text Versions</a></li>';
     const listItem = "li.diff-tool";
     const listItemAnchor = "li.diff-tool a";
     const activeListItem = "active";
     const disabled = "disabled";
+    const disabledCursor = "disabled-cursor";
+    const enabledCursor = "enabled-cursor";
     const selectedItems = "input.list-check-box:checked";
 
     function enableDiffTool() {
         $(listItem).removeClass(disabled);
         $(listItem).addClass(activeListItem);
-        $(listItemAnchor).css({cursor:"pointer"});
+        $(listItemAnchor).addClass(enabledCursor);
     }
 
     function disableDiffTool() {
         $(listItem).removeClass(activeListItem);
         $(listItem).addClass(disabled);
-        $(listItemAnchor).css({cursor:"not-allow"});
+        $(listItemAnchor).addClass(disabledCursor);
     }
 
     function isThisPageVersionsTool() {
@@ -41,7 +43,7 @@ define(function(require, exports, module) {
     function showModal(title, content) {
         Ratchet.showModalMessage(
             `<div id='diff-modal-title'>${title}</div>`,
-            `<div id='diff-modal-content'>${content ? content : 'No differences between selected versions.'}</div>`
+            `<div id='diff-modal-content'>${content}</div>`
         );
     }
 
@@ -56,8 +58,8 @@ define(function(require, exports, module) {
 
         $('.document-versions .table').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function() {
             const $this = $(this);
-            const id = $this.attr('id');
             // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
+            const id = $this.attr('id');
 
             selectedListItems.push(id);
         });
@@ -66,7 +68,12 @@ define(function(require, exports, module) {
             // return all info, no limit, sort with newest first
             .listVersions({full:true, limit:-1, sort: {"_system.modified_on.ms": -1}})
             .then(function() {
-                // convert the returned map to an array
+                // set up needed variables
+                let modalContent = '';
+                let fieldDiff = '';
+                let isError = false;
+
+                // convert the returned map of versions to an array
                 const versions = this.asArray()
 
                 // given the array of all the versions on the page, find the ones we put a checkmark on
@@ -76,18 +83,15 @@ define(function(require, exports, module) {
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
+                // TODO: delete these console logs
                 console.log('new version 1 => ', newDocumentVersion);
                 console.log('old version 2 => ', oldDocumentVersion);
 
-                // convert the node array to a hash map
+                // convert the oldDocumentVersion array to a hash map
                 const oldNodeHash = {};
                 oldDocumentVersion.content.node.forEach(element => {
                     oldNodeHash[element.id] = element;
                 });
-
-                let modalContent = '';
-                let fieldDiff = '';
-                let isError = false;
 
                 const newPageTitle = newDocumentVersion.title;
                 newDocumentVersion.content.node.forEach(element => {
@@ -104,10 +108,12 @@ define(function(require, exports, module) {
                         fieldName = 'paragraph';
                         newFieldValue = element.paragraph;
                     }
-                    try {
+
+                    try { // rendering the diff with the dmp tool will fail if the newFieldValue or oldNodeHash[][] is not truthy
                         fieldDiff = renderDiff(newFieldValue, oldNodeHash[element.id][fieldName]);
                     } catch (err) {
-                        showModal('Error', `Relators are broken with error: ${err}`);
+                        showModal('Error creating a diff', `<div class='error'>Something went wrong with the diffing process. Are you sure relators are working set up correctly?
+                                            Here's the error: <pre>${err}</pre></div>`);
                         isError = true;
                     }
 

@@ -6,6 +6,18 @@ ins {
     background-color: #bdffbd !important;
 }
 
+.disabled-cursor {
+    cursor: not-allowed
+}
+
+.enabled-cursor {
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+}
+
 .modal-body {
     height: 500px;
     overflow: scroll;

@@ -29,18 +29,22 @@ define(function(require, exports, module) {
         $(listItemAnchor).addClass(disabledCursor);
     }
 
-    function isThisPageVersionsTool() {
-        // TODO: Figure out how to detect if we're on a page vs. any other kind of document
-        // determines if we're on the correct page
-        const regex = /cricket:page(-.*)?/;
-
+    function isPageDocument() {
         // check list-row-info class innerHTML for anything that contains cricket:page*
+        // will return true for "cricket:page", "cricket:page-support", etc
         const arrayOfInfoElements = $('#document-summary .list-row-info a');
-        const isPage = $.grep(arrayOfInfoElements, function(element) {
+        const regex = /cricket:page(-.*)?/;
+        return  $.grep(arrayOfInfoElements, function(element) {
             return regex.test(element.innerHTML);
         }).length;
+    }
 
-        return isPage && windowHref.indexOf("versions") > -1;
+    function isVersionsList() {
+        return windowHref.indexOf("versions") > -1;
+    }
+
+    function isThisPageVersions() {
+        return isPageDocument() && isVersionsList();
     }
 
     function isTwoItemsSelected() {
@@ -56,84 +60,96 @@ define(function(require, exports, module) {
 
     function renderDiff(oldDocumentVersion, newDocumentVersion) {
         const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
-        dmp.diff_cleanupSemantic(delta); // makes the diff human readable
-        return dmp.diff_prettyHtml(delta); // returns pretty html content
+        // make the diff human readable
+        dmp.diff_cleanupSemantic(delta);
+
+        // return an HTML element
+        return dmp.diff_prettyHtml(delta);
     }
 
-    $(document).on('click', 'li.diff-tool.active', function() {
-        let selectedListItems = [];
+    function convertToHashMap(array) {
+        const hashMap = {};
+        array.forEach(element => {
+            hashMap[element.id] = element;
+        });
+        return hashMap;
+    }
 
+    function getSelectedItems() {
+        // returns an array of the versions user selected
+        let selectedItems = [];
         $('.document-versions .table').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function() {
             const $this = $(this);
-            // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
-            const id = $this.attr('id');
 
-            selectedListItems.push(id);
+            const id = $this.attr('id'); // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
+
+            selectedItems.push(id);
         });
+        return selectedItems;
+    }
 
+    function renderModal() {
         Ratchet.observable("document").get()
-            // return all info, no limit, sort with newest first
-            .listVersions({full:true, limit:-1, sort: {"_system.modified_on.ms": -1}})
-            .then(function() {
-                // set up needed variables
-                let modalContent = '';
-                let fieldDiff = '';
-                let isError = false;
+        // return all document versions on this page, no limit, sort with newest first
+        .listVersions({full:true, limit:-1, sort: {"_system.modified_on.ms": -1}})
+        .then(function() {
+            let modalContent = '';
+            let fieldDiff = '';
+            let isError = false;
+            const selectedItems = getSelectedItems();
 
-                // convert the returned map of versions to an array
-                const versions = this.asArray()
+            // convert the returned map of versions to an array
+            const versions = this.asArray()
 
-                // given the array of all the versions on the page, find the ones we put a checkmark on
-                const matchingResults = versions.filter(version => selectedListItems.includes(version._doc));
+            // given the array of all the versions on the page, find the ones we put a checkmark on
+            const matchingResults = versions.filter(version => selectedItems.includes(version._doc));
 
-                // remove all the superfluous functions and stuff, just give us the JSON
-                const newDocumentVersion = matchingResults[0].json();
-                const oldDocumentVersion = matchingResults[1].json();
+            // remove all the superfluous functions and stuff, just give us the JSON
+            const newDocumentVersion = matchingResults[0].json();
+            const oldDocumentVersion = matchingResults[1].json();
 
-                // TODO: delete these console logs
-                console.log('new version 1 => ', newDocumentVersion);
-                console.log('old version 2 => ', oldDocumentVersion);
+            // TODO: delete these console logs
+            console.log('new version 1 => ', newDocumentVersion);
+            console.log('old version 2 => ', oldDocumentVersion);
 
-                // convert the oldDocumentVersion array to a hash map
-                const oldNodeHash = {};
-                oldDocumentVersion.content.node.forEach(element => {
-                    oldNodeHash[element.id] = element;
-                });
+            const oldNodeHash = convertToHashMap(oldDocumentVersion.content.node);
 
-                const newPageTitle = newDocumentVersion.title;
-                newDocumentVersion.content.node.forEach(element => {
-                    if (isError) {
-                        return;
-                    }
-                    let newFieldValue;
-                    let fieldName;
+            const modalTitle = newDocumentVersion.title;
 
-                    if (element.typeQName === 'cricket:header') {
-                        fieldName = 'header';
-                        newFieldValue = element.header;
-                    } else if (element.typeQName === 'cricket:paragraph') {
-                        fieldName = 'paragraph';
-                        newFieldValue = element.paragraph;
-                    }
+            newDocumentVersion.content.node.forEach(element => {
+                if (isError) {
+                    return;
+                }
+                let newFieldValue;
+                let fieldName;
 
-                    try { // rendering the diff with the dmp tool will fail if the newFieldValue or oldNodeHash[][] is not truthy
-                        fieldDiff = renderDiff(newFieldValue, oldNodeHash[element.id][fieldName]);
-                    } catch (err) {
-                        showModal('Error creating a diff', `<div class='error'>Something went wrong with the diffing process. Are you sure relators are working set up correctly?
-                                            Here's the error: <pre>${err}</pre></div>`);
-                        isError = true;
-                    }
+                if (element.typeQName === 'cricket:header') {
+                    fieldName = 'header';
+                    newFieldValue = element.header;
+                } else if (element.typeQName === 'cricket:paragraph') {
+                    fieldName = 'paragraph';
+                    newFieldValue = element.paragraph;
+                }
 
+                try { // rendering the diff with the dmp tool will fail if the newFieldValue or oldNodeHash[][] is not truthy
+                    fieldDiff = renderDiff(newFieldValue, oldNodeHash[element.id][fieldName]);
                     modalContent += `<div class='field-name'>${fieldName}</div><div class='field-content'>${fieldDiff}</div>`;
-                });
-                if (!isError) {
-                    showModal(newPageTitle, modalContent);
+                } catch (err) {
+                    showModal('Error creating a diff', `<div class='error'>Something went wrong with the diffing process. Are you sure relators are working set up correctly?
+                                        Here's the error: <pre>${err}</pre></div>`);
+                    isError = true;
                 }
             });
-    });
+            if (!isError) {
+                showModal(modalTitle, modalContent);
+            }
+        });
+    }
+
+    $(document).on('click', 'li.diff-tool.active', renderModal);
 
     $(document).on('cloudcms-ready', function() {
-        if (isThisPageVersionsTool()) {
+        if (isThisPageVersions()) {
             // insert a new option to the top of the select dropdown
             $(dropdownMenu).prepend(newDropdownOption);
 

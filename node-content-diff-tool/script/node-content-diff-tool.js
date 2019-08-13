@@ -52,10 +52,10 @@ define(function (require, exports, module) {
     }
 
     function showModal(title, content) {
-        Ratchet.showModalMessage(
-            `<div id='diff-modal-title'>${title}</div>`,
-            `<div id='diff-modal-content'>${content}</div>`
-        );
+        Ratchet.showModal({
+            title: `<div id='diff-modal-title'>${title}</div>`,
+            body: `<div id='diff-modal-content'>${content}</div>`
+        });
     }
 
     function renderDiff(oldDocumentVersion, newDocumentVersion) {
@@ -100,14 +100,14 @@ define(function (require, exports, module) {
             const oldColor = options.oldSku.color[0];
 
             colorFields.forEach(field => {
-                modalContent += `<div class='field-name'>color:${field}</div>`;
+                modalContent += `<div class='field-name'>SKU:color:${field}</div>`;
                 modalContent += `<div class='field-content'>${renderDiff(oldColor[field], newColor[field])}</div>`;
             });
         }
 
-        additionalSkuFields.forEach((field) => {
+        additionalSkuFields.forEach(field => {
             modalContent += renderSkuField({
-                type: `SKU:${field}`,
+                type: `SKU${options.index}:${field}`,
                 oldSku: options.oldSku,
                 newSku: options.newSku,
                 field: field
@@ -121,6 +121,77 @@ define(function (require, exports, module) {
         modalContent += `<div class='field-name'>${options.type}</div>`;
         modalContent += `<div class='field-content'>${renderDiff(options.oldSku[options.field], options.newSku[options.field])}</div>`;
         return modalContent;
+    }
+
+    function buildPageContent(options) {
+        if (options.newDocumentVersion.typeQName === 'cricket:header') {
+            let modalContent = '';
+            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:title</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.title, options.newDocumentVersion.title)}</div>`;
+            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:header</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.header, options.newDocumentVersion.header)}</div>`;
+            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:active</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.active, options.newDocumentVersion.active)}</div>`;
+            return modalContent;
+        } else if (options.newDocumentVersion.typeQName === 'cricket:paragraph') {
+            let modalContent = '';
+            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:paragraph</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.paragraph, options.newDocumentVersion.paragraph)}</div>`;
+            return modalContent;
+        } else if (options.newDocumentVersion.typeQName === 'cricket:link') {
+            let modalContent = '';
+            modalContent += `<div class='field-name'>${options.nodeKey}:node:${options.nodeIndex}:link title</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.title, options.newDocumentVersion.title)}</div>`;
+            if (options.oldDocumentVersion.linkNodeReference) {
+                modalContent += `<div class='field-name'>${options.nodeKey}:node:${options.nodeIndex}:linkNodeReference title</div>`;
+                modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.linkNodeReference.title, options.newDocumentVersion.linkNodeReference.title)}</div>`;
+            }
+            return modalContent;
+        } else if (options.newDocumentVersion.typeQName === 'cricket:view-multi') {
+            let modalContent = '';
+            // TODO add top level slot fields from old and new, then run diff on them, push to modalContent
+            if (options.newDocumentVersion.view) {
+                options.newDocumentVersion.view.node.forEach((item, index) => {
+                    modalContent += buildPageContent({
+                        newDocumentVersion: item,
+                        oldDocumentVersion: ((options.oldDocumentVersion.view || {}).node || [])[index] || '',
+                        modalContent: modalContent,
+                        isRoot: false,
+                        nodeKey: options.nodeKey+":view-multi",
+                        nodeIndex: index
+                    });
+                });
+            }
+            return modalContent;
+        } else if (options.isRoot) {
+            let modalContent = '';
+
+            Object.keys(options.newDocumentVersion).forEach((key, index) => {
+                if (options.newDocumentVersion[key].node) {
+                    if (Array.isArray(options.newDocumentVersion[key].node)) {
+                        options.newDocumentVersion[key].node.forEach((node, nodeIndex) => {
+                            modalContent += buildPageContent({
+                                newDocumentVersion: node,
+                                oldDocumentVersion: options.oldDocumentVersion[key].node[nodeIndex],
+                                nodeKey: key,
+                                parentIndex: index,
+                                nodeIndex: nodeIndex,
+                                isRoot: false
+                            });
+                        });
+                    } else {
+                        modalContent += buildPageContent({
+                            newDocumentVersion: options.newDocumentVersion[key].node,
+                            oldDocumentVersion: options.oldDocumentVersion[key].node,
+                            nodeKey: key,
+                            nodeIndex: '',
+                            isRoot: false
+                        });
+                    }
+                }
+            });
+            return modalContent;
+        }
     }
 
     function renderModal() {
@@ -147,18 +218,35 @@ define(function (require, exports, module) {
                 console.log('new version => ', newDocumentVersion);
                 console.log('old version => ', oldDocumentVersion);
 
+                // Print diff of page title
+                mainModalContent +=  mainModalContent += `<div class='field-name'>Page Title</div>`;
+                mainModalContent += `<div class='field-content'>${renderDiff(newDocumentVersion.title, oldDocumentVersion.title)}</div>`;
+
+                 // Print out metadata diffs
+                 newDocumentVersion.metadata.forEach((item, index) => {
+                    newValue = item.value;
+                    newType = item.type;
+                    mainModalContent += `<div class='field-name'>Metadata: ${newType}</div>`;
+                    mainModalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.metadata[index].value, newValue)}</div>`;
+                });
+
+                // Print out urlList diffs
+                let oldUrl = (oldDocumentVersion.urlList[0] || {}).url;
+                let newUrl = (newDocumentVersion.urlList[0] || {}).url;
+                mainModalContent += `<div class='field-name'>url list</div>`;
+                mainModalContent += `<div class='field-content'>${renderDiff(oldUrl, newUrl)}</div>`;
+
+                // adding a black divider
+                mainModalContent += `<div class="content-diff-modal-divider"></div>`;
+
                 // determine if there is a content object
                 if (matchingResults[1].getTypeQName() === 'cricket:page') {
-
+                    mainModalContent += buildPageContent({
+                        newDocumentVersion: newDocumentVersion,
+                        oldDocumentVersion: oldDocumentVersion,
+                        isRoot: true
+                    })
                 } else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {
-                    // Print out metadata diffs
-                    newDocumentVersion.metadata.forEach((item, index) => {
-                        newValue = item.value;
-                        newType = item.type;
-                        mainModalContent += `<div class='field-name'>${newType}</div>`;
-                        mainModalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.metadata[index].value, newValue)}</div>`;
-                    });
-
                     // Print out Sku diffs
                     newDocumentVersion.skus.forEach((item, index) => {
                         mainModalContent += renderSku({
@@ -167,19 +255,24 @@ define(function (require, exports, module) {
                             index
                         });
                     });
+                } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-article') {
+                    mainModalContent += buildPageContent({
+                        newDocumentVersion: newDocumentVersion,
+                        oldDocumentVersion: oldDocumentVersion,
+                        isRoot: true
+                    })
+                } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-category') {
+                    mainModalContent += buildPageContent({
+                        newDocumentVersion: newDocumentVersion,
+                        oldDocumentVersion: oldDocumentVersion,
+                        isRoot: true
+                    })
+                } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-home') {
 
-                    // Print out urlList diffs
-                    if ((oldDocumentVersion.urlList  && oldDocumentVersion.urlList[0]) ||
-                        (newDocumentVersion.urlList  && newDocumentVersion.urlList[0])) {
-                        let oldUrl = (oldDocumentVersion.urlList[0] || {}).url;
-                        let newUrl = (newDocumentVersion.urlList[0] || {}).url;
-                        mainModalContent += `<div class='field-name'>Url List</div>`;
-                        mainModalContent += `<div class='field-content'>${renderDiff(oldUrl, newUrl)}</div>`;
-                    }
+                }
 
-                    if (!isError) {
-                        showModal(modalTitle, mainModalContent);
-                    }
+                if (!isError) {
+                    showModal(modalTitle, mainModalContent);
                 }
             });
     }

@@ -1,8 +1,8 @@
-del {
+del, .removed-text {
     background-color: #ffb2b2 !important;
 }
 
-ins {
+ins, .added-text {
     background-color: #bdffbd !important;
 }
 

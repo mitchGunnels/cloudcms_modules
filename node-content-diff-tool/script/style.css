@@ -33,3 +33,11 @@ ins, .added-text {
 .field-content {
     margin-bottom: 20px;
 }
+
+.content-diff-modal-divider {
+    display: block;
+    background-color: black;
+    height: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+}

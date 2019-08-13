@@ -242,7 +242,10 @@ define(function (require, exports, module) {
                 mainModalContent += `<div class="content-diff-modal-divider"></div>`;
 
                 // determine if there is a content object
-                if (matchingResults[1].getTypeQName() === 'cricket:page') {
+                if ((matchingResults[1].getTypeQName() === 'cricket:page') ||
+                    (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
+                    (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
+                    (matchingResults[1].getTypeQName() === 'cricket:page-support-home')) {
                     mainModalContent += buildPageContent({
                         newDocumentVersion: newDocumentVersion,
                         oldDocumentVersion: oldDocumentVersion,
@@ -256,24 +259,6 @@ define(function (require, exports, module) {
                             oldSku: oldDocumentVersion.skus[index],
                             index
                         });
-                    });
-                } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-article') {
-                    mainModalContent += buildPageContent({
-                        newDocumentVersion: newDocumentVersion,
-                        oldDocumentVersion: oldDocumentVersion,
-                        isRoot: true
-                    });
-                } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-category') {
-                    mainModalContent += buildPageContent({
-                        newDocumentVersion: newDocumentVersion,
-                        oldDocumentVersion: oldDocumentVersion,
-                        isRoot: true
-                    });
-                } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-home') {
-                    mainModalContent += buildPageContent({
-                        newDocumentVersion: newDocumentVersion,
-                        oldDocumentVersion: oldDocumentVersion,
-                        isRoot: true
                     });
                 }
 

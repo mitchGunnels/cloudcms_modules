@@ -52,6 +52,8 @@ define(function (require, exports, module) {
     }
 
     function showModal(title, content) {
+        // attach a specific class name
+
         Ratchet.showModal({
             title: `<div id='diff-modal-title'>${title}</div>`,
             body: `<div id='diff-modal-content'>${content}</div>`
@@ -245,7 +247,7 @@ define(function (require, exports, module) {
                         newDocumentVersion: newDocumentVersion,
                         oldDocumentVersion: oldDocumentVersion,
                         isRoot: true
-                    })
+                    });
                 } else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {
                     // Print out Sku diffs
                     newDocumentVersion.skus.forEach((item, index) => {
@@ -260,15 +262,19 @@ define(function (require, exports, module) {
                         newDocumentVersion: newDocumentVersion,
                         oldDocumentVersion: oldDocumentVersion,
                         isRoot: true
-                    })
+                    });
                 } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-category') {
                     mainModalContent += buildPageContent({
                         newDocumentVersion: newDocumentVersion,
                         oldDocumentVersion: oldDocumentVersion,
                         isRoot: true
-                    })
+                    });
                 } else if (matchingResults[1].getTypeQName() === 'cricket:page-support-home') {
-
+                    mainModalContent += buildPageContent({
+                        newDocumentVersion: newDocumentVersion,
+                        oldDocumentVersion: oldDocumentVersion,
+                        isRoot: true
+                    });
                 }
 
                 if (!isError) {

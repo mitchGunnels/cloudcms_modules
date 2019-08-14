@@ -1,8 +1,10 @@
-del, .removed-text {
+.node-content-diff-modal del,
+.node-content-diff-modal .removed-text {
     background-color: #ffb2b2 !important;
 }
 
-ins, .added-text {
+.node-content-diff-modal ins,
+.node-content-diff-modal .added-text {
     background-color: #bdffbd !important;
 }
 
@@ -14,30 +16,31 @@ ins, .added-text {
     cursor: pointer;
 }
 
-.error {
+.node-content-diff-modal .error {
     color: red;
 }
 
-.modal-body {
+.node-content-diff-modal .modal-body {
     height: 500px;
     overflow: scroll;
     overflow-x: hidden;
 }
 
-.field-name {
-    font-size: 24px;
-    text-transform: capitalize;
-    font-weight: bold;
-}
-
-.field-content {
+.node-content-diff-modal .field-content {
     margin-bottom: 20px;
+    padding-left: 20px;
 }
 
-.content-diff-modal-divider {
+.node-content-diff-modal .content-diff-modal-divider {
     display: block;
     background-color: black;
     height: 5px;
     width: 100%;
     margin-bottom: 15px;
+}
+
+.node-content-diff-modal .section-header {
+    font-weight: bold;
+    font-size: 24px;
+    font-style: italic;
 }

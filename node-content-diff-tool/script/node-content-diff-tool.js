@@ -127,14 +127,7 @@ define(function (require, exports, module) {
         return modalContent;
     }
 
-    function buildPageContent({
-        isRoot,
-        nodeIndex,
-        nodeKey,
-        oldDocumentVersion,
-        newDocumentVersion,
-        ...rest
-    }) {
+    function buildPageContent({ isRoot, nodeIndex, nodeKey, oldDocumentVersion, newDocumentVersion }) {
         // Here be dragons
         // TODO: refactor this function
         if (newDocumentVersion.typeQName === 'cricket:header') {

@@ -51,6 +51,14 @@ define(function (require, exports, module) {
         return $(selectedItems).length === 2;
     }
 
+    function createHashMap({array, key}) {
+        const hashMap = {};
+        array.forEach(element => {
+            hashMap[element[key]] = element;
+        });
+        return hashMap;
+    }
+
     function showModal(title, content) {
         Ratchet.showModal({
             title: `<div id='diff-modal-title'>${title}</div>`,
@@ -60,7 +68,7 @@ define(function (require, exports, module) {
 
     function renderDiff(oldDocumentVersion, newDocumentVersion) {
         if (!oldDocumentVersion && newDocumentVersion) {
-            return `<div clalss="added-text">${newDocumentVersion}</div>`;
+            return `<div class="added-text">${newDocumentVersion}</div>`;
         }
         if (!newDocumentVersion && oldDocumentVersion) {
             return `<div class="removed-text">${oldDocumentVersion}</div>;`
@@ -220,6 +228,9 @@ define(function (require, exports, module) {
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
+                console.log('new document version => ', newDocumentVersion);
+                console.log('old document version => ', oldDocumentVersion);
+
                 // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;
 
@@ -228,11 +239,22 @@ define(function (require, exports, module) {
                 mainModalContent += `<div class='field-content'>${renderDiff(newDocumentVersion.title, oldDocumentVersion.title)}</div>`;
 
                  // Print metadata diffs, all pages have metadata
-                 newDocumentVersion.metadata.forEach((item, index) => {
-                    newValue = item.value;
-                    newType = item.type;
-                    mainModalContent += `<div class='field-name'>Metadata: ${newType}</div>`;
-                    mainModalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.metadata[index].value, newValue)}</div>`;
+                const oldMetaDataHashMap = createHashMap({
+                    array: oldDocumentVersion.metadata,
+                    key: 'type'
+                });
+
+                newDocumentVersion.metadata.forEach(item => {
+                    const newType = item.type;
+                    const newValue = item.value;
+                    let oldValue = '';
+                    let oldType = '';
+                    if (oldMetaDataHashMap[item.type]) {
+                        oldValue = oldMetaDataHashMap[item.type].value;
+                        oldType = oldMetaDataHashMap[item.type].type;
+                    }
+                    mainModalContent += `<div class='field-name'>Metadata:${renderDiff(oldType, newType)}</div>`;
+                    mainModalContent += `<div class='field-content'>${renderDiff(oldValue, newValue)}</div>`;
                 });
 
                 // Print Url List diffs, all pages have a url list

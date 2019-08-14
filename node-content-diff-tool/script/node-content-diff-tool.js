@@ -52,8 +52,6 @@ define(function (require, exports, module) {
     }
 
     function showModal(title, content) {
-        // attach a specific class name
-
         Ratchet.showModal({
             title: `<div id='diff-modal-title'>${title}</div>`,
             body: `<div id='diff-modal-content'>${content}</div>`
@@ -72,6 +70,7 @@ define(function (require, exports, module) {
         }
 
         const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
+
         // make the diff human readable
         dmp.diff_cleanupSemantic(delta);
 
@@ -92,10 +91,18 @@ define(function (require, exports, module) {
         return selectedItems;
     }
 
+    function renderSkuField(options) {
+        let modalContent = '';
+        modalContent += `<div class='field-name'>${options.type}</div>`;
+        modalContent += `<div class='field-content'>${renderDiff(options.oldSku[options.field], options.newSku[options.field])}</div>`;
+        return modalContent;
+    }
+
     function renderSku(options) {
         let modalContent = '';
         const additionalSkuFields = ['active', 'id', 'modelName', 'refurbished', 'skuId', 'title'];
 
+        // Specifically call out the color array
         if (options.newSku.color && options.newSku.color[0]) {
             const colorFields = ['active', 'displayName', 'hexValue', 'id', 'title'];
             const newColor = options.newSku.color[0];
@@ -107,6 +114,7 @@ define(function (require, exports, module) {
             });
         }
 
+        // Call out the other fields that are not "color"
         additionalSkuFields.forEach(field => {
             modalContent += renderSkuField({
                 type: `SKU${options.index}:${field}`,
@@ -118,14 +126,8 @@ define(function (require, exports, module) {
         return modalContent;
     }
 
-    function renderSkuField(options) {
-        let modalContent = '';
-        modalContent += `<div class='field-name'>${options.type}</div>`;
-        modalContent += `<div class='field-content'>${renderDiff(options.oldSku[options.field], options.newSku[options.field])}</div>`;
-        return modalContent;
-    }
-
     function buildPageContent(options) {
+        // Here be dragons
         if (options.newDocumentVersion.typeQName === 'cricket:header') {
             let modalContent = '';
             modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:title</div>`;
@@ -151,7 +153,6 @@ define(function (require, exports, module) {
             return modalContent;
         } else if (options.newDocumentVersion.typeQName === 'cricket:view-multi') {
             let modalContent = '';
-            // TODO add top level slot fields from old and new, then run diff on them, push to modalContent
             if (options.newDocumentVersion.view) {
                 options.newDocumentVersion.view.node.forEach((item, index) => {
                     modalContent += buildPageContent({
@@ -202,7 +203,6 @@ define(function (require, exports, module) {
             .listVersions({ full: true, limit: -1, sort: { "_system.modified_on.ms": -1 } })
             .then(function () {
                 let mainModalContent = '';
-                let fieldDiff = '';
                 let isError = false;
                 const selectedItems = getSelectedItems();
                 const versionsList = this.asArray()
@@ -214,17 +214,18 @@ define(function (require, exports, module) {
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
+                // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;
 
                 // TODO: delete these console logs
                 console.log('new version => ', newDocumentVersion);
                 console.log('old version => ', oldDocumentVersion);
 
-                // Print diff of page title
+                // Print diff of page title, all pages have a title
                 mainModalContent +=  mainModalContent += `<div class='field-name'>Page Title</div>`;
                 mainModalContent += `<div class='field-content'>${renderDiff(newDocumentVersion.title, oldDocumentVersion.title)}</div>`;
 
-                 // Print out metadata diffs
+                 // Print metadata diffs, all pages have metadata
                  newDocumentVersion.metadata.forEach((item, index) => {
                     newValue = item.value;
                     newType = item.type;
@@ -232,27 +233,34 @@ define(function (require, exports, module) {
                     mainModalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.metadata[index].value, newValue)}</div>`;
                 });
 
-                // Print out urlList diffs
+                // Print Url List diffs, all pages have a url list
                 let oldUrl = (oldDocumentVersion.urlList[0] || {}).url;
                 let newUrl = (newDocumentVersion.urlList[0] || {}).url;
                 mainModalContent += `<div class='field-name'>url list</div>`;
                 mainModalContent += `<div class='field-content'>${renderDiff(oldUrl, newUrl)}</div>`;
 
-                // adding a black divider
-                mainModalContent += `<div class="content-diff-modal-divider"></div>`;
+                // add a black divider
+                mainModalContent += `<hr class="content-diff-modal-divider" />`;
 
-                // determine if there is a content object
+                // Execute our recursive function above
+                // All these page types contain nested nodes
                 if ((matchingResults[1].getTypeQName() === 'cricket:page') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-home')) {
-                    mainModalContent += buildPageContent({
-                        newDocumentVersion: newDocumentVersion,
-                        oldDocumentVersion: oldDocumentVersion,
-                        isRoot: true
-                    });
+                        mainModalContent += buildPageContent({
+                            newDocumentVersion: newDocumentVersion,
+                            oldDocumentVersion: oldDocumentVersion,
+                            isRoot: true
+                        });
                 } else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {
-                    // Print out Sku diffs
+                    // Print out page-level properties
+                    mainModalContent += `<div class='field-name'>document active</div>`;
+                    mainModalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.active, newDocumentVersion.active)}</div>`;
+                    mainModalContent += `<div class='field-name'>document title</div>`;
+                    mainModalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.title, newDocumentVersion.title)}</div>`;
+
+                    // Print out Sku diffs, only possible on page-shop
                     newDocumentVersion.skus.forEach((item, index) => {
                         mainModalContent += renderSku({
                             newSku: item,

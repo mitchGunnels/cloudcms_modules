@@ -56,6 +56,7 @@ define(function (require, exports, module) {
             "eol",
             "eoli",
             "color[0]/hexValue",
+            "color[0]/displayName",
             "active",
             "_system/created_on/timestamp",
             "_system/created_by",

@@ -84,7 +84,6 @@ define(function (require, exports, module) {
 
         $('.document-versions .table').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function () {
             const $this = $(this);
-
             const id = $this.attr('id'); // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
 
             selectedItems.push(id);
@@ -92,23 +91,23 @@ define(function (require, exports, module) {
         return selectedItems;
     }
 
-    function renderSkuField(options) {
+    function renderSkuField({type, oldSku, newSku, field, ...rest}) {
         let modalContent = '';
 
-        modalContent += `<div class='field-name'>${options.type}</div>`;
-        modalContent += `<div class='field-content'>${renderDiff(options.oldSku[options.field], options.newSku[options.field])}</div>`;
+        modalContent += `<div class='field-name'>${type}</div>`;
+        modalContent += `<div class='field-content'>${renderDiff(oldSku[field], newSku[field])}</div>`;
         return modalContent;
     }
 
-    function renderSku(options) {
+    function renderSku({oldSku, newSku, index, ...rest}) {
         let modalContent = '';
         const additionalSkuFields = ['active', 'id', 'modelName', 'refurbished', 'skuId', 'title'];
 
         // Specifically call out the color array
-        if (options.newSku.color && options.newSku.color[0]) {
+        if (newSku.color && newSku.color[0]) {
             const colorFields = ['active', 'displayName', 'hexValue', 'id', 'title'];
-            const newColor = options.newSku.color[0];
-            const oldColor = options.oldSku.color[0];
+            const newColor = newSku.color[0];
+            const oldColor = oldSku.color[0];
 
             colorFields.forEach(field => {
                 modalContent += `<div class='field-name'>SKU:color:${field}</div>`;
@@ -119,79 +118,87 @@ define(function (require, exports, module) {
         // Call out the other fields that are not "color"
         additionalSkuFields.forEach(field => {
             modalContent += renderSkuField({
-                type: `SKU${options.index}:${field}`,
-                oldSku: options.oldSku,
-                newSku: options.newSku,
-                field: field
+                type: `SKU${index}:${field}`,
+                oldSku,
+                newSku,
+                field
             });
         });
         return modalContent;
     }
 
-    function buildPageContent(options) {
+    function buildPageContent({
+        isRoot,
+        nodeIndex,
+        nodeKey,
+        oldDocumentVersion,
+        newDocumentVersion,
+        ...rest
+    }) {
         // Here be dragons
-        if (options.newDocumentVersion.typeQName === 'cricket:header') {
+        // TODO: refactor this function
+        if (newDocumentVersion.typeQName === 'cricket:header') {
             let modalContent = '';
 
-            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:title</div>`;
-            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.title, options.newDocumentVersion.title)}</div>`;
-            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:header</div>`;
-            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.header, options.newDocumentVersion.header)}</div>`;
-            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:active</div>`;
-            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.active, options.newDocumentVersion.active)}</div>`;
+            modalContent += `<div class='field-name'>${nodeKey}:${nodeIndex}:title</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.title, newDocumentVersion.title)}</div>`;
+            modalContent += `<div class='field-name'>${nodeKey}:${nodeIndex}:header</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.header, newDocumentVersion.header)}</div>`;
+            modalContent += `<div class='field-name'>${nodeKey}:${nodeIndex}:active</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.active, newDocumentVersion.active)}</div>`;
             return modalContent;
-        } else if (options.newDocumentVersion.typeQName === 'cricket:paragraph') {
+        } else if (newDocumentVersion.typeQName === 'cricket:paragraph') {
             let modalContent = '';
 
-            modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:paragraph</div>`;
-            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.paragraph, options.newDocumentVersion.paragraph)}</div>`;
+            modalContent += `<div class='field-name'>${nodeKey}:${nodeIndex}:paragraph</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.paragraph, newDocumentVersion.paragraph)}</div>`;
             return modalContent;
-        } else if (options.newDocumentVersion.typeQName === 'cricket:link') {
+        } else if (newDocumentVersion.typeQName === 'cricket:link') {
             let modalContent = '';
 
-            modalContent += `<div class='field-name'>${options.nodeKey}:node:${options.nodeIndex}:link title</div>`;
-            modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.title, options.newDocumentVersion.title)}</div>`;
-            if (options.oldDocumentVersion.linkNodeReference) {
-                modalContent += `<div class='field-name'>${options.nodeKey}:node:${options.nodeIndex}:linkNodeReference title</div>`;
-                modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.linkNodeReference.title, options.newDocumentVersion.linkNodeReference.title)}</div>`;
+            modalContent += `<div class='field-name'>${nodeKey}:node:${nodeIndex}:link title</div>`;
+            modalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.title, newDocumentVersion.title)}</div>`;
+            if (oldDocumentVersion.linkNodeReference) {
+                modalContent += `<div class='field-name'>${nodeKey}:node:${nodeIndex}:linkNodeReference title</div>`;
+                modalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.linkNodeReference.title, newDocumentVersion.linkNodeReference.title)}</div>`;
             }
             return modalContent;
-        } else if (options.newDocumentVersion.typeQName === 'cricket:view-multi') {
+        } else if (newDocumentVersion.typeQName === 'cricket:view-multi') {
             let modalContent = '';
 
-            if (options.newDocumentVersion.view) {
-                options.newDocumentVersion.view.node.forEach((item, index) => {
+            if (newDocumentVersion.view) {
+                newDocumentVersion.view.node.forEach((item, index) => {
                     modalContent += buildPageContent({
                         newDocumentVersion: item,
-                        oldDocumentVersion: ((options.oldDocumentVersion.view || {}).node || [])[index] || '',
-                        modalContent: modalContent,
+                        oldDocumentVersion: ((oldDocumentVersion.view || {}).node || [])[index] || '',
+                        modalContent,
                         isRoot: false,
-                        nodeKey: options.nodeKey+":view-multi",
+                        nodeKey: nodeKey+":view-multi",
                         nodeIndex: index
                     });
                 });
             }
             return modalContent;
-        } else if (options.isRoot) {
+        } else if (isRoot) {
             let modalContent = '';
 
-            Object.keys(options.newDocumentVersion).forEach((key, index) => {
-                if (options.newDocumentVersion[key].node) {
-                    if (Array.isArray(options.newDocumentVersion[key].node)) {
-                        options.newDocumentVersion[key].node.forEach((node, nodeIndex) => {
+            Object.keys(newDocumentVersion).forEach((key, index) => {
+                if (newDocumentVersion[key].node) {
+                    if (Array.isArray(newDocumentVersion[key].node)) {
+                        newDocumentVersion[key].node.forEach((node, nodeIndex) => {
                             modalContent += buildPageContent({
                                 newDocumentVersion: node,
-                                oldDocumentVersion: options.oldDocumentVersion[key].node[nodeIndex],
+                                oldDocumentVersion: oldDocumentVersion[key].node[nodeIndex],
                                 nodeKey: key,
                                 parentIndex: index,
-                                nodeIndex: nodeIndex,
+                                nodeIndex,
                                 isRoot: false
                             });
                         });
                     } else {
                         modalContent += buildPageContent({
-                            newDocumentVersion: options.newDocumentVersion[key].node,
-                            oldDocumentVersion: options.oldDocumentVersion[key].node,
+                            newDocumentVersion: newDocumentVersion[key].node,
+                            oldDocumentVersion: oldDocumentVersion[key].node,
                             nodeKey: key,
                             nodeIndex: '',
                             isRoot: false
@@ -224,7 +231,7 @@ define(function (require, exports, module) {
                 const modalTitle = newDocumentVersion.title;
 
                 // Print diff of page title, all pages have a title
-                mainModalContent +=  mainModalContent += `<div class='field-name'>Page Title</div>`;
+                mainModalContent += `<div class='field-name'>Page Title</div>`;
                 mainModalContent += `<div class='field-content'>${renderDiff(newDocumentVersion.title, oldDocumentVersion.title)}</div>`;
 
                  // Print metadata diffs, all pages have metadata
@@ -252,8 +259,8 @@ define(function (require, exports, module) {
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-home')) {
                         mainModalContent += buildPageContent({
-                            newDocumentVersion: newDocumentVersion,
-                            oldDocumentVersion: oldDocumentVersion,
+                            newDocumentVersion,
+                            oldDocumentVersion,
                             isRoot: true
                         });
                 } else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {

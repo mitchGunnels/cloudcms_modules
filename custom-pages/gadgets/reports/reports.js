@@ -1,6 +1,8 @@
 define(function (require, exports, module) {
-    
+
+    //TODO reduce size of includes via lib
     require('css!./styles/reports.css');
+    const XLSX = require('../../../lib/xlsx.js')
     const html = require('text!./templates/reports.html');
     
     const Empty = require('ratchet/dynamic/empty');

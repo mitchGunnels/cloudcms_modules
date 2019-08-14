@@ -66,7 +66,7 @@ define(function (require, exports, module) {
             return `<div class="removed-text">${oldDocumentVersion}</div>;`
         }
         if (!newDocumentVersion && !oldDocumentVersion) {
-            return `<div>Both were empty</div>`
+            return `<div>EMPTY</div>`
         }
 
         const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
@@ -219,6 +219,10 @@ define(function (require, exports, module) {
                 // Remove all the superfluous functions and stuff, just give us the JSON
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
+
+                // TODO: remove these console.logs
+                console.log('new document version => ', newDocumentVersion);
+                console.log('old document version => ', oldDocumentVersion);
 
                 // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;

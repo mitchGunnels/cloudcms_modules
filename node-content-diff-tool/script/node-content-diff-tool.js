@@ -51,18 +51,11 @@ define(function (require, exports, module) {
         return $(selectedItems).length === 2;
     }
 
-    function createHashMap({ array, key }) {
-        const hashMap = {};
-        array.forEach(element => {
-            hashMap[element[key]] = element;
-        });
-        return hashMap;
-    }
-
     function showModal(title, content) {
         Ratchet.showModal({
             title: `<div id='diff-modal-title'>${title}</div>`,
-            body: `<div id='diff-modal-content'>${content}</div>`
+            body: `<div id='diff-modal-content'>${content}</div>`,
+            big: true
         });
     }
 
@@ -99,7 +92,7 @@ define(function (require, exports, module) {
         return selectedItems;
     }
 
-    function renderSkuField({ type, oldSku, newSku, field, ...rest }) {
+    function renderSkuField({ type, oldSku, newSku, field }) {
         let modalContent = '';
 
         modalContent += `<div class='field-name'>${type}</div>`;
@@ -261,6 +254,10 @@ define(function (require, exports, module) {
                 // Remove all the superfluous functions and stuff, just give us the JSON
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
+
+                // TODO: remove these consoles
+                console.log('new doc ver =>', newDocumentVersion);
+                console.log('old doc ver =>', oldDocumentVersion);
 
                 // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;

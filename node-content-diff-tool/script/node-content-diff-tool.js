@@ -51,7 +51,7 @@ define(function (require, exports, module) {
         return $(selectedItems).length === 2;
     }
 
-    function createHashMap({array, key}) {
+    function createHashMap({ array, key }) {
         const hashMap = {};
         array.forEach(element => {
             hashMap[element[key]] = element;
@@ -99,7 +99,7 @@ define(function (require, exports, module) {
         return selectedItems;
     }
 
-    function renderSkuField({type, oldSku, newSku, field, ...rest}) {
+    function renderSkuField({ type, oldSku, newSku, field, ...rest }) {
         let modalContent = '';
 
         modalContent += `<div class='field-name'>${type}</div>`;
@@ -107,18 +107,20 @@ define(function (require, exports, module) {
         return modalContent;
     }
 
-    function renderSku({oldSku, newSku, index, ...rest}) {
+    function renderSku({ oldSku, newSku, index }) {
         let modalContent = '';
         const additionalSkuFields = ['active', 'id', 'modelName', 'refurbished', 'skuId', 'title'];
+        const colorFields = ['active', 'displayName', 'hexValue', 'id', 'title'];
 
         // Specifically call out the color array
-        if (newSku.color && newSku.color[0]) {
-            const colorFields = ['active', 'displayName', 'hexValue', 'id', 'title'];
-            const newColor = newSku.color[0];
-            const oldColor = oldSku.color[0];
+        // Check that the color property exists on either the old or new document version
+        // If not, then just render the diffs on the other properties
+        if ((newSku.color && newSku.color[0]) || (oldSku.color && oldSku.color[0])) {
+            const newColor = newSku.color ? newSku.color[0] : '';
+            const oldColor = oldSku.color ? oldSku.color[0] : '';
 
             colorFields.forEach(field => {
-                modalContent += `<div class='field-name'>SKU:color:${field}</div>`;
+                modalContent += `<div class='field-name'>SKU${index}:color:${field}</div>`;
                 modalContent += `<div class='field-content'>${renderDiff(oldColor[field], newColor[field])}</div>`;
             });
         }
@@ -174,7 +176,7 @@ define(function (require, exports, module) {
                         oldDocumentVersion: ((oldDocumentVersion.view || {}).node || [])[index] || '',
                         modalContent,
                         isRoot: false,
-                        nodeKey: nodeKey+":view-multi",
+                        nodeKey: nodeKey + ":view-multi",
                         nodeIndex: index
                     });
                 });
@@ -182,31 +184,63 @@ define(function (require, exports, module) {
             return modalContent;
         } else if (isRoot) {
             let modalContent = '';
+            // Determine which document version has the longer array length
+            // We will then use that docuemnt version to loop through
+            const newDocumentLength = newDocumentVersion.length;
+            const oldDocumentLength = oldDocumentVersion.length;
 
-            Object.keys(newDocumentVersion).forEach((key, index) => {
-                if (newDocumentVersion[key].node) {
-                    if (Array.isArray(newDocumentVersion[key].node)) {
-                        newDocumentVersion[key].node.forEach((node, nodeIndex) => {
+            if (newDocumentLength >= oldDocumentLength) {
+                Object.keys(newDocumentVersion).forEach((key, index) => {
+                    if (newDocumentVersion[key].node) {
+                        if (Array.isArray(newDocumentVersion[key].node)) {
+                            newDocumentVersion[key].node.forEach((node, nodeIndex) => {
+                                modalContent += buildPageContent({
+                                    newDocumentVersion: node,
+                                    oldDocumentVersion: oldDocumentVersion[key].node[nodeIndex],
+                                    nodeKey: key,
+                                    parentIndex: index,
+                                    nodeIndex,
+                                    isRoot: false
+                                });
+                            });
+                        } else {
                             modalContent += buildPageContent({
-                                newDocumentVersion: node,
-                                oldDocumentVersion: oldDocumentVersion[key].node[nodeIndex],
+                                newDocumentVersion: newDocumentVersion[key].node,
+                                oldDocumentVersion: oldDocumentVersion[key].node,
                                 nodeKey: key,
-                                parentIndex: index,
-                                nodeIndex,
+                                nodeIndex: '',
                                 isRoot: false
                             });
-                        });
-                    } else {
-                        modalContent += buildPageContent({
-                            newDocumentVersion: newDocumentVersion[key].node,
-                            oldDocumentVersion: oldDocumentVersion[key].node,
-                            nodeKey: key,
-                            nodeIndex: '',
-                            isRoot: false
-                        });
+                        }
                     }
-                }
-            });
+                });
+            } else if (oldDocumentLength >= newDocumentLength) {
+                Object.keys(oldDocumentVersion).forEach((key, index) => {
+                    if (oldDocumentVersion[key].node) {
+                        if (Array.isArray(oldDocumentVersion[key].node)) {
+                            oldDocumentVersion[key].node.forEach((node, nodeIndex) => {
+                                modalContent += buildPageContent({
+                                    oldDocumentVersion: node,
+                                    newDocumentVersion: newDocumentVersion[key].node[nodeIndex],
+                                    nodeKey: key,
+                                    parentIndex: index,
+                                    nodeIndex,
+                                    isRoot: false
+                                });
+                            });
+                        } else {
+                            modalContent += buildPageContent({
+                                newDocumentVersion: newDocumentVersion[key].node,
+                                oldDocumentVersion: oldDocumentVersion[key].node,
+                                nodeKey: key,
+                                nodeIndex: '',
+                                isRoot: false
+                            });
+                        }
+                    }
+                });
+            }
+
             return modalContent;
         }
     }
@@ -228,9 +262,6 @@ define(function (require, exports, module) {
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
-                console.log('new document version => ', newDocumentVersion);
-                console.log('old document version => ', oldDocumentVersion);
-
                 // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;
 
@@ -238,24 +269,29 @@ define(function (require, exports, module) {
                 mainModalContent += `<div class='field-name'>Page Title</div>`;
                 mainModalContent += `<div class='field-content'>${renderDiff(newDocumentVersion.title, oldDocumentVersion.title)}</div>`;
 
-                 // Print metadata diffs, all pages have metadata
-                const oldMetaDataHashMap = createHashMap({
-                    array: oldDocumentVersion.metadata,
-                    key: 'type'
-                });
-
-                newDocumentVersion.metadata.forEach(item => {
-                    const newType = item.type;
-                    const newValue = item.value;
-                    let oldValue = '';
-                    let oldType = '';
-                    if (oldMetaDataHashMap[item.type]) {
-                        oldValue = oldMetaDataHashMap[item.type].value;
-                        oldType = oldMetaDataHashMap[item.type].type;
-                    }
-                    mainModalContent += `<div class='field-name'>Metadata:${renderDiff(oldType, newType)}</div>`;
-                    mainModalContent += `<div class='field-content'>${renderDiff(oldValue, newValue)}</div>`;
-                });
+                // Print metadata diffs, all pages have metadata
+                // Determine which document version has more metadata items, this is the one we're going to loop through
+                const newMetadataLength = newDocumentVersion.metadata.length;
+                const oldMetadataLength = oldDocumentVersion.metadata.length;
+                if (newMetadataLength >= oldMetadataLength) {
+                    newDocumentVersion.metadata.forEach((item, index) => {
+                        newValue = item.value;
+                        newType = item.type;
+                        oldValue = oldDocumentVersion.metadata[index] ? oldDocumentVersion.metadata[index].value : '';
+                        oldType = oldDocumentVersion.metadata[index] ? oldDocumentVersion.metadata[index].type : '';
+                        mainModalContent += `<div class='field-name'>Metadata${index}: ${renderDiff(oldType, newType)}</div>`;
+                        mainModalContent += `<div class='field-content'>${renderDiff(oldValue, newValue)}</div>`;
+                    });
+                } else if (newMetadataLength <= oldMetadataLength) {
+                    oldDocumentVersion.metadata.foreach((item, index) => {
+                        oldValue = item.value;
+                        oldType = item.type;
+                        newValue = newDocumentVersion.metadata[index] ? newDocumentVersion.metadata[index].value : '';
+                        newType = newDocumentVersion.metadata[index] ? newDocumentVersion.metadata[index].type : '';
+                        mainModalContent += `<div class='field-name'>Metadata${index}: ${renderDiff(oldType, newType)}</div>`;
+                        mainModalContent += `<div class='field-content'>${renderDiff(oldValue, newValue)}</div>`;
+                    });
+                }
 
                 // Print Url List diffs, all pages have a url list
                 let oldUrl = (oldDocumentVersion.urlList[0] || {}).url;
@@ -273,11 +309,11 @@ define(function (require, exports, module) {
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-home')) {
-                        mainModalContent += buildPageContent({
-                            newDocumentVersion,
-                            oldDocumentVersion,
-                            isRoot: true
-                        });
+                    mainModalContent += buildPageContent({
+                        newDocumentVersion,
+                        oldDocumentVersion,
+                        isRoot: true
+                    });
                 } else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {
                     // Print out page-level properties
                     mainModalContent += `<div class='field-name'>document active</div>`;
@@ -286,13 +322,27 @@ define(function (require, exports, module) {
                     mainModalContent += `<div class='field-content'>${renderDiff(oldDocumentVersion.title, newDocumentVersion.title)}</div>`;
 
                     // Print out Sku diffs, only possible on page-shop
-                    newDocumentVersion.skus.forEach((item, index) => {
-                        mainModalContent += renderSku({
-                            newSku: item,
-                            oldSku: oldDocumentVersion.skus[index],
-                            index
+                    // Determine which document version has more skus, this is the one we're going to loop through
+                    newSkusLength = newDocumentVersion.skus.length;
+                    oldSkusLength = oldDocumentVersion.skus.length;
+                    if (newSkusLength >= oldSkusLength) {
+                        newDocumentVersion.skus.forEach((item, index) => {
+                            mainModalContent += renderSku({
+                                newSku: item,
+                                oldSku: oldDocumentVersion.skus[index],
+                                index
+                            });
                         });
-                    });
+                    } else if (oldSkusLength >= newSkusLength) {
+                        oldDocumentVersion.skus.forEach((item, index) => {
+                            mainModalContent += renderSku({
+                                oldSku: item,
+                                newSku: newDocumentVersion.skus[index],
+                                index
+                            });
+                        });
+                    }
+
                 }
 
                 if (!isError) {

@@ -1,8 +1,7 @@
 define(function (require, exports, module) {
-    const $ = require("jquery");
     require("./diff-match-patch.js");
     require('css!./style.css');
-
+    const $ = require("jquery");
     const dmp = new diff_match_patch();
     const windowHref = window.location.href;
     const dropdownToggleButton = ".dropdown-toggle";
@@ -30,10 +29,11 @@ define(function (require, exports, module) {
     }
 
     function isPageDocument() {
-        // check list-row-info class innerHTML for anything that contains cricket:page*
-        // will return true for "cricket:page", "cricket:page-support", etc
+        // Check list-row-info class innerHTML for anything that contains cricket:page*
+        // Will return true for "cricket:page", "cricket:page-support", etc
         const arrayOfInfoElements = $('#document-summary .list-row-info a');
         const regex = /cricket:page(-.*)?/;
+
         return $.grep(arrayOfInfoElements, function (element) {
             return regex.test(element.innerHTML);
         }).length;
@@ -71,16 +71,17 @@ define(function (require, exports, module) {
 
         const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
 
-        // make the diff human readable
+        // Make the diff human readable
         dmp.diff_cleanupSemantic(delta);
 
-        // return an HTML element
+        // Return an HTML element
         return dmp.diff_prettyHtml(delta);
     }
 
     function getSelectedItems() {
-        // returns an array of the versions user selected
+        // Returns an array of the versions user selected
         let selectedItems = [];
+
         $('.document-versions .table').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function () {
             const $this = $(this);
 
@@ -93,6 +94,7 @@ define(function (require, exports, module) {
 
     function renderSkuField(options) {
         let modalContent = '';
+
         modalContent += `<div class='field-name'>${options.type}</div>`;
         modalContent += `<div class='field-content'>${renderDiff(options.oldSku[options.field], options.newSku[options.field])}</div>`;
         return modalContent;
@@ -130,6 +132,7 @@ define(function (require, exports, module) {
         // Here be dragons
         if (options.newDocumentVersion.typeQName === 'cricket:header') {
             let modalContent = '';
+
             modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:title</div>`;
             modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.title, options.newDocumentVersion.title)}</div>`;
             modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:header</div>`;
@@ -139,11 +142,13 @@ define(function (require, exports, module) {
             return modalContent;
         } else if (options.newDocumentVersion.typeQName === 'cricket:paragraph') {
             let modalContent = '';
+
             modalContent += `<div class='field-name'>${options.nodeKey}:${options.nodeIndex}:paragraph</div>`;
             modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.paragraph, options.newDocumentVersion.paragraph)}</div>`;
             return modalContent;
         } else if (options.newDocumentVersion.typeQName === 'cricket:link') {
             let modalContent = '';
+
             modalContent += `<div class='field-name'>${options.nodeKey}:node:${options.nodeIndex}:link title</div>`;
             modalContent += `<div class='field-content'>${renderDiff(options.oldDocumentVersion.title, options.newDocumentVersion.title)}</div>`;
             if (options.oldDocumentVersion.linkNodeReference) {
@@ -153,6 +158,7 @@ define(function (require, exports, module) {
             return modalContent;
         } else if (options.newDocumentVersion.typeQName === 'cricket:view-multi') {
             let modalContent = '';
+
             if (options.newDocumentVersion.view) {
                 options.newDocumentVersion.view.node.forEach((item, index) => {
                     modalContent += buildPageContent({
@@ -199,7 +205,7 @@ define(function (require, exports, module) {
 
     function renderModal() {
         Ratchet.observable("document").get()
-            // return all document versions on this page, no limit, sort with newest first
+            // Return all document versions on this page, no limit, sort with newest first
             .listVersions({ full: true, limit: -1, sort: { "_system.modified_on.ms": -1 } })
             .then(function () {
                 let mainModalContent = '';
@@ -207,19 +213,15 @@ define(function (require, exports, module) {
                 const selectedItems = getSelectedItems();
                 const versionsList = this.asArray()
 
-                // given the array of all the versions on the page, find the ones we put a checkmark on
+                // Given the array of all the versions on the page, find the ones we put a checkmark on
                 const matchingResults = versionsList.filter(version => selectedItems.includes(version._doc));
 
-                // remove all the superfluous functions and stuff, just give us the JSON
+                // Remove all the superfluous functions and stuff, just give us the JSON
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
                 // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;
-
-                // TODO: delete these console logs
-                console.log('new version => ', newDocumentVersion);
-                console.log('old version => ', oldDocumentVersion);
 
                 // Print diff of page title, all pages have a title
                 mainModalContent +=  mainModalContent += `<div class='field-name'>Page Title</div>`;
@@ -236,14 +238,15 @@ define(function (require, exports, module) {
                 // Print Url List diffs, all pages have a url list
                 let oldUrl = (oldDocumentVersion.urlList[0] || {}).url;
                 let newUrl = (newDocumentVersion.urlList[0] || {}).url;
+
                 mainModalContent += `<div class='field-name'>url list</div>`;
                 mainModalContent += `<div class='field-content'>${renderDiff(oldUrl, newUrl)}</div>`;
 
-                // add a black divider
+                // Add a black divider
                 mainModalContent += `<hr class="content-diff-modal-divider" />`;
 
                 // Execute our recursive function above
-                // All these page types contain nested nodes
+                // All these page types contain nested nodes we need to recurse through
                 if ((matchingResults[1].getTypeQName() === 'cricket:page') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
@@ -280,10 +283,11 @@ define(function (require, exports, module) {
 
     $(document).on('cloudcms-ready', function () {
         if (isThisPageVersions()) {
-            // insert a new option to the top of the select dropdown
+            // Insert a new option to the top of the select dropdown
             $(dropdownMenu).prepend(newDropdownOption);
 
-            // detect click on existing dropdown menu and disable or enable our tool based on number of items selected
+            // Detect click on existing dropdown menu
+            // Disable or enable our tool based on number of items selected
             $(dropdownToggleButton).on('click', function () {
                 if (isTwoItemsSelected()) {
                     enableDiffTool();

@@ -109,7 +109,7 @@ define(function (require, exports, module) {
 
         if (newItemKeys.length >= oldItemKeys.length) {
             newItemKeys.forEach((property) => {
-                modalContent += `<div class='field-content'><span class="field-label">${property}:</span>`;
+                modalContent += `<div class='field-content'><span class="field-label">${property}: </span>`;
                 modalContent += buildPageContent({
                     newItem: newItem[property],
                     oldItem: oldItem[property],
@@ -119,7 +119,7 @@ define(function (require, exports, module) {
             });
         } else {
             oldItemKeys.forEach((property) => {
-                modalContent += `<div class='field-content'><span class="field-label">${property}:</span>`;
+                modalContent += `<div class='field-content'><span class="field-label">${property}: </span>`;
                 modalContent += buildPageContent({
                     newItem: newItem[property],
                     oldItem: oldItem[property],

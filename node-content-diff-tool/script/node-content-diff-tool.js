@@ -136,7 +136,7 @@ define(function (require, exports, module) {
         return modalContent;
     }
 
-    function renderSkuField({ oldSku, ewSku, field }) {
+    function renderSkuField({ oldSku, newSku, field }) {
         let modalContent = '';
 
         modalContent += `<div class="field-content"><span class="field-label">${field}</span>: ${renderDiff(oldSku[field], newSku[field])}</div>`;
@@ -148,6 +148,10 @@ define(function (require, exports, module) {
         const typeQName = newSku ? newSku.typeQName : oldSku.typeQName;
         const additionalSkuFields = ['active', 'id', 'modelName', 'refurbished', 'skuId', 'title'];
         const colorFields = ['active', 'displayName', 'hexValue', 'id', 'title'];
+
+        if (typeQName === 'cricket:product') {
+
+        }
 
         // Specifically call out the color array
         // Check that the color property exists on either the old or new document version
@@ -377,16 +381,15 @@ define(function (require, exports, module) {
                 if ((matchingResults[1].getTypeQName() === 'cricket:page') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
                     (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
-                    (matchingResults[1].getTypeQName() === 'cricket:page-support-home') ||
-                    (matchingResults[1].getTypeQName() === 'cricket:page-shop')) {
+                    (matchingResults[1].getTypeQName() === 'cricket:page-support-home')) {
                     mainModalContent += buildPageContent({
                         newDocumentVersion,
                         oldDocumentVersion,
                         isRoot: true
                     });
-                } // else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {
-                   // mainModalContent += renderPageShopContent({ newDocumentVersion, oldDocumentVersion });
-               // }
+                } else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {
+                mainModalContent += renderPageShopContent({ newDocumentVersion, oldDocumentVersion });
+                }
 
                 // Finally, show the modal with the accumulated contents
                 if (!isError) {

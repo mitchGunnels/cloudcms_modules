@@ -215,7 +215,7 @@ define(function (require, exports, module) {
                 // The modal needs a title, might as well use the one on newDocumentVersion...
                 const modalTitle = newDocumentVersion.title;
                 showModal(modalTitle, mainModalContent);
-ß            });
+            });
     }
 
     $(document).on('click', 'li.diff-tool.active-list-item', renderModal);

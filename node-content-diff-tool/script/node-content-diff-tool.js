@@ -383,6 +383,7 @@ define(function (require, exports, module) {
                     mainModalContent += renderPageShopContent({ newDocumentVersion, oldDocumentVersion });
                 }
 
+                // Finally, show the modal with the accumulated contents
                 if (!isError) {
                     // The modal needs a title, might as well use the one on newDocumentVersion...
                     const modalTitle = newDocumentVersion.title;

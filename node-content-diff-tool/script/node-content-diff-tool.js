@@ -30,24 +30,8 @@ define(function (require, exports, module) {
         $(listItemAnchor).removeClass(enabledCursor);
     }
 
-    function isPageDocument() {
-        // Check list-row-info class innerHTML for anything that contains cricket:page*
-        // Will return true for "cricket:page", "cricket:page-support", etc
-        const arrayOfInfoElements = $('#document-summary .list-row-info a');
-        const regex = /cricket:page(-.*)?/;
-
-        return $.grep(arrayOfInfoElements, function (element) {
-            return regex.test(element.innerHTML);
-        }).length;
-    }
-
     function isVersionsList() {
         return windowHref.indexOf("versions") > -1;
-    }
-
-    function isThisPageVersions() {
-        // return isPageDocument() && isVersionsList();
-        return isVersionsList();
     }
 
     function isTwoItemsSelected() {
@@ -62,7 +46,7 @@ define(function (require, exports, module) {
         });
     }
 
-    function renderDiff(oldItem, newItem) {
+    function renderDiff({ oldItem, newItem }) {
         oldItem = (oldItem || '').toString();
         newItem = (newItem || '').toString();
 
@@ -148,10 +132,10 @@ define(function (require, exports, module) {
             return modalContent;
         } else if (newItem && Array.isArray(newItem)) {
             let modalContent = '';
-            // check to see which array is longer
             newItem = newItem || [];
             oldItem = oldItem || [];
 
+            // check to see which array is longer
             const newItemLength = newItem.length;
             const oldItemLength = oldItem.length;
 
@@ -177,7 +161,8 @@ define(function (require, exports, module) {
         } else if (newItem && typeof newItem === 'object') {
             return iterateThroughObject({ newItem, oldItem });
         } else {
-            return renderDiff(oldItem, newItem);
+            // If the item is neither an array nor an object at this point, assume it's a scalar value
+            return renderDiff({ oldItem, newItem });
         }
     }
 
@@ -197,23 +182,17 @@ define(function (require, exports, module) {
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
+                // The modal needs a title, might as well use the one on newDocumentVersion...
+                const modalTitle = newDocumentVersion.title;
+
                 // Execute our recursive function above
-                // All these page types contain nested nodes we need to recurse through
-                // if ((matchingResults[1].getTypeQName() === 'cricket:page') ||
-                //     (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
-                //     (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
-                //     (matchingResults[1].getTypeQName() === 'cricket:page-support-home') ||
-                //     (matchingResults[1].getTypeQName() === 'cricket:page-shop')) {
                 mainModalContent += buildPageContent({
                     newItem: newDocumentVersion,
                     oldItem: oldDocumentVersion,
                     isRoot: true
                 });
-                // }
 
                 // Finally, show the modal with the accumulated contents
-                // The modal needs a title, might as well use the one on newDocumentVersion...
-                const modalTitle = newDocumentVersion.title;
                 showModal(modalTitle, mainModalContent);
             });
     }
@@ -221,7 +200,7 @@ define(function (require, exports, module) {
     $(document).on('click', 'li.diff-tool.active-list-item', renderModal);
 
     $(document).on('cloudcms-ready', function () {
-        if (isThisPageVersions()) {
+        if (isVersionsList()) {
             // Insert a new option to the top of the select dropdown
             $(dropdownMenu).prepend(newDropdownOption);
 

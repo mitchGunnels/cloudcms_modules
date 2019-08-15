@@ -46,7 +46,8 @@ define(function (require, exports, module) {
     }
 
     function isThisPageVersions() {
-        return isPageDocument() && isVersionsList();
+        // return isPageDocument() && isVersionsList();
+        return isVersionsList();
     }
 
     function isTwoItemsSelected() {
@@ -61,18 +62,21 @@ define(function (require, exports, module) {
         });
     }
 
-    function renderDiff(oldDocumentVersion, newDocumentVersion) {
-        if (!oldDocumentVersion && newDocumentVersion) {
-            return `<div class="added-text">${newDocumentVersion}</div>`;
+    function renderDiff(oldItem, newItem) {
+        oldItem = (oldItem || '').toString();
+        newItem = (newItem || '').toString();
+
+        if (!oldItem && newItem) {
+            return `<div class="added-text">${newItem}</div>`;
         }
-        if (!newDocumentVersion && oldDocumentVersion) {
-            return `<div class="removed-text">${oldDocumentVersion}</div>`;
+        if (!newItem && oldItem) {
+            return `<div class="removed-text">${oldItem}</div>`;
         }
-        if (!newDocumentVersion && !oldDocumentVersion) {
+        if (!newItem && !oldItem) {
             return `<div class="error">EMPTY</div>`
         }
 
-        const delta = dmp.diff_main(oldDocumentVersion, newDocumentVersion);
+        const delta = dmp.diff_main(oldItem, newItem);
 
         // Make the diff human readable
         dmp.diff_cleanupSemantic(delta);
@@ -94,255 +98,86 @@ define(function (require, exports, module) {
         return selectedItems;
     }
 
-    function renderMetadataDiffs({ newDocumentVersion, oldDocumentVersion }) {
+    function iterateThroughObject({ newItem, oldItem }) {
         let modalContent = '';
 
-        // Print metadata diffs, all pages have metadata
-        // Determine which document version has more metadata items, this is the one we're going to loop through
-        const newMetadataLength = newDocumentVersion.metadata.length;
-        const oldMetadataLength = oldDocumentVersion.metadata.length;
+        newItem = newItem || {};
+        oldItem = oldItem || {};
 
-        modalContent += `<div class="section-header">metadata</div>`;
-        if (newMetadataLength >= oldMetadataLength) {
-            newDocumentVersion.metadata.forEach((item, index) => {
-                newValue = item.value;
-                newType = item.type;
-                oldValue = oldDocumentVersion.metadata[index] ? oldDocumentVersion.metadata[index].value : '';
-                oldType = oldDocumentVersion.metadata[index] ? oldDocumentVersion.metadata[index].type : '';
-                modalContent += `<div class="field-content"><span class="field-label">${newType}</span>: ${renderDiff(oldValue, newValue)}</div>`;
-            });
-        } else if (newMetadataLength <= oldMetadataLength) {
-            oldDocumentVersion.metadata.foreach((item, index) => {
-                oldValue = item.value;
-                oldType = item.type;
-                newValue = newDocumentVersion.metadata[index] ? newDocumentVersion.metadata[index].value : '';
-                newType = newDocumentVersion.metadata[index] ? newDocumentVersion.metadata[index].type : '';
-                modalContent += `<div class="field-content"><span class="field-label">${newType}</span>: ${renderDiff(oldValue, newValue)}</div>`;
-            });
-        }
-        return modalContent;
-    }
+        newItemKeys = Object.keys(newItem);
+        oldItemKeys = Object.keys(oldItem);
 
-    function renderUrlListDiffs({ newDocumentVersion, oldDocumentVersion }) {
-        let modalContent = '';
-
-        // Print Url List diffs, all pages have a url list
-        let oldUrl = (oldDocumentVersion.urlList[0] || {}).url;
-        let newUrl = (newDocumentVersion.urlList[0] || {}).url;
-
-        modalContent += `<div class="section-header">url list</div>`;
-        modalContent += `<div class="field-content"><span class="field-label">url</span>: ${renderDiff(oldUrl, newUrl)}</div>`;
-
-        return modalContent;
-    }
-
-    function renderSkuField({ oldSku, newSku, field }) {
-        let modalContent = '';
-
-        modalContent += `<div class="field-content"><span class="field-label">${field}</span>: ${renderDiff(oldSku[field], newSku[field])}</div>`;
-        return modalContent;
-    }
-
-    function renderSku({ oldSku, newSku }) {
-        let modalContent = '';
-        const typeQName = newSku ? newSku.typeQName : oldSku.typeQName;
-        const additionalSkuFields = ['active', 'id', 'modelName', 'refurbished', 'skuId', 'title'];
-        const colorFields = ['active', 'displayName', 'hexValue', 'id', 'title'];
-
-        if (typeQName === 'cricket:product') {
-
-        }
-
-        // Specifically call out the color array
-        // Check that the color property exists on either the old or new document version
-        // If not, then just render the diffs on the other properties
-        if ((newSku.color && newSku.color[0]) || (oldSku.color && oldSku.color[0])) {
-            const newColor = newSku.color ? newSku.color[0] : '';
-            const oldColor = oldSku.color ? oldSku.color[0] : '';
-
-            modalContent += `<div class="section-header">skus</div>`;
-            colorFields.forEach(field => {
-                modalContent += `<div class="field-content"><span class="field-label">color ${field}</span>: ${renderDiff(oldColor[field], newColor[field])}</div>`;
-            });
-        }
-
-        // Call out the other fields that are not "color"
-        additionalSkuFields.forEach(field => {
-            if (oldSku[field] || newSku[field]) {
-                modalContent += renderSkuField({
-                    oldSku,
-                    newSku,
-                    field
+        if (newItemKeys.length >= oldItemKeys.length) {
+            newItemKeys.forEach((property) => {
+                modalContent += `<div class='field-content'><span class="field-label">${property}:</span>`;
+                modalContent += buildPageContent({
+                    newItem: newItem[property],
+                    oldItem: oldItem[property],
+                    isRoot: false
                 });
-            }
-        });
+                modalContent += `</div>`;
+            });
+        } else {
+            oldItemKeys.forEach((property) => {
+                modalContent += `<div class='field-content'><span class="field-label">${property}:</span>`;
+                modalContent += buildPageContent({
+                    newItem: newItem[property],
+                    oldItem: oldItem[property],
+                    isRoot: false
+                });
+                modalContent += `</div>`;
+            });
+        }
+
         return modalContent;
     }
 
-    function renderPageShopContent({ newDocumentVersion, oldDocumentVersion }) {
-        let modalContent = '';
+    function buildPageContent({ isRoot, oldItem, newItem }) {
+        if (isRoot) {
+            let modalContent = '';
 
-        // Print out page-level properties
-        modalContent += `<div class="section-header">page shop content</div>`;
-        modalContent += `<div class="field-content"><span class="field-label">active</span>: ${renderDiff(oldDocumentVersion.active, newDocumentVersion.active)}</div>`;
-        modalContent += `<div class="field-content"><span class="field-label">title</span>: ${renderDiff(oldDocumentVersion.title, newDocumentVersion.title)}</div>`;
-
-        // Print out Sku diffs, only possible on page-shop
-        // Determine which document version has more skus, this is the one we're going to loop through
-        const newSkusLength = newDocumentVersion.skus.length;
-        const oldSkusLength = oldDocumentVersion.skus.length;
-        if (newSkusLength >= oldSkusLength) {
-            newDocumentVersion.skus.forEach((item, index) => {
-                modalContent += renderSku({
-                    newSku: item,
-                    oldSku: oldDocumentVersion.skus[index],
-                    index
-                });
-            })
-        } else if (oldSkusLength > newSkusLength) {
-            oldDocumentVersion.skus.forEach((item, index) => {
-                modalContent += renderSku({
-                    oldSku: item,
-                    newSku: newDocumentVersion.skus[index],
-                    index
+            Object.keys(newItem).forEach((property) => {
+                modalContent += `<div class="section-header">${property}</div>`;
+                modalContent += buildPageContent({
+                    newItem: newItem[property],
+                    oldItem: oldItem[property],
+                    isRoot: false
                 });
             });
-        }
 
-        return modalContent;
-    }
-
-    function renderPageTitleDiffs({ newDocumentVersion, oldDocumentVersion }) {
-        let modalContent = '';
-
-        // Print diff of page title, all pages have a title
-        modalContent += `<div class="section-header">page title</div>`;
-        modalContent += `<div class="field-content">${renderDiff(newDocumentVersion.title, oldDocumentVersion.title)}</div>`;
-
-        return modalContent;
-    }
-
-    function buildPageContent({ isRoot, nodeKey, oldDocumentVersion, newDocumentVersion }) {
-        // Here be dragons
-        // TODO: refactor this function
-
-        const typeQName = newDocumentVersion ? newDocumentVersion.typeQName : oldDocumentVersion.typeQName;
-
-        if (typeQName === 'cricket:header') {
-            let modalContent = '';
-            const oldTitle = oldDocumentVersion ? oldDocumentVersion.title : '';
-            const newTitle = newDocumentVersion ? newDocumentVersion.title : '';
-            const oldHeader = oldDocumentVersion ? oldDocumentVersion.header : '';
-            const newHeader = newDocumentVersion ? newDocumentVersion.header : '';
-            const oldactive = oldDocumentVersion ? oldDocumentVersion.active : '';
-            const newactive = newDocumentVersion ? newDocumentVersion.active : '';
-
-            modalContent += `<div class='field-content'><span class="field-label">title</span>: ${renderDiff(oldTitle, newTitle)}</div>`;
-            modalContent += `<div class='field-content'><span class="field-label">header</span>: ${renderDiff(oldHeader, newHeader)}</div>`;
-            modalContent += `<div class='field-content'><span class="field-label">active</span>: ${renderDiff(oldactive, newactive)}</div>`;
             return modalContent;
-        } else if ((typeQName === 'cricket:paragraph') ||
-            (newDocumentVersion.typeQName === 'cricket:disclaimer') ||
-            (newDocumentVersion.typeQName === 'cricket:table')) {
+        } else if (newItem && Array.isArray(newItem)) {
             let modalContent = '';
-            const oldParagraph = oldDocumentVersion ? oldDocumentVersion.paragraph : '';
-            const newParagraph = newDocumentVersion ? newDocumentVersion.paragraph : '';
+            // check to see which array is longer
+            newItem = newItem || [];
+            oldItem = oldItem || [];
 
-            modalContent += `<div class='field-content'><span class="field-label">paragraph</span>: ${renderDiff(oldParagraph, newParagraph)}</div>`;
-            return modalContent;
-        } else if (typeQName === 'cricket:link') {
-            let modalContent = '';
-            const oldAriaLabel = oldDocumentVersion ? oldDocumentVersion.linkAriaLabel : '';
-            const newAriaLabel = newDocumentVersion ? newDocumentVersion.linkAriaLabel : '';
+            const newItemLength = newItem.length;
+            const oldItemLength = oldItem.length;
 
-            modalContent += `<div class='field-content'><span class="field-label">link</span>: ${renderDiff(oldAriaLabel, newAriaLabel)}</div>`;
-            return modalContent;
-        } else if (typeQName === 'cricket:image') {
-            let modalContent = '';
-            const oldImageTitle = oldDocumentVersion ? oldDocumentVersion.title : '';
-            const newImagetitle = newDocumentVersion ? newDocumentVersion.title : '';
-
-            modalContent += `<div class='field-content'><span class="field-label">title</span>: ${renderDiff(oldImageTitle, newImagetitle)}</div>`;
-            return modalContent;
-        } else if (typeQName === 'cricket:product') {
-            let modalContent = '';
-            const oldSOL = oldDocumentVersion ? oldDocumentVersion.sol : '';
-            const newSOL = newDocumentVersion ? newDocumentVersion.sol : '';
-
-            modalContent += `<div class='field-content'><span class="field-label">sol</span>: ${renderDiff(oldSOL, newSOL)}</div>`;
-            return modalContent;
-        } else if (typeQName === 'cricket:view-multi') {
-            let modalContent = '';
-
-            if (newDocumentVersion.view) {
-                newDocumentVersion.view.node.forEach((item, index) => {
+            if (newItemLength >= oldItemLength) {
+                // iterate through that array
+                newItem.forEach((item, index) => {
                     modalContent += buildPageContent({
-                        newDocumentVersion: item,
-                        oldDocumentVersion: ((oldDocumentVersion.view || {}).node || [])[index] || '',
-                        modalContent,
-                        isRoot: false,
-                        nodeKey: nodeKey + ":view-multi",
-                        nodeIndex: index
+                        oldItem: oldItem[index],
+                        newItem: item,
+                        isRoot: false
+                    });
+                });
+            } else {
+                // iterate through that array
+                oldItem.forEach((item, index) => {
+                    modalContent += buildPageContent({
+                        newItem: newItem[index],
+                        oldItem: item
                     });
                 });
             }
             return modalContent;
-        } else if (isRoot) {
-            let modalContent = '';
-            Object.keys(newDocumentVersion).forEach((key, index) => {
-                if (newDocumentVersion[key].node) {
-                    if (Array.isArray(newDocumentVersion[key].node)) {
-                        modalContent += `<div class="section-header">${key}</div>`;
-                        // Which array is longer? Use this to iterate over.
-                        newLength = newDocumentVersion.length;
-                        oldLength = oldDocumentVersion.length;
-                        if (newLength >= oldLength) {
-                            newDocumentVersion[key].node.forEach((node, nodeIndex) => {
-                                modalContent += buildPageContent({
-                                    newDocumentVersion: node,
-                                    oldDocumentVersion: oldDocumentVersion[key].node[nodeIndex],
-                                    nodeKey: key,
-                                    parentIndex: index,
-                                    nodeIndex,
-                                    isRoot: false
-                                });
-                            });
-                        } else {
-                            oldDocumentVersion[key].node.forEach((node, nodeIndex) => {
-                                modalContent += buildPageContent({
-                                    oldDocumentVersion: node,
-                                    newDocumentVersion: newDocumentVersion[key].node[nodeIndex],
-                                    nodeKey: key,
-                                    parentIndex: index,
-                                    nodeIndex,
-                                    isRoot: false
-                                });
-                            });
-                        }
-
-                        newDocumentVersion[key].node.forEach((node, nodeIndex) => {
-                            modalContent += buildPageContent({
-                                newDocumentVersion: node,
-                                oldDocumentVersion: oldDocumentVersion[key].node[nodeIndex],
-                                nodeKey: key,
-                                parentIndex: index,
-                                nodeIndex,
-                                isRoot: false
-                            });
-                        });
-                    } else {
-                        modalContent += `<div class="section-header">${key}</div>`;
-                        modalContent += buildPageContent({
-                            newDocumentVersion: newDocumentVersion[key].node,
-                            oldDocumentVersion: oldDocumentVersion[key].node,
-                            nodeKey: key,
-                            nodeIndex: '',
-                            isRoot: false
-                        });
-                    }
-                }
-            });
-            return modalContent;
+        } else if (newItem && typeof newItem === 'object') {
+            return iterateThroughObject({ newItem, oldItem });
+        } else {
+            return renderDiff(oldItem, newItem);
         }
     }
 
@@ -352,7 +187,6 @@ define(function (require, exports, module) {
             .listVersions({ full: true, limit: -1, sort: { "_system.modified_on.ms": -1 } })
             .then(function () {
                 let mainModalContent = '';
-                let isError = false;
                 const selectedItems = getSelectedItems();
                 const versionsList = this.asArray()
 
@@ -363,41 +197,25 @@ define(function (require, exports, module) {
                 const newDocumentVersion = matchingResults[0].json();
                 const oldDocumentVersion = matchingResults[1].json();
 
-                // TODO: remove these consoles
-                console.log('new doc ver =>', newDocumentVersion);
-                console.log('old doc ver =>', oldDocumentVersion);
-
-                // Render page title diffs
-                mainModalContent += renderPageTitleDiffs({ newDocumentVersion, oldDocumentVersion });
-
-                // Render metadata diffs
-                mainModalContent += renderMetadataDiffs({ newDocumentVersion, oldDocumentVersion });
-
-                // Render url list diffs
-                mainModalContent += renderUrlListDiffs({ newDocumentVersion, oldDocumentVersion });
-
                 // Execute our recursive function above
                 // All these page types contain nested nodes we need to recurse through
-                if ((matchingResults[1].getTypeQName() === 'cricket:page') ||
-                    (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
-                    (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
-                    (matchingResults[1].getTypeQName() === 'cricket:page-support-home')) {
-                    mainModalContent += buildPageContent({
-                        newDocumentVersion,
-                        oldDocumentVersion,
-                        isRoot: true
-                    });
-                } else if (matchingResults[1].getTypeQName() === 'cricket:page-shop') {
-                mainModalContent += renderPageShopContent({ newDocumentVersion, oldDocumentVersion });
-                }
+                // if ((matchingResults[1].getTypeQName() === 'cricket:page') ||
+                //     (matchingResults[1].getTypeQName() === 'cricket:page-support-article') ||
+                //     (matchingResults[1].getTypeQName() === 'cricket:page-support-category') ||
+                //     (matchingResults[1].getTypeQName() === 'cricket:page-support-home') ||
+                //     (matchingResults[1].getTypeQName() === 'cricket:page-shop')) {
+                mainModalContent += buildPageContent({
+                    newItem: newDocumentVersion,
+                    oldItem: oldDocumentVersion,
+                    isRoot: true
+                });
+                // }
 
                 // Finally, show the modal with the accumulated contents
-                if (!isError) {
-                    // The modal needs a title, might as well use the one on newDocumentVersion...
-                    const modalTitle = newDocumentVersion.title;
-                    showModal(modalTitle, mainModalContent);
-                }
-            });
+                // The modal needs a title, might as well use the one on newDocumentVersion...
+                const modalTitle = newDocumentVersion.title;
+                showModal(modalTitle, mainModalContent);
+ß            });
     }
 
     $(document).on('click', 'li.diff-tool.active-list-item', renderModal);

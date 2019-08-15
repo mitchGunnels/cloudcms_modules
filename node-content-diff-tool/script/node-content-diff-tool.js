@@ -123,7 +123,7 @@ define(function (require, exports, module) {
         return modalContent;
     }
 
-    function renderUrlList({ newDocumentVersion, oldDocumentVersion }) {
+    function renderUrlListDiffs({ newDocumentVersion, oldDocumentVersion }) {
         let modalContent = '';
 
         // Print Url List diffs, all pages have a url list
@@ -275,9 +275,8 @@ define(function (require, exports, module) {
             let modalContent = '';
             // Determine which document version has the longer array length
             // We will then use that docuemnt version to loop through
-            // TODO change this to check if it's an array instead of default to length of 1
-            const newDocumentLength = newDocumentVersion.length || 1; // first pass through, the length will be undefined, so give it a default
-            const oldDocumentLength = oldDocumentVersion.length || 1;
+            const newDocumentLength = Array.isArray(newDocumentVersion) ? newDocumentVersion.length : 1;
+            const oldDocumentLength = Array.isArray(oldDocumentVersion) ? oldDocumentVersion.length : 1;
 
             if (newDocumentLength >= oldDocumentLength) {
                 Object.keys(newDocumentVersion).forEach((key, index) => {
@@ -366,7 +365,7 @@ define(function (require, exports, module) {
                 mainModalContent += renderMetadataDiffs({ newDocumentVersion, oldDocumentVersion });
 
                 // Render url list diffs
-                mainModalContent += renderUrlList({ newDocumentVersion, oldDocumentVersion });
+                mainModalContent += renderUrlListDiffs({ newDocumentVersion, oldDocumentVersion });
 
                 // Execute our recursive function above
                 // All these page types contain nested nodes we need to recurse through

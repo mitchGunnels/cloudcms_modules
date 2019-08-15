@@ -27,8 +27,16 @@
 }
 
 .node-content-diff-modal .field-content {
-    margin-bottom: 20px;
-    padding-left: 20px;
+    padding-bottom: 20px;
+    padding-left: 50px;
+}
+
+.node-content-diff-modal .field-content span{
+    padding-right: 10px;
+}
+
+.node-content-diff-modal .field-content .field-label {
+    font-weight: bold;
 }
 
 .node-content-diff-modal .content-diff-modal-divider {
@@ -41,6 +49,7 @@
 
 .node-content-diff-modal .section-header {
     font-weight: bold;
-    font-size: 24px;
-    font-style: italic;
+    font-size: 18px;
+    border-bottom: 1px solid gray;
+    padding-top: 10px;
 }

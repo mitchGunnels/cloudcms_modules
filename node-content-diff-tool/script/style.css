@@ -1,0 +1,51 @@
+.node-content-diff-modal del,
+.node-content-diff-modal .removed-text {
+    background-color: #ffb2b2 !important;
+}
+
+.node-content-diff-modal ins,
+.node-content-diff-modal .added-text {
+    background-color: #bdffbd !important;
+}
+
+.disabled-cursor {
+    cursor: not-allowed
+}
+
+.enabled-cursor {
+    cursor: pointer;
+}
+
+.node-content-diff-modal .error {
+    color: red;
+}
+
+.node-content-diff-modal .modal-body {
+    height: 500px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+.node-content-diff-modal .field-content {
+    padding-bottom: 20px;
+    padding-left: 50px;
+}
+
+.node-content-diff-modal .field-content .field-label {
+    font-weight: bold;
+}
+
+.node-content-diff-modal .content-diff-modal-divider {
+    display: block;
+    background-color: black;
+    height: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.node-content-diff-modal .section-header {
+    font-weight: bold;
+    font-size: 18px;
+    border-bottom: 1px solid gray;
+    padding-top: 10px;
+}

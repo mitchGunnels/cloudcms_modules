@@ -1,0 +1,6 @@
+{
+    "title": "Reports",
+    "uri": "/projects/{projectId}/reports",
+    "extends": "project/_project",
+    "template": "index"
+}

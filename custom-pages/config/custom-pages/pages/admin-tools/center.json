@@ -1,0 +1,8 @@
+{
+    "type": "admin-tools",
+    "config": {
+        "chrome": {
+            "title": "Admin Tools"
+        }
+    }
+}

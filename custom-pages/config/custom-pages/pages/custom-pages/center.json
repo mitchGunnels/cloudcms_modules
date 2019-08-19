@@ -1,8 +1,0 @@
-{
-    "type": "flesch-kincaid",
-    "config": {
-        "chrome": {
-            "title": "Flesch Kincaid"
-        }
-    }
-}

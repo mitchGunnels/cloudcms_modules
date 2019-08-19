@@ -1,6 +1,9 @@
-define(function(require) {
-	console.log('v4');
-    // page:
-    require("./gadgets/flesch-kincaid/flesch-kincaid.js");
+define(function (require) {
+
+    
+    require('./gadgets/admin-tools/admin-tools.js');
+    
+    require('./gadgets/reports/reports.js');
+    
 });
 

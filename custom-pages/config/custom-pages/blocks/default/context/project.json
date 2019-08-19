@@ -2,24 +2,39 @@
     "evaluator": "context-project",
     "config": {
         "project-context": {
-            "items": [{
-                "key": "cricket/header",
-                "title": "Cricket",
-                "order": 1,
-                "header": true,
-                "iconClass": "fa fa-dashboard",
-                "allowAuthority": [],
-                "allowPermission": [],
-                "rejectAuthority": [],
-                "rejectPermission": [],
-                "items": [{
-                    "key": "custom-pages/fleschKincaid",
-                    "title": "Flesch Kincaid",
-                    "uri": "#/projects/{projectId}/flesch-kincaid",
-                    "iconClass": "fa fa-pencil",
-                    "allowPermission": []
-                }]
-            }]
+            "items": [
+                {
+                    "key": "cricket/header",
+                    "title": "Admin",
+                    "order": 1,
+                    "header": true,
+                    "iconClass": "fa fa-dashboard",
+                    "allowAuthority": [],
+                    "allowPermission": [],
+                    "rejectAuthority": [],
+                    "rejectPermission": [],
+                    "items": [
+                        {
+                            "key": "admin-tools/admin-tools",
+                            "title": "Admin Tools",
+                            "uri": "#/projects/{projectId}/admin-tools",
+                            "iconClass": "fa fa-pencil",
+                            "allowPermission": [
+                                "manager"
+                            ]
+                        },
+                        {
+                            "key": "reports/reports",
+                            "title": "Reports",
+                            "uri": "#/projects/{projectId}/reports",
+                            "iconClass": "fa fa-bomb",
+                            "allowPermission": [
+                                "manager"
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     }
 }

@@ -1,6 +1,6 @@
 define(function(require) {
-
-    var r = {};
+    
+    const r = {};
 
     r.uninstall = function(observableHolder, project, callback) {
 

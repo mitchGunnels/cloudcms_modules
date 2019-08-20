@@ -1,8 +1,13 @@
 define(function (require, exports, module) {
+    let XLSX = {}
+    let wb
 
     //TODO reduce size of includes via lib
     require('css!./styles/reports.css');
-    const XLSX = require('./lib/xlsx.js')
+    require(['./lib/dist/xlsx.full.min.js'], function() {
+        //global function defined in dependency
+        make_xlsx_lib(XLSX) //eslint-disable-line no-undef
+    });
     const html = require('text!./templates/reports.html');
     
     const Empty = require('ratchet/dynamic/empty');
@@ -16,7 +21,7 @@ define(function (require, exports, module) {
         'sku',
         'price-sheet'
     ]
-    const ReportBtnClasses = [PAGE, PRODUCT, SKU, PRICESHEET]
+    const ReportTypes = [PAGE, PRODUCT, SKU, PRICESHEET]
 
     const QueryTypes = {
         [PAGE]: {
@@ -27,64 +32,6 @@ define(function (require, exports, module) {
         [PRICESHEET]: "cricket:price-list"
     }
 
-    const TypeFields = {
-        [PAGE]: [                        
-            "title",
-            "_type",
-            "urlList[0]/url",
-            "active",
-            "_system/created_on/timestamp",
-            "_system/created_by",
-            "_system/edited_on/timestamp",
-            "_system/edited_by"
-        ],
-        [PRODUCT]: [
-            "title",
-            "sol",
-            "soli",
-            "eol",
-            "eoli",
-            "active",
-            "_system/created_on/timestamp",
-            "_system/created_by",
-            "_system/edited_on/timestamp",
-            "_system/edited_by"
-        ],
-        [SKU]: [
-            "title",
-            "skuId",
-            "sol",
-            "soli",
-            "eol",
-            "eoli",
-            "color[0]/hexValue",
-            "color[0]/displayName",
-            "active",
-            "_system/created_on/timestamp",
-            "_system/created_by",
-            "_system/edited_on/timestamp",
-            "_system/edited_by"
-        ],
-        [PRICESHEET]: [
-            "title",
-            "priceSkuList[0]/price[0]/priceType",
-            "priceSkuList[0]/price[0]/priceValue",
-            "priceSkuList[0]/price[1]/priceType",
-            "priceSkuList[0]/price[1]/priceValue",
-            "priceSkuList[0]/price[2]/priceType",
-            "priceSkuList[0]/price[2]/priceValue",
-            "priceSkuList[0]/sku[0]/sol",
-            "priceSkuList[0]/sku[0]/soli",
-            "priceSkuList[0]/sku[0]/eol",
-            "priceSkuList[0]/sku[0]/eoli",
-            "active",
-            "_system/created_on/timestamp",
-            "_system/created_by",
-            "_system/edited_on/timestamp",
-            "_system/edited_by"
-        ]
-    }
-    
     let branch;
     let platform;
 
@@ -103,47 +50,113 @@ define(function (require, exports, module) {
         }
     }
 
-    function buildFields(reportType, nodes) {
-        let extendedFields = []
-        if (PRODUCT === reportType) {
-            let maxSkus = 0
-            nodes.asArray().forEach(function (node) {
-                if (node.skus.length > maxSkus) {
-                    maxSkus = node.skus.length
-                }
-            })
-            for(let index = 0; index < maxSkus; index++ ) {
-                extendedFields.push(`skus[${index}]/skuId`)
-            }
-        }
-
-        let fields = (TypeFields[reportType] || []).concat(extendedFields)
-        return fields
-    }
-
     function genericErrorLoggerHalter(err) {
         console.error(err)
         return false
     }
 
+    function buildWorksheet({nodes, reportType}) {
+        const topLevelFieldsToCopy = ["title", "active", "sol", "soli", "eol", "eoli"]
+        let filteredNodes = []
+
+        nodes = nodes.map((record) => {
+            let rec = {}
+
+            //copy common fields
+            topLevelFieldsToCopy.forEach(function (fieldName) {
+                rec[fieldName] = record[fieldName]
+            })
+
+            rec._type = record.getTypeQName()
+            let meta = record.getSystemMetadata()
+            rec["_system.created_on.timestamp"] = meta.created_on.timestamp
+            rec["_system.created_by"] = meta.created_by
+            rec["_system.edited_on.timestamp"] = meta.edited_on.timestamp
+            rec["_system.edited_by"] = meta.edited_by
+
+            //copy all skus' .skuId to top-level prop on rec
+            if (PRODUCT === reportType) {
+                record.skus.forEach(function (sku, index) {
+                    rec[`skus[${index}].skuId`] = sku.skuId
+                })
+            }
+
+            //copy over product page.urlList[0].url
+            if (PAGE === reportType) {
+                if (record.urlList && record.urlList[0]) {
+                    rec.url = record.urlList[0].url
+                }
+            }
+
+            //copy over sku.color[0].hexValue and displayName
+            if (SKU === reportType) {
+                rec.skuId = record.skuId
+
+                if (record.color && record.color[0]) {
+                    rec.hexValue = record.color[0].hexValue
+                    rec.displayName = record.color[0].displayName
+                }
+            }
+
+            //copy over priceSkuList[0].price[ 0-2 ].priceType and priceValue
+            //copy over priceSkuList[0].sku[0].sol, soli, eol, and eoli
+            if (PRICESHEET === reportType) {
+                if (record.priceSkuList && record.priceSkuList[0]) {
+                    record.priceSkuList[0].price.forEach(function (price, index) {
+                        rec[`priceSkuList[0].price[${index}].priceType`] = price.priceType
+                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceType
+                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceType
+                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceType
+                    })
+                }
+            }
+
+            return rec
+        })
+
+        return XLSX.utils.json_to_sheet(nodes)
+    }
+
+    function queryNodesThen(query, callback) {
+        Chain(branch).trap(genericErrorLoggerHalter).queryNodes(query, {limit: -1}).then(callback)
+    }
+
+    function exportHolisticReport() {
+        let workbook = XLSX.utils.book_new()
+
+        ReportTypes.forEach((reportType) => {
+            let query = buildQuery(reportType)
+            if (query) {
+                queryNodesThen(query, function () {
+                    workbook.SheetNames.push(reportType)
+                    workbook.Sheets[reportType] = buildWorksheet({
+                        reportType: reportType,
+                        nodes: this.asArray()
+                    })
+
+                    if (4 === workbook.Sheets.length) {
+                        XLSX.writeFile(workbook, `${reportType}.xlsx`)
+                        Ratchet.unblock()
+                    }
+                })
+
+            }
+        })
+    }
+
     function exportReport(reportType) {
         let query = buildQuery(reportType)
         if (query) {
-            let nodes
-            let exportId
-
-            Chain(branch).trap(genericErrorLoggerHalter).queryNodes(query, {limit: -1}).then(function() {
-                nodes = this
-                let fields = buildFields(reportType, nodes)
-                this.subchain(platform).trap(genericErrorLoggerHalter).runExport(nodes, {
-                    package: "CSV",
-                    includeMetadata: true,
-                    fields: fields
-                }, function (_exportId, _status) {
-                    Ratchet.unblock()
-                    window.location.href = "/proxy/ref/exports/" + _exportId + "/download?a=true&download=" + reportType + ".csv"
+            queryNodesThen(query, function() {
+                let workbook = XLSX.utils.book_new()
+                workbook.SheetNames.push(reportType)
+                workbook.Sheets[reportType] = buildWorksheet({
+                    reportType: reportType,
+                    nodes: this.asArray()
                 })
 
+                XLSX.writeFile(workbook, `${reportType}.xlsx`)
+                Ratchet.unblock()
             })
         }
     }
@@ -151,15 +164,20 @@ define(function (require, exports, module) {
     function handleReportButtonClick() {
         if(branch) {
             let btn = $(this)
-            let report
-            ReportBtnClasses.forEach(function (reportClass) {
-                if (btn.hasClass(reportClass)) {
-                    report = reportClass
+            let reportType
+            ReportTypes.forEach(function (reportTypeClass) {
+                if (btn.hasClass(reportTypeClass)) {
+                    reportType = reportTypeClass
                 }
             })
-            if (report) {
+            if (btn.hasClass('holistic')) {
                 Ratchet.block('Generating Report', 'This may take a while...', () => {
-                    exportReport(report)
+                    exportHolisticReport()
+
+                })
+            } else if (reportType) {
+                Ratchet.block('Generating Report', 'This may take a while...', () => {
+                    exportReport(reportType)
                 })
             } else {
                 console.error('Invalid report type provided')
@@ -233,8 +251,4 @@ define(function (require, exports, module) {
         }
         
     }));
-    
-});
-
-
-
+})

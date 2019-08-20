@@ -124,41 +124,47 @@ define(function (require, exports, module) {
     function exportHolisticReport() {
         let workbook = XLSX.utils.book_new()
 
-        ReportTypes.forEach((reportType) => {
+        Ratchet.block('Generating Report', 'This may take a while...', () => {
+            ReportTypes.forEach((reportType) => {
+                let query = buildQuery(reportType)
+                if (query) {
+                    queryNodesThen(query, function () {
+                        workbook.SheetNames.push(reportType)
+                        workbook.Sheets[reportType] = buildWorksheet({
+                            reportType: reportType,
+                            nodes: this.asArray()
+                        })
+
+                        if (4 === workbook.SheetNames.length) {
+                            XLSX.writeFile(workbook, `holistic.xlsx`)
+                            Ratchet.unblock()
+                        }
+                    })
+
+                }
+            })
+
+        })
+    }
+
+    function exportReport(reportType) {
+        Ratchet.block('Generating Report', 'This may take a while...', () => {
             let query = buildQuery(reportType)
             if (query) {
-                queryNodesThen(query, function () {
+                queryNodesThen(query, function() {
+                    let workbook = XLSX.utils.book_new()
                     workbook.SheetNames.push(reportType)
                     workbook.Sheets[reportType] = buildWorksheet({
                         reportType: reportType,
                         nodes: this.asArray()
                     })
 
-                    if (4 === workbook.SheetNames.length) {
-                        XLSX.writeFile(workbook, `holistic.xlsx`)
-                        Ratchet.unblock()
-                    }
+                    XLSX.writeFile(workbook, `${reportType}.xlsx`)
+                    Ratchet.unblock()
                 })
-
             }
+
         })
-    }
-
-    function exportReport(reportType) {
-        let query = buildQuery(reportType)
-        if (query) {
-            queryNodesThen(query, function() {
-                let workbook = XLSX.utils.book_new()
-                workbook.SheetNames.push(reportType)
-                workbook.Sheets[reportType] = buildWorksheet({
-                    reportType: reportType,
-                    nodes: this.asArray()
-                })
-
-                XLSX.writeFile(workbook, `${reportType}.xlsx`)
-                Ratchet.unblock()
-            })
-        }
     }
 
     function handleReportButtonClick() {
@@ -171,14 +177,9 @@ define(function (require, exports, module) {
                 }
             })
             if (btn.hasClass('holistic')) {
-                Ratchet.block('Generating Report', 'This may take a while...', () => {
-                    exportHolisticReport()
-
-                })
+                exportHolisticReport()
             } else if (reportType) {
-                Ratchet.block('Generating Report', 'This may take a while...', () => {
-                    exportReport(reportType)
-                })
+                exportReport(reportType)
             } else {
                 console.error('Invalid report type provided')
             }

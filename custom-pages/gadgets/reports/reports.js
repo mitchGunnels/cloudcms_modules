@@ -134,8 +134,8 @@ define(function (require, exports, module) {
                         nodes: this.asArray()
                     })
 
-                    if (4 === workbook.Sheets.length) {
-                        XLSX.writeFile(workbook, `${reportType}.xlsx`)
+                    if (4 === workbook.SheetNames.length) {
+                        XLSX.writeFile(workbook, `holistic.xlsx`)
                         Ratchet.unblock()
                     }
                 })

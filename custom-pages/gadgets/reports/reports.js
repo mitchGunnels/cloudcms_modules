@@ -69,8 +69,8 @@ define(function (require, exports, module) {
 
             rec._type = record.getTypeQName()
             let meta = record.getSystemMetadata()
-            rec["_system.created_on.timestamp"] = meta.created_on.timestamp
-            rec["_system.created_by"] = meta.created_by
+            rec["_system.created_on.timestamp"] = meta.getCreatedOn().timestamp
+            rec["_system.created_by"] = meta.getCreatedBy()
             rec["_system.edited_on.timestamp"] = meta.edited_on.timestamp
             rec["_system.edited_by"] = meta.edited_by
 
@@ -99,13 +99,10 @@ define(function (require, exports, module) {
             }
 
             //copy over priceSkuList[0].price[ 0-2 ].priceType and priceValue
-            //copy over priceSkuList[0].sku[0].sol, soli, eol, and eoli
             if (PRICESHEET === reportType) {
                 if (record.priceSkuList && record.priceSkuList[0]) {
                     record.priceSkuList[0].price.forEach(function (price, index) {
                         rec[`priceSkuList[0].price[${index}].priceType`] = price.priceType
-                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceType
-                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceType
                         rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceType
                     })
                 }
@@ -135,7 +132,7 @@ define(function (require, exports, module) {
                             nodes: this.asArray()
                         })
 
-                        if (4 === workbook.SheetNames.length) {
+                        if (ReportTypes.length === workbook.SheetNames.length) {
                             XLSX.writeFile(workbook, `holistic.xlsx`)
                             Ratchet.unblock()
                         }

@@ -64,7 +64,9 @@ define(function (require, exports, module) {
 
             //copy common fields
             topLevelFieldsToCopy.forEach(function (fieldName) {
-                rec[fieldName] = record[fieldName]
+                if (record[fieldName]) {
+                    rec[fieldName] = record[fieldName]
+                }
             })
 
             rec._type = record.getTypeQName()

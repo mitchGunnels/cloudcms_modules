@@ -14,6 +14,7 @@ define(function (require, exports, module) {
     
     const UI = require('ui');
     const $ = require('jquery')
+    const OneTeam = require('oneteam')
 
     const [PAGE, PRODUCT, SKU, PRICESHEET] = [
         'page',
@@ -59,6 +60,11 @@ define(function (require, exports, module) {
         const topLevelFieldsToCopy = ["title", "active", "sol", "soli", "eol", "eoli"]
         let filteredNodes = []
 
+        function formatDate(date) {
+            var d = new Date(date.ms)
+            return OneTeam.formatDateTime4(d)
+        }
+
         nodes = nodes.map((record) => {
             let rec = {}
 
@@ -71,9 +77,10 @@ define(function (require, exports, module) {
 
             rec._type = record.getTypeQName()
             let meta = record.getSystemMetadata()
-            rec["_system.created_on.timestamp"] = meta.getCreatedOn().timestamp
+            rec["_system.created_on.timestamp"] = formatDate(meta.getCreatedOn())
             rec["_system.created_by"] = meta.getCreatedBy()
-            rec["_system.edited_on.timestamp"] = meta.edited_on.timestamp
+            //switch to our timezone
+            rec["_system.edited_on.timestamp"] = formatDate(meta.edited_on)
             rec["_system.edited_by"] = meta.edited_by
 
             //copy all skus' .skuId to top-level prop on rec

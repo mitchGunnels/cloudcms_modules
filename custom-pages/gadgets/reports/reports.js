@@ -103,7 +103,7 @@ define(function (require, exports, module) {
                 if (record.priceSkuList && record.priceSkuList[0]) {
                     record.priceSkuList[0].price.forEach(function (price, index) {
                         rec[`priceSkuList[0].price[${index}].priceType`] = price.priceType
-                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceType
+                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceValue
                     })
                 }
             }

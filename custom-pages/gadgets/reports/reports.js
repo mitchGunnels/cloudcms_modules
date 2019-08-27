@@ -56,8 +56,28 @@ define(function (require, exports, module) {
         return false
     }
 
+    const UniversalFields = ["title", "active"]
+    const LifeCycleFields = ["sol", "soli", "eol", "eoli"]
+    const HeaderStrings = {
+        CREATEDON: "Created On",
+        EDITEDON: "Edited On",
+        CREATEDBY: "Created By",
+        EDITEDBY: "Edited By",
+        URL: "URL",
+        SKUID: "SKU",
+        HEXVALUE: "Hex Value",
+        DISPLAYNAME: "Display Name",
+        TITLE: "Title",
+        ACTIVE: "Active",
+        TYPE: "Type",
+        SOL: "Start of Life",
+        SOLI: "Start of Life Immediate",
+        EOL: "End of Life",
+        EOLI: "End of Life Immediate"
+    }
+
     function buildWorksheet({nodes, reportType}) {
-        const topLevelFieldsToCopy = ["title", "active", "sol", "soli", "eol", "eoli"]
+        let header = []
         let filteredNodes = []
 
         function formatDate(date) {
@@ -65,45 +85,65 @@ define(function (require, exports, module) {
             return OneTeam.formatDateTime4(d)
         }
 
+        header = header.concat([HeaderStrings.TYPE, HeaderStrings.TITLE, HeaderStrings.ACTIVE, HeaderStrings.CREATEDON, HeaderStrings.CREATEDBY, HeaderStrings.EDITEDON, HeaderStrings.EDITEDBY])
+
+        if (PAGE === reportType) {
+            header.push(HeaderStrings.URL)
+        }
+        if (SKU === reportType) {
+            header = header.concat([HeaderStrings.SKUID, HeaderStrings.HEXVALUE, HeaderStrings.DISPLAYNAME])
+        }
+
         nodes = nodes.map((record) => {
             let rec = {}
 
             //copy common fields
-            topLevelFieldsToCopy.forEach(function (fieldName) {
+            rec[HeaderStrings.TYPE] = record.getTypeQName()
+            rec[HeaderStrings.TITLE] = record.title
+            rec[HeaderStrings.ACTIVE] = record.active
+            let meta = record.getSystemMetadata()
+            rec[HeaderStrings.CREATEDON] = formatDate(meta.getCreatedOn())
+            rec[HeaderStrings.CREATEDBY] = meta.getCreatedBy()
+            //switch to our timezone
+            rec[HeaderStrings.EDITEDON] = formatDate(meta.edited_on)
+            rec[HeaderStrings.EDITEDBY] = meta.edited_by
+
+            LifeCycleFields.forEach((fieldName) => {
                 if (record[fieldName]) {
-                    rec[fieldName] = record[fieldName]
+                    let headerString = HeaderStrings[fieldName.toUpperCase()]
+                    rec[headerString] = record[fieldName]
+                    if (-1 === header.indexOf(HeaderStrings.SOL)) {
+                        header = header.concat([HeaderStrings.SOL, HeaderStrings.SOLI, HeaderStrings.EOL, HeaderStrings.EOLI])
+                    }
                 }
             })
-
-            rec._type = record.getTypeQName()
-            let meta = record.getSystemMetadata()
-            rec["_system.created_on.timestamp"] = formatDate(meta.getCreatedOn())
-            rec["_system.created_by"] = meta.getCreatedBy()
-            //switch to our timezone
-            rec["_system.edited_on.timestamp"] = formatDate(meta.edited_on)
-            rec["_system.edited_by"] = meta.edited_by
 
             //copy all skus' .skuId to top-level prop on rec
             if (PRODUCT === reportType) {
                 record.skus.forEach(function (sku, index) {
-                    rec[`skus[${index}].skuId`] = sku.skuId
+                    let field = `Sku ${index}`
+                    rec[field] = sku.skuId
+
+                    if (-1 === header.indexOf(field)) {
+                        header.push(field)
+                    }
                 })
             }
 
             //copy over product page.urlList[0].url
             if (PAGE === reportType) {
                 if (record.urlList && record.urlList[0]) {
-                    rec.url = record.urlList[0].url
+                    rec[HeaderStrings.URL] = record.urlList[0].url
                 }
             }
 
             //copy over sku.color[0].hexValue and displayName
             if (SKU === reportType) {
-                rec.skuId = record.skuId
+                rec[HeaderStrings.SKUID] = record.skuId
 
                 if (record.color && record.color[0]) {
-                    rec.hexValue = record.color[0].hexValue
-                    rec.displayName = record.color[0].displayName
+                    rec[HeaderStrings.HEXVALUE] = record.color[0].hexValue
+                    rec[HeaderStrings.DISPLAYNAME] = record.color[0].displayName
                 }
             }
 
@@ -111,8 +151,16 @@ define(function (require, exports, module) {
             if (PRICESHEET === reportType) {
                 if (record.priceSkuList && record.priceSkuList[0]) {
                     record.priceSkuList[0].price.forEach(function (price, index) {
-                        rec[`priceSkuList[0].price[${index}].priceType`] = price.priceType
-                        rec[`priceSkuList[0].price[${index}].priceValue`] = price.priceValue
+                        let priceIndex = `Price ${index}`
+                        let priceTypeField = `${priceIndex} Type`
+                        let priceValueField = `${priceIndex} Value`
+
+                        rec[priceTypeField] = price.priceType
+                        rec[priceValueField] = price.priceValue
+
+                        if (-1 === header.indexOf(priceTypeField)) {
+                            header = header.concat([priceTypeField, priceValueField])
+                        }
                     })
                 }
             }
@@ -120,7 +168,7 @@ define(function (require, exports, module) {
             return rec
         })
 
-        return XLSX.utils.json_to_sheet(nodes)
+        return XLSX.utils.json_to_sheet(nodes, { header: header })
     }
 
     function queryNodesThen(query, callback) {

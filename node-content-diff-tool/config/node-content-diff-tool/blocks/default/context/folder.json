@@ -1,0 +1,20 @@
+{
+    "condition": true,
+    "config": {
+        "documents-list-buttons": [
+            {
+                "key": "multi-documents-action-selector",
+                "buttons": [
+                    {
+                        "key": "do-something-awesome",
+                        "title": "Do Something Awesome",
+                        "iconClass": "glyphicon glyphicon-asterisk",
+                        "allowPermission": [
+                            "read"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

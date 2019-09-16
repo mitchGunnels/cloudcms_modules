@@ -6,6 +6,7 @@ define(function(require, exports, module) {
     var modalCSS = '.cke_maximized {z-index: 9996 !important;} .cke_button__globalcontent_icon, .cke_button__modalslot_icon, .cke_button__legalcontent_icon, .cke_button__fleschkincaid_icon { display: none !important; } .cke_button__globalcontent_label, .cke_button__legalcontent_label, .cke_button__fleschkincaid_label, .cke_button__modalslot_label { display: inline !important; padding: 0px; margin: 0px; } .modal.fade, .modal-scrollable { z-index: 9998 !important; } span#modalID { font-size: 11px; font-style: italic; } .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; z-index: 9999 !important; } .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; } .autocomplete-selected { background: #F0F0F0; } .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; } .autocomplete-group { padding: 2px 5px; } .autocomplete-group strong { display: block; border-bottom: 1px solid #000; } #slotDocId {display:none;}'; 
     var $ = require("jquery");
     var uri = module.uri;
+    var OneTeam = window._OT;
     uri = uri.substring(0, uri.lastIndexOf('/'));
 
     require('https://cache.cricketwireless.com/ckeditor-plugins/jquery.autocomplete.min.js');
@@ -23,38 +24,6 @@ define(function(require, exports, module) {
     console.error(err);
     return false;
   }
-
-          function associateModal (currentDocId, slotDocId) {
-            var branch = Ratchet.observable('branch').get()
-            Chain(branch).queryNodes({_doc: currentDocId}).trap(genericErrorLoggerHalter)
-            .then(function () {
-              var docs = this.asArray()
-              if (docs.length) {
-                var currentDoc = Chain(docs[0])
-                currentDoc.associations({type: paragraphModalAssociationType}).then(function() {
-                    var assocCount = this.asArray().length
-                    if (0 === assocCount) {
-                      currentDoc.associate(slotDocId, paragraphModalAssociationType)
-                    }
-                  })
-              }
-            })                
-          } 
-
-          function removeModalAssociations (currentDocId) {
-            var branch = Ratchet.observable('branch').get()
-              Chain(branch).queryNodes({_doc: currentDocId}).trap(genericErrorLoggerHalter)
-              .then(function () {
-                var docs = this.asArray()
-                if (docs.length) {
-                  var currentDoc = Chain(docs[0])
-                  currentDoc.associations({type: paragraphModalAssociationType}).each(function(assocId, assoc) {
-                    Chain(assoc).del()
-                  })
-                }
-              })                
-          }
-
 
     basePluginPath += uri.replace(window.location.origin, "");
     CKEDITOR.plugins.addExternal('balloonpanel', basePluginPath + '/plugins/balloonpanel/');
@@ -194,12 +163,18 @@ define(function(require, exports, module) {
               $('#modalSlotInsert').off()
               $('#modalSlotContent').modal('show')
               $('#modalSlotInsert').on('click', function () {
-                var slotId = $('#slotId').text()
-                var slotDocId = $('#slotDocId').text()
                 var modalTitle = $('#modalTitle').text()
+                var modalBody = document.querySelector("#modalBody")
+                var slotId = modalBody.dataset.slotId
+                var slotDocId = modalBody.dataset.slotDocId
+                var ref = modalBody.dataset.slotRef
+                var uuid = OneTeam.parseNodeIdFromRef(ref)
 
                 var currentDocId = getCurrentDocId()
-                editor.insertHtml('<a href="modalAction/' + slotId + '" title="" pop-modal slotid="' + slotId + '" class="custom-class" data-toggle="modal" data-target="#' + slotId + '" slotdocid="' + slotDocId + '">' + modalTitle + '</a>');
+                editor.insertHtml('<a href="modalAction/' + slotId + '" title="" pop-modal slotid="' + slotId + '" ' +
+                  'data-link-id="' + uuid + '" data-link-ref="' + ref + '" ' +
+                  'class="custom-class" data-toggle="modal" data-target="#' + slotId + '"> ' +
+                  modalTitle + '</a>');
                 $('#modalSlotContent').modal('hide');
                 $('#modalSlotContent #modalSlotResult').empty();
                 $('#searchTermModalSlot').val('');
@@ -261,20 +236,6 @@ define(function(require, exports, module) {
             initModalSlotAutoComplete();
           }
         });
-    });
-
-    CKEDITOR.on('instanceDestroyed', function(e) {
-      var currentDocId = getCurrentDocId();
-      var content = e.editor.getData();
-      var contentDom = $('<div>' + content + '</div>')[0];
-      var slot = contentDom.querySelector('a[slotid]');
-
-      if (slot) {
-        var slotId = slot.getAttribute('slotDocId')
-        associateModal(currentDocId, slotId);
-      } else {
-        removeModalAssociations(currentDocId);
-      }
     });
 
     function initAutoComplete() {
@@ -357,7 +318,8 @@ define(function(require, exports, module) {
           value: doc.title,
           slotContent: doc.slotContent,
           slotId: doc.slotId,
-          slotDocId: docId
+          slotDocId: docId,
+          slotRef: doc.ref()
         }
         modalSlotContent.push(modalSlotSuggestion)
       }).then(function () {
@@ -365,7 +327,11 @@ define(function(require, exports, module) {
           lookup: modalSlotContent,
           onSelect: function (suggestion) {
             previewContent = flattenSlotContentMarkupRecursively({node: suggestion, nodeIsRoot: true})
-            $('#modalSlotResult').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><div id="modalBody">' + previewContent + '</div><p><span id="slotId">' + suggestion.slotId + '</span><span id="slotDocId">' + suggestion.slotDocId + '</span></p>')
+            $('#modalSlotResult').empty().html('<h4 id="modalTitle">' + suggestion.value + '</h4><div id="modalBody" ' +
+              'data-slot-id="' + suggestion.slotId + '" ' + 
+              'data-slot-doc-id="' + suggestion.slotDocId + '" ' + 
+              'data-slot-ref="' + suggestion.slotRef + '">' + 
+              previewContent + '</div>')
           }
         })
       })

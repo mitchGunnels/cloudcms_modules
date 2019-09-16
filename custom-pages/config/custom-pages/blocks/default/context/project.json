@@ -29,7 +29,7 @@
                             "uri": "#/projects/{projectId}/reports",
                             "iconClass": "fa fa-bomb",
                             "allowPermission": [
-                                "manager"
+                                "read"
                             ]
                         }
                     ]

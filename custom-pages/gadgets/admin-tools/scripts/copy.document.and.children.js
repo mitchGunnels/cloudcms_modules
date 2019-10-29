@@ -143,32 +143,39 @@ define(function (require, exports, module) {
                 });
             });
             
-            Ratchet.showModalMessage('<div style="text-align:center">Let\'s move content!</div>', listOfBranchesHTML);
-            let listOfNodesHTML = '<ol id="orderedListOfNodes"></ol>';
-            targetBranch.getRepository().readBranch(sourceBranchId).queryNodes({
-                $in: nodeIds
-            }, {limit: -1}).each((docId, doc) => {
-                $('#orderedListOfNodes').append(`<li>${doc.getTitle()}</li>`);
-            }).then(() => {
-                Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                    `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,
-                    'Yes',
-                    'btn btn-default',
-                    () => {
-                        
-                        // blocking clicks
-                        
-                        $('body').css('pointer-events', 'none');
-                        
-                        Ratchet.block('Working...', 'Creating the Snapshot', () => {
-                            
-                            copyDocumentAndChildren(targetBranch, sourceBranchId, nodeIds, next);
-                            
-                        });
-                        
-                    }
-                );
-            });
+            Ratchet.fadeModalConfirm(
+                '<div style="text-align:center">Let\'s move content!</div>',
+                listOfBranchesHTML,
+                'OK',
+                'btn btn-default',
+                () => {
+                    let listOfNodesHTML = '<ol id="orderedListOfNodes"></ol>';
+                    targetBranch.getRepository().readBranch(sourceBranchId).queryNodes({
+                        $in: nodeIds
+                    }, {limit: -1}).each((docId, doc) => {
+                        $('#orderedListOfNodes').append(`<li>${doc.getTitle()}</li>`);
+                    }).then(() => {
+                        Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
+                            `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,
+                            'Yes',
+                            'btn btn-default',
+                            () => {
+                                
+                                // blocking clicks
+                                
+                                $('body').css('pointer-events', 'none');
+                                
+                                Ratchet.block('Working...', 'Creating the Snapshot', () => {
+                                    
+                                    copyDocumentAndChildren(targetBranch, sourceBranchId, nodeIds, next);
+                                    
+                                });
+                                
+                            }
+                        );
+                    });
+                });
+            
         }
     };
 });

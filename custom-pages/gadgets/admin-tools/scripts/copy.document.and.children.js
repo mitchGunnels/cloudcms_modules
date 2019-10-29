@@ -179,17 +179,7 @@ define(function (require, exports, module) {
                                 'Yes',
                                 'btn btn-default',
                                 () => {
-                                    
-                                    // blocking clicks
-                                    
-                                    $('body').css('pointer-events', 'none');
-                                    
-                                    Ratchet.block('Working...', 'Creating the Snapshot', () => {
-                                        
-                                        copyDocumentAndChildren(targetBranch, sourceBranchId, nodeIds, next);
-                                        
-                                    });
-                                    
+                                    copyDocumentAndChildren(targetBranch, sourceBranchId, nodeIds, next);
                                 }
                             );
                         });

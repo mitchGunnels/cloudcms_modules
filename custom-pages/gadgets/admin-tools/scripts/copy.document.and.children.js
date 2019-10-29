@@ -126,12 +126,12 @@ define(function (require, exports, module) {
                 listOfBranchesOptions += `<option value="${workspace.id}">${workspace.title}</option>`;
             });
             let listOfBranchesHTML = `<div>Select the workspace to Copy From: <br><select id ="listOfBranches">${listOfBranchesOptions}</select><div>Please Enter the nodes to copy (csv, no spaces)<input type="text" required id="nodeList"></div></div>`;
-            
-            $('#listOfBranches').on('change', function () {
+            const bodySelector = $('body');
+            bodySelector.on('change', '#listOfBranches', function () {
                 sourceBranchId = $(this).find(':selected').val();
             });
             
-            $('#nodeList').on('keyup', function () {
+            bodySelector.on('keyup', '#nodeList', function () {
                 // Makes sure that we remove everything in the array before adding more items
                 nodeIds = [];
                 const values = this.value;

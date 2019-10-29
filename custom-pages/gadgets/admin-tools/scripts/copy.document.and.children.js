@@ -3,10 +3,7 @@ define(function (require, exports, module) {
     const UI = require('ui');
     const $ = require('jquery');
     
-    let nodeIds = [];
-    let sourceBranchId = '';
-    let listOfBranchesOptions = '';
-    const documentsToTraverse = [];
+    
     
     /**
      * In case any errors are found, this will handle them
@@ -52,7 +49,7 @@ define(function (require, exports, module) {
         const sourceBranchId = sourceBranch.getId();
         const repositoryId = sourceBranch.getRepository().getId();
         sourceBranch.queryNodes({
-            _doc: {$in: documentsToTraverse}
+            _doc: {$in: nodeIds}
         }, {
             limit: -1
         })
@@ -120,7 +117,9 @@ define(function (require, exports, module) {
         run: (next) => {
             const listOfBranches = Ratchet.observable('workspaces').get();
             const targetBranch = Ratchet.observable('branch').get();
-            
+            let nodeIds = [];
+            let sourceBranchId = '';
+            let listOfBranchesOptions = '';
             
             listOfBranches.forEach(workspace => {
                 listOfBranchesOptions += `<option value="${workspace.id}">${workspace.title}</option>`;

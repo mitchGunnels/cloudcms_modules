@@ -147,16 +147,17 @@ define(function (require, exports, module) {
                 'OK',
                 'btn btn-default',
                 () => {
-                    let listOfNodesHTML = $('<div id="orderedListOfNodes"><ol></ol></div>');
+                    let listOfNodesHTML = '<ol id="orderedListOfNodes">';
                     if (nodeIds.length) {
                         Chain(targetBranch).getRepository().readBranch(sourceBranchId).queryNodes({
                             _doc: {$in: nodeIds}
                         }, {limit: -1}).each((docId, doc) => {
                             console.log(doc.getTitle());
-                            listOfNodesHTML.append(`<li>${doc.getTitle()}</li>`);
+                            listOfNodesHTML += `<li>${doc.getTitle()}</li>`;
                         }).then(() => {
+                            listOfNodesHTML += '</ol>';
                             Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                                `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML.outerHTML}</div>`,
+                                `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,
                                 'Yes',
                                 'btn btn-default',
                                 () => {

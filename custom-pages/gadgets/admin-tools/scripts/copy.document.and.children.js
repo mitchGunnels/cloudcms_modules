@@ -156,7 +156,7 @@ define(function (require, exports, module) {
                             listOfNodesHTML.append(`<li>${doc.getTitle()}</li>`);
                         }).then(() => {
                             Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                                `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,
+                                `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML.outerHTML}</div>`,
                                 'Yes',
                                 'btn btn-default',
                                 () => {

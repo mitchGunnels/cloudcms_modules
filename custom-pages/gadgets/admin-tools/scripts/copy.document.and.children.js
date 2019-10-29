@@ -175,7 +175,7 @@ define(function (require, exports, module) {
                         Chain(targetBranch).getRepository().readBranch(sourceBranchId).then(function () {
                             const sourceBranch = this.getTitle();
                             Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                                `<div style="text-align:center">Are you sure you want to copy these files from ${sourceBranch} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,
+                                `<div style="text-align:center">Are you sure you want to copy these files from ${sourceBranch} to ${targetBranch.getTitle()} ?</div>`,
                                 'Yes',
                                 'btn btn-default',
                                 () => {

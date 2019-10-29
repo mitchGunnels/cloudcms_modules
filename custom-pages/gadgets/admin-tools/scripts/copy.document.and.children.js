@@ -4,7 +4,6 @@ define(function (require, exports, module) {
     const $ = require('jquery');
     
     
-    
     /**
      * In case any errors are found, this will handle them
      * @param error
@@ -134,7 +133,6 @@ define(function (require, exports, module) {
                 // Makes sure that we remove everything in the array before adding more items
                 nodeIds = [];
                 const values = this.value;
-                console.log(values);
                 values.split(',').forEach(node => {
                     node = node.replace(/\s+/g, '');
                     if (node.length) {
@@ -149,12 +147,13 @@ define(function (require, exports, module) {
                 'OK',
                 'btn btn-default',
                 () => {
-                    let listOfNodesHTML = '<ol id="orderedListOfNodes"></ol>';
+                    let listOfNodesHTML = '<div id="orderedListOfNodes"><ol></ol></div>';
                     if (nodeIds.length) {
                         Chain(targetBranch).getRepository().readBranch(sourceBranchId).queryNodes({
                             _doc: {$in: nodeIds}
                         }, {limit: -1}).each((docId, doc) => {
-                            $('#orderedListOfNodes').append(`<li>${doc.getTitle()}</li>`);
+                            console.log(doc.getTitle());
+                            $('#orderedListOfNodes ol').append(`<li>${doc.getTitle()}</li>`);
                         }).then(() => {
                             Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
                                 `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,

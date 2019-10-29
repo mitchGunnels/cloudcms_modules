@@ -153,7 +153,7 @@ define(function (require, exports, module) {
                     let listOfNodesHTML = '<ol id="orderedListOfNodes"></ol>';
                     if (nodeIds.length) {
                         Chain(targetBranch).getRepository().readBranch(sourceBranchId).queryNodes({
-                            $in: nodeIds
+                            _doc: {$in: nodeIds}
                         }, {limit: -1}).each((docId, doc) => {
                             $('#orderedListOfNodes').append(`<li>${doc.getTitle()}</li>`);
                         }).then(() => {

@@ -47,6 +47,7 @@ define(function (require, exports, module) {
         
         const sourceBranchId = sourceBranch.getId();
         const repositoryId = sourceBranch.getRepository().getId();
+        let nodesListHTML = '<ol id="nodeList">';
         sourceBranch.queryNodes({
             _doc: {$in: nodeIds}
         }, {
@@ -56,22 +57,45 @@ define(function (require, exports, module) {
             .then(function () {
                 const nodes = this;
                 const nodesAsJson = nodes.json();
-                nodeIds = scanForIds(nodesAsJson);
+                const fullListOfNodeIds = scanForIds(nodesAsJson);
                 
-                console.log(`Will copy ${nodeIds.length} documents from ${sourceBranchId} to ${targetBranchId}`);
                 
-                Chain(sourceBranch.getRepository()).startCopyFrom(sourceBranchId, targetBranchId, {
-                    repositoryId: repositoryId,
-                    branchId: sourceBranchId,
-                    targetRepositoryId: repositoryId,
-                    targetBranchId: targetBranchId,
-                    nodeIds: nodeIds
-                }, function (jobId) {
-                    
-                    // You can wait for the job to finish or just quit the application, the job will still be running.
-                    console.log(`The job is now running (${jobId}) - Please wait for it to complete`);
-                    waitForJob(jobId, sourceBranch, next);
-                });
+                sourceBranch.queryNodes({
+                    _doc: {
+                        $in: fullListOfNodeIds
+                    }
+                }, {limit: -1})
+                    .trap(e => errorHandler(e, next))
+                    .each((docId, doc) => {
+                        nodesListHTML += `<li>${doc.getTitle()}</li>`;
+                    })
+                    .then(function () {
+                        nodesListHTML += '</ol>';
+                        
+                        Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
+                            `<div style="text-align:center">Are you these the correct files to copy ?</div><br><div>${nodesListHTML}</div>`,
+                            'Yes',
+                            'btn btn-default',
+                            () => {
+                                
+                                console.log(`Will copy ${nodeIds.length} documents from ${sourceBranchId} to ${targetBranchId}`);
+                                
+                                Chain(sourceBranch.getRepository()).startCopyFrom(sourceBranchId, targetBranchId, {
+                                    repositoryId: repositoryId,
+                                    branchId: sourceBranchId,
+                                    targetRepositoryId: repositoryId,
+                                    targetBranchId: targetBranchId,
+                                    nodeIds: nodeIds
+                                }, function (jobId) {
+                                    
+                                    // You can wait for the job to finish or just quit the application, the job will still be running.
+                                    console.log(`The job is now running (${jobId}) - Please wait for it to complete`);
+                                    waitForJob(jobId, sourceBranch, next);
+                                });
+                            });
+                        
+                    });
+                
             });
         
     }
@@ -147,17 +171,11 @@ define(function (require, exports, module) {
                 'OK',
                 'btn btn-default',
                 () => {
-                    let listOfNodesHTML = '<ol id="orderedListOfNodes">';
                     if (nodeIds.length) {
-                        Chain(targetBranch).getRepository().readBranch(sourceBranchId).queryNodes({
-                            _doc: {$in: nodeIds}
-                        }, {limit: -1}).each((docId, doc) => {
-                            console.log(doc.getTitle());
-                            listOfNodesHTML += `<li>${doc.getTitle()}</li>`;
-                        }).then(() => {
-                            listOfNodesHTML += '</ol>';
+                        Chain(targetBranch).getRepository().readBranch(sourceBranchId).then(function () {
+                            const sourceBranch = this.getTitle();
                             Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                                `<div style="text-align:center">Are you sure you want to copy these files ${targetBranch.getRepository().readBranch(sourceBranchId).getTitle()} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,
+                                `<div style="text-align:center">Are you sure you want to copy these files from ${sourceBranch} to ${targetBranch.getTitle()} ?</div><br><div>${listOfNodesHTML}</div>`,
                                 'Yes',
                                 'btn btn-default',
                                 () => {

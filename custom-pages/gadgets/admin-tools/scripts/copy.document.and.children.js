@@ -81,7 +81,7 @@ define(function (require, exports, module) {
                                 console.log(`Will copy ${nodeIds.length} documents from ${sourceBranchId} to ${targetBranchId}`);
                                 
                                 // blocking clicks
-    
+                                
                                 $('body').css('pointer-events', 'none');
                                 
                                 Ratchet.block('Working...', 'Copying the nodes from one branch to another', () => {
@@ -149,8 +149,8 @@ define(function (require, exports, module) {
             const listOfBranches = Ratchet.observable('workspaces').get();
             const targetBranch = Ratchet.observable('branch').get();
             let nodeIds = [];
-            let sourceBranchId = '';
-            let listOfBranchesOptions = '';
+            let sourceBranchId = 'master';
+            let listOfBranchesOptions = '<option value="master">Master</option>';
             
             listOfBranches.forEach(workspace => {
                 listOfBranchesOptions += `<option value="${workspace.id}">${workspace.title}</option>`;
@@ -188,12 +188,11 @@ define(function (require, exports, module) {
                                 'btn btn-default',
                                 () => {
                                     copyDocumentAndChildren(targetBranch, sourceBranchId, nodeIds, next);
-                                }
-                            );
+                                });
                         });
                     }
-                });
-            
+                }
+            );
         }
     };
 });

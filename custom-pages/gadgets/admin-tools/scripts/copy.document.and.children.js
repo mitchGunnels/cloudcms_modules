@@ -80,18 +80,26 @@ define(function (require, exports, module) {
                                 
                                 console.log(`Will copy ${nodeIds.length} documents from ${sourceBranchId} to ${targetBranchId}`);
                                 
-                                Chain(sourceBranch.getRepository()).startCopyFrom(sourceBranchId, targetBranchId, {
-                                    repositoryId: repositoryId,
-                                    branchId: sourceBranchId,
-                                    targetRepositoryId: repositoryId,
-                                    targetBranchId: targetBranchId,
-                                    nodeIds: nodeIds
-                                }, function (jobId) {
+                                // blocking clicks
+    
+                                $('body').css('pointer-events', 'none');
+                                
+                                Ratchet.block('Working...', 'Copying the nodes from one branch to another', () => {
                                     
-                                    // You can wait for the job to finish or just quit the application, the job will still be running.
-                                    console.log(`The job is now running (${jobId}) - Please wait for it to complete`);
-                                    waitForJob(jobId, sourceBranch, next);
+                                    Chain(sourceBranch.getRepository()).startCopyFrom(sourceBranchId, targetBranchId, {
+                                        repositoryId: repositoryId,
+                                        branchId: sourceBranchId,
+                                        targetRepositoryId: repositoryId,
+                                        targetBranchId: targetBranchId,
+                                        nodeIds: fullListOfNodeIds
+                                    }, function (jobId) {
+                                        
+                                        // You can wait for the job to finish or just quit the application, the job will still be running.
+                                        console.log(`The job is now running (${jobId}) - Please wait for it to complete`);
+                                        waitForJob(jobId, sourceBranch, next);
+                                    });
                                 });
+                                
                             });
                         
                     });

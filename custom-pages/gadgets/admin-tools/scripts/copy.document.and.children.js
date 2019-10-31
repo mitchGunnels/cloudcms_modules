@@ -187,7 +187,7 @@ define(function (require, exports, module) {
                                 'Yes',
                                 'btn btn-default',
                                 () => {
-                                    copyDocumentAndChildren(targetBranch, sourceBranchId, nodeIds, next);
+                                    copyDocumentAndChildren(sourceBranchId, targetBranch, nodeIds, next);
                                 });
                         });
                     }

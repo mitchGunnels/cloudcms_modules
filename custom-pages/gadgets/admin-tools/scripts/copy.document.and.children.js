@@ -43,7 +43,7 @@ define(function (require, exports, module) {
             });
     }
     
-    function copyDocumentAndChildren(sourceBranch, targetBranchId, nodeIds, next) {
+    function copyDocumentAndChildren(sourceBranch, targetBranch, nodeIds, next) {
         
         const sourceBranchId = sourceBranch.getId();
         const repositoryId = sourceBranch.getRepository().getId();
@@ -78,7 +78,7 @@ define(function (require, exports, module) {
                             'btn btn-default',
                             () => {
                                 
-                                console.log(`Will copy ${nodeIds.length} documents from ${sourceBranchId} to ${targetBranchId}`);
+                                console.log(`Will copy ${nodeIds.length} documents from ${sourceBranch.getTitle()} to ${targetBranch.getTitle()}`);
                                 
                                 // blocking clicks
                                 
@@ -86,11 +86,11 @@ define(function (require, exports, module) {
                                 
                                 Ratchet.block('Working...', 'Copying the nodes from one branch to another', () => {
                                     
-                                    Chain(sourceBranch.getRepository()).startCopyFrom(sourceBranchId, targetBranchId, {
+                                    Chain(sourceBranch.getRepository()).startCopyFrom(sourceBranchId, targetBranch.getId(), {
                                         repositoryId: repositoryId,
                                         branchId: sourceBranchId,
                                         targetRepositoryId: repositoryId,
-                                        targetBranchId: targetBranchId,
+                                        targetBranchId: targetBranch.getId(),
                                         nodeIds: fullListOfNodeIds
                                     }, function (jobId) {
                                         
@@ -181,13 +181,13 @@ define(function (require, exports, module) {
                 () => {
                     if (nodeIds.length) {
                         Chain(targetBranch).getRepository().readBranch(sourceBranchId).then(function () {
-                            const sourceBranch = this.getTitle();
+                            const sourceBranch = this;
                             Ratchet.fadeModalConfirm('<div style="text-align:center">Please Confirm</div>',
-                                `<div style="text-align:center">Are you sure you want to copy files from ${sourceBranch} to ${targetBranch.getTitle()} ?</div>`,
+                                `<div style="text-align:center">Are you sure you want to copy files from ${sourceBranch.getTitle()} to ${targetBranch.getTitle()} ?</div>`,
                                 'Yes',
                                 'btn btn-default',
                                 () => {
-                                    copyDocumentAndChildren(sourceBranchId, targetBranch, nodeIds, next);
+                                    copyDocumentAndChildren(sourceBranch, targetBranch, nodeIds, next);
                                 });
                         });
                     }

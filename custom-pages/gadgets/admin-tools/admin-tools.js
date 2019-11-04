@@ -6,8 +6,10 @@ define(function (require, exports, module) {
     const Empty = require('ratchet/dynamic/empty');
     
     const UI = require('ui');
-    
+    const $ = require('jquery');
     const createSnapshot = require('./scripts/create-snapshot.js');
+    
+    const copyFrom = require('./scripts/copy.document.and.children.js');
     
     
     return UI.registerGadget('admin-tools', Empty.extend({
@@ -69,6 +71,10 @@ define(function (require, exports, module) {
                 //Creates a snapshot
                 $(el).find('.btn.btn-primary').click(() => {
                     createSnapshot.run(callback);
+                });
+                
+                $(el).find('.btn.btn-default').click(() => {
+                    copyFrom.run(callback);
                 });
             });
             

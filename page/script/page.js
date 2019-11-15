@@ -1,18 +1,19 @@
 define(function (require, exports, module) {
     /*********************
      * Prevent addition of page/page-* documents with duplicate urls of existing documents
+     * And similar unique-checks for other docs
      * ******************/
 
 
     var $ = require("jquery");
-    var duplicatePropertyString = "Oh-Oh, it looks like another page is already using that URL."
-    var validPropertyString = "The URL is not being used, you are good to go."
+    var duplicatePropertyString = "Oh-Oh, it looks like another document is already using that value."
+    var validPropertyString = "The value is not being used elsewhere, you are good to go."
     var errorColor = "#a94442"
     var validColor = "rgb(39, 174, 96)"
     var saveButtonSelector = ".buttonbar .btn.save, .btn-toolbar .btn.save, .btn.btn-success.wizard-next"
-    var propertyFieldSelector = ".alpaca-field [data-alpaca-field-name=urlList]"
+    var propertyFieldSelector = ".alpaca-field [data-alpaca-field-name=urlList], .alpaca-field [data-alpaca-field-name=errorCode]"
     var propertyTextSelector = ".alpaca-field [name=urlList_0_url], .alpaca-field [name=errorCode]"
-    var helpBlockSelector = ".alpaca-helper.help-block"
+    var helpBlockSelector = ".help-block"
     var validPropertyClass = "valid-property-message"
     var validPropertySelector = "." + validPropertyClass
     var disabled = "disabled"
@@ -25,16 +26,27 @@ define(function (require, exports, module) {
     var docId = null
     var isValid = false
 
-    var typeWithUniqueProperty;
+    var typeRegexWithUniqueProperty;
     var uniqueProperty;
 
-    //TODO! make sure this works on both create wizard and edit properties page
-    //TODO! add dictionary with different message strings and subselectors, keyed off of type/property values
+    var propertiesList = [
+        { regex: "cricket:page(-.*)?", property: "urlList.0.url" },
+        { regex: "cricket:error", property: "errorCode" }
+    ]
+
     function detectTypeAndProperty() {
-        //set type/prop to undefined
+        //set type matcher/unique prop to undefined
+        typeRegexWithUniqueProperty = undefined
+        uniqueProperty = undefined
         //based on url pattern, set them to specific values
-        typeWithUniqueProperty = "cricket:page(-.*)?"
-        uniqueProperty = "url"
+        var regex
+        propertiesList.forEach(function (prop) {
+            regex = new RegExp(prop.regex)
+            if (regex.test(location.href)) {
+                typeRegexWithUniqueProperty = prop.regex
+                uniqueProperty = prop.property
+            }
+        })
     }
 
     function disableSave() {
@@ -97,30 +109,27 @@ define(function (require, exports, module) {
     function queryForDocuments(value) {
         var branch = Ratchet.observable('branch').get()
         var chain = Chain(branch).trap(genericErrorLoggerHalter)
-        return chain.queryNodes({
+        var queryObject = {
             _type: {
-                $regex:
+                $regex: typeRegexWithUniqueProperty
             },
             _doc: {
                 $ne: docId
             },
-            urlList: {
-                $elemMatch: {
-                    [uniqueProperty]: value
-                }
-            }
-        })
+            [uniqueProperty]: value
+        }
+        return chain.queryNodes(queryObject)
     }
 
-    function findIdenticalUrlPages(event) {
+    function findIdenticalPropertyDocuments(event) {
         //if not valid and enter key pressed, do not save!
         if (!isValid && event && event.key && "Enter" === event.key) {
             event.stopPropagation()
             event.preventDefault()
         } else {
             latestDupeCheckRequestTime = new Date().getTime()
-            var pagesRequestTime = new Date().getTime()
-            var url
+            var docsRequestTime = new Date().getTime()
+            var value
 
             //disable early as response timing varies
             disableSave()
@@ -135,15 +144,15 @@ define(function (require, exports, module) {
             //(cut/paste event-driven changes do not reflect until then)
             timer = setTimeout(function () {
                 timer = undefined
-                url = $(propertyTextSelector).val()
+                value = $(propertyTextSelector).val()
 
-                if (url) {
-                    queryForDocuments(url).then(function handleQueryResponse() {
+                if (value) {
+                    queryForDocuments(value).then(function handleQueryResponse() {
                         //ensure only final check results in DOM update
-                        if (pagesRequestTime === latestDupeCheckRequestTime) {
-                            var identicalUrlPages = this.asArray()
-                            var pageCount = identicalUrlPages.length
-                            if (pageCount) {
+                        if (docsRequestTime === latestDupeCheckRequestTime) {
+                            var identicalValueDocs = this.asArray()
+                            var docsCount = identicalValueDocs.length
+                            if (docsCount) {
                                 setPropertyInvalid()
                             } else {
                                 setPropertyValid()
@@ -157,20 +166,20 @@ define(function (require, exports, module) {
         }
     }
 
-    //TODO! update to incorporate detectTypeAndProperty
     $(document).on('cloudcms-ready', function (event) {
         $(propertyTextSelector).off()
         //detect if current page is edit properties
         var editPropertiesPattern = /^.*\/documents\/(\w+)\/properties$/
+        detectTypeAndProperty()
         var isEditProperties = editPropertiesPattern.test(location.href)
         if (isEditProperties) {
             docId = location.href.replace(editPropertiesPattern, '$1')
-            findIdenticalUrlPages()
+            findIdenticalPropertyDocuments()
         } else {
             //if not on edit properties, clear docId
             docId = null
         }
 
-        $(document).on('keyup keydown paste cut change', propertyTextSelector, findIdenticalUrlPages)
+        $(document).on('keyup keydown paste cut change', propertyTextSelector, findIdenticalPropertyDocuments)
     })
 });

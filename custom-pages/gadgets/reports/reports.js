@@ -16,13 +16,14 @@ define(function (require, exports, module) {
     const $ = require('jquery')
     const OneTeam = require('oneteam')
 
-    const [PAGE, PRODUCT, SKU, PRICESHEET] = [
+    const [PAGE, PRODUCT, SKU, PRICESHEET, MISSINGMETAKEYS] = [
         'page',
         'product',
         'sku',
-        'price-sheet'
+        'price-sheet',
+        'missing-meta-keys'
     ]
-    const ReportTypes = [PAGE, PRODUCT, SKU, PRICESHEET]
+    const ReportTypes = [PAGE, PRODUCT, SKU, PRICESHEET, MISSINGMETAKEYS]
 
     const QueryTypes = {
         [PAGE]: {
@@ -30,7 +31,10 @@ define(function (require, exports, module) {
         },
         [PRODUCT]: "cricket:product",
         [SKU]: "cricket:sku",
-        [PRICESHEET]: "cricket:price-list"
+        [PRICESHEET]: "cricket:price-list",
+        [MISSINGMETAKEYS]: {
+            "$regex": "cricket:page(-.+)?"
+        }
     }
 
     let branch;
@@ -39,7 +43,50 @@ define(function (require, exports, module) {
     function buildQuery(reportType) {
         let query = { }
         if (reportType in QueryTypes) {
-            query._type = QueryTypes[reportType]
+            query._type = QueryTypes[reportType];
+            if (reportType === MISSINGMETAKEYS){
+                query.metadata={
+                    $not: {
+                      $all: [
+                        {
+                          $elemMatch: {
+                            type: "title"
+                          }
+                        },
+                        {
+                          $elemMatch: {
+                            type: "description"
+                          }
+                        },
+                        {
+                          $elemMatch: {
+                            type: "canonical"
+                          }
+                        },
+                        {
+                          $elemMatch: {
+                            type: "og:title"
+                          }
+                        },
+                        {
+                          $elemMatch: {
+                            type: "og:description"
+                          }
+                        },
+                        {
+                          $elemMatch: {
+                            type: "og:url"
+                          }
+                        },
+                        {
+                          $elemMatch: {
+                            type: "og:image"
+                          }
+                        }
+                      ]
+                    }
+                }
+            }
         } else {
             console.error('Invalid report type provided')
         }
@@ -301,7 +348,7 @@ define(function (require, exports, module) {
          */
         afterSwap: function (el, model, originalContext, callback) {
             this.base(el, model, originalContext, function () {
-                
+           
             });
         }
         

@@ -19,6 +19,30 @@ define((require, exports, module) => {
     }
 
     /**
+     * Waits for the Job to complete
+     * Once it finishes, then the spinner will go away a a message will show up
+     * @param jobId
+     * @param branch
+     * @param next
+     */
+    function waitForJob(jobId, branch, next) {
+        if (typeof next !== 'function') {
+            console.error('Need to be a function');
+        }
+        const repository = branch.getRepository();
+
+        Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
+            // all done
+            $('body').css('pointer-events', 'all');
+
+            Ratchet.unblock();
+
+            Ratchet.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`, `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`);
+            next();
+        });
+    }
+
+    /**
      * Create a new snapshot using the currently selected branch
      * @param branch
      * @param next
@@ -45,30 +69,6 @@ define((require, exports, module) => {
                     waitForJob(jobId, branch, next);
                 }
             );
-    }
-
-    /**
-     * Waits for the Job to complete
-     * Once it finishes, then the spinner will go away a a message will show up
-     * @param jobId
-     * @param branch
-     * @param next
-     */
-    function waitForJob(jobId, branch, next) {
-        if (typeof next !== 'function') {
-            console.error('Need to be a function');
-        }
-        const repository = branch.getRepository();
-
-        Chain(repository.getCluster()).waitForJobCompletion(jobId, (job) => {
-            // all done
-            $('body').css('pointer-events', 'all');
-
-            Ratchet.unblock();
-
-            Ratchet.showModalMessage(`Executed Snapshot Creation from: ${branch.getTitle().toUpperCase()}`, `<div style="text-align:center"> Finished: ${job.getJobTitle()}</div>`);
-            next();
-        });
     }
 
     return {

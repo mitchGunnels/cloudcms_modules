@@ -2,13 +2,13 @@ define((require, exports, module) => {
     const $ = require('jquery');
     $(document).on('cloudcms-ready', (event) => {
         // THIS IS TO CHANGE THE DEFAULT CLICK TO TAKE USERS TO THE PROPERTIES PAGE. QUICKER EDITING
-        var propLink = setInterval(() => {
+        const propLink = setInterval(() => {
             if ($('.documents-list table td h2 a').length > 0 || $('.content-instances table td h2 a').length > 0) {
                 $('.list-row-info.title a').each(function(index, el) {
                     const url = $(this).attr('href');
                     const slug = url.substr(url.lastIndexOf('/') + 1);
                     const self = this;
-                    if (slug != 'browse' && slug != 'properties') {
+                    if (slug !== 'browse' && slug !== 'properties') {
                         $(self).attr('href', `${url}/properties`);
                     }
                 });
@@ -22,13 +22,6 @@ define((require, exports, module) => {
             clearInterval(propLink);
         }, 5000);
 
-        // HANDLE THE COLOR AT THE TOP OF THE PAGE TO REMIND WHICH BRANCH
-        const workspacePickerVal = $('select.workspace-picker option:selected').text();
-        if (workspacePickerVal.includes('Master')) {
-            $('div[region="workspace-bar"]').css('borderTopColor', '#a94442');
-        } else {
-            $('div[region="workspace-bar"]').css('borderTopColor', '#60a630');
-        }
         $('select.workspace-picker').on('change', () => {
             const workspacePickerVal = $('select.workspace-picker option:selected').text();
             if (workspacePickerVal.includes('Master')) {
@@ -37,34 +30,6 @@ define((require, exports, module) => {
                 $('div[region="workspace-bar"]').css('borderTopColor', '#60a630');
             }
         });
-
-        //------------------------------------------------------------------
-
-        // WHEN "CREATING A DOCUMENT" SELECT THE PROPER NODE BASED ON THE CURRENT FOLDER
-        // $(document).on('click', '.list-button-new_document', function(event) {
-        //     var nodeName = $('ol.breadcrumb.docpath li:last a').text().replace(/\s/g, '').replace(/_/g, ' ');
-        //     var selectExists = setInterval(function() {
-        //         if ($('.card-content-holder select').length) {
-        //             setTimeout(function(){$('.card-content-holder select option:contains(' + nodeName + ')').attr('selected', 'selected');},10)
-        //             clearInterval(selectExists);
-        //         }
-        //     }, 50);
-        // });
-
-        // Create custom config for authors
-        const uiConfig = $('button[data-header-item-key=ui-config-dropdown]')
-            .text()
-            .replace(/\s/g, '');
-        if (uiConfig == 'Author') {
-            // HIDE FROM VIEW
-            $('.list-button-view_details, .list-button-new_text_document')
-                .parent()
-                .hide();
-            $('.list-button-view_rules, .dropdown-menu li.divider').hide();
-            // CHANGE NAME
-
-            // CUSTOM ACTIONS
-        }
 
         //---------------------------------------------------------------------------------------------------------------
         // IF DELAY IS NEEDED:
@@ -95,17 +60,17 @@ define((require, exports, module) => {
                 // console.log("SIT9");
                 domain = 'https://wwwsit9.cricketwireless.com';
             } else {
-                // console.log("Nothing found");
+                console.log("The branch did not contain the word 'SIT'!");
             }
             const endPoint = $('div[name=previewURL]').text();
             const inputEndPoint = $('input[name=previewURL]').val();
             $('.previewButton').remove();
-            if (endPoint != undefined && endPoint.length > 0) {
+            if (endPoint !== undefined && endPoint.length > 0) {
                 $('div[name=previewURL]').append(` <span class="previewButton">- <a href="${domain}${endPoint}" target="_blank">Preview Content</a></span>`);
                 $('.content-holder div.row:first div.col-md-4').prepend(
                     `<div class="pull-right previewButton"><a href="${domain}${endPoint}" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>`
                 );
-            } else if (inputEndPoint != undefined && inputEndPoint.length > 0) {
+            } else if (inputEndPoint !== undefined && inputEndPoint.length > 0) {
                 $('div[name=previewURL]').append(` <span class="previewButton">- <a href="${domain}${inputEndPoint}" target="_blank">Preview Content</a></span>`);
                 $('.content-holder div.row:first div.col-md-4').prepend(
                     `<div class="pull-right previewButton"><a href="${domain}${inputEndPoint}" class="btn btn-success" target="_blank"><span class="fa fa-eye" aria-hidden="true"></span> Preview Content</a></div>`

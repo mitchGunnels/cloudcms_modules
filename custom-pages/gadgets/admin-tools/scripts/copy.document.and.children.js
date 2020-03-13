@@ -14,6 +14,44 @@ define((require, exports, module) => {
     }
 
     /**
+     *
+     * @param obj
+     * @return {boolean}
+     */
+    function isObj(obj) {
+        return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
+    }
+
+    /**
+     *
+     * @param obj
+     * @return {*[]|unknown}
+     */
+    function scanForIds(obj) {
+        if (isObj(obj) || Array.isArray(obj)) {
+            return Object.values(obj).reduce((idList, value) => {
+                if (isObj(value)) {
+                    if (Object.prototype.hasOwnProperty.call(value, 'id')) {
+                        idList.push(value.id);
+                    } else if (Object.prototype.hasOwnProperty.call(value, '_doc')) {
+                        idList.push(value._doc);
+                    }
+
+                    return [...idList, ...scanForIds(value)];
+                }
+                if (Array.isArray(value)) {
+                    idList = [...idList, ...scanForIds(value)];
+                }
+
+                // makes sure to return unique ids only
+                return [...new Set(idList)];
+            }, []);
+        }
+
+        return [];
+    }
+
+    /**
      * Waits for the Job to complete
      * Once it finishes, then the spinner will go away a a message will show up
      * @param jobId
@@ -112,34 +150,6 @@ define((require, exports, module) => {
             });
     }
 
-    function scanForIds(obj) {
-        if (isObj(obj) || Array.isArray(obj)) {
-            return Object.values(obj).reduce((idList, value) => {
-                if (isObj(value)) {
-                    if (Object.prototype.hasOwnProperty.call(value, 'id')) {
-                        idList.push(value.id);
-                    } else if (Object.prototype.hasOwnProperty.call(value, '_doc')) {
-                        idList.push(value._doc);
-                    }
-
-                    return [...idList, ...scanForIds(value)];
-                }
-                if (Array.isArray(value)) {
-                    idList = [...idList, ...scanForIds(value)];
-                }
-
-                // makes sure to return unique ids only
-                return [...new Set(idList)];
-            }, []);
-        }
-
-        return [];
-    }
-
-    function isObj(obj) {
-        return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
-    }
-
     return {
         /**
          * Kicks off the process to create a new snapshot, from the currently selected branch
@@ -168,9 +178,9 @@ define((require, exports, module) => {
                 nodeIds = [];
                 const values = this.value;
                 values.split(',').forEach((node) => {
-                    node = node.replace(/\s+/g, '');
-                    if (node.length) {
-                        nodeIds.push(node);
+                    const nodeToCopy = node.replace(/\s+/g, '');
+                    if (nodeToCopy.length) {
+                        nodeIds.push(nodeToCopy);
                     }
                 });
             });

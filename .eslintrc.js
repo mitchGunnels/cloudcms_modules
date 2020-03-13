@@ -21,6 +21,7 @@ module.exports = {
         }
     },
     rules: {
+        'no-underscore-dangle': "off",
         'space-before-function-paren': 'off',
         'no-restricted-globals': 'warn',
         'prettier/prettier': 'error',

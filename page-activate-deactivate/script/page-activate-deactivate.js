@@ -13,8 +13,7 @@ define((require, exports, module) => {
     const typeClass = 'activation-page-type';
     const typeSelector = `${dashletSelector} .${typeClass}`;
     const typeSelectSelector = `${typeSelector} select`;
-    const typeSelect = '<div class="';
-    `${typeClass}"><label>Page Type<select><option value="page">Page</option><option value="page-support-article">Support Article Page</option><option value="page-support-category">Support Category Page</option><option value="page-support-home">Support Home Page</option></select></label></div>`;
+    const typeSelect = `<div class=${typeClass}"><label>Page Type<select><option value="page">Page</option><option value="page-support-article">Support Article Page</option><option value="page-support-category">Support Category Page</option><option value="page-support-home">Support Home Page</option></select></label></div>`;
 
     const pageListClass = 'activation-page-list';
     const pageListSelector = `${dashletSelector} .${pageListClass}`;
@@ -46,8 +45,7 @@ define((require, exports, module) => {
     const contentSelector = `${dashletSelector} .${contentClass}`;
     const content = `<div class="${contentClass}"></div>`;
 
-    const activationStyles = contentSelector;
-    ` { background: #fff; border: 1px solid #ccc; padding: 10px; }${buttonsSelector} { background: #fff; border-top: none; text-align: right; }${activateSelector}, ${deactivateSelector} { display: inline-block; margin: 10px 0 0 10px; }${dashletSelector} label { width: 100%; display: flex; flex-direction: column; }${errorMessageSelector} { color: #a94442; }${successMessageSelector} { color: rgb(39, 174, 96); }`;
+    const activationStyles = `${contentSelector} { background: #fff; border: 1px solid #ccc; padding: 10px; }${buttonsSelector} { background: #fff; border-top: none; text-align: right; }${activateSelector}, ${deactivateSelector} { display: inline-block; margin: 10px 0 0 10px; }${dashletSelector} label { width: 100%; display: flex; flex-direction: column; }${errorMessageSelector} { color: #a94442; }${successMessageSelector} { color: rgb(39, 174, 96); }`;
 
     function genericErrorLoggerHalter(err) {
         console.error(err);

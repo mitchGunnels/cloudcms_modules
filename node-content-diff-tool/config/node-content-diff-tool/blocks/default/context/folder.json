@@ -9,9 +9,7 @@
                         "key": "do-something-awesome",
                         "title": "Do Something Awesome",
                         "iconClass": "glyphicon glyphicon-asterisk",
-                        "allowPermission": [
-                            "read"
-                        ]
+                        "allowPermission": ["read"]
                     }
                 ]
             }

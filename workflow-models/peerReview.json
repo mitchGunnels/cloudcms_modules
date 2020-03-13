@@ -1,78 +1,58 @@
 {
     "title": "Peer Review",
-    "nodes":
-    {
-        "start":
-        {
+    "nodes": {
+        "start": {
             "type": "start",
-            "transitions":
-            {
+            "transitions": {
                 "start": "step1"
             },
             "form": "main"
         },
-        "step1":
-        {
+        "step1": {
             "type": "participant",
             "title": "Please approve the attached content",
             "description": "The provided content require your approval",
             "swimlane": "approver",
             "form": "main",
-            "transitions":
-            {
+            "transitions": {
                 "approve": "approve",
                 "reject": "reject"
             }
         },
-        "approve":
-        {
+        "approve": {
             "type": "passthru",
-            "transitions":
-            {
+            "transitions": {
                 "end": "end"
             }
         },
-        "reject":
-        {
+        "reject": {
             "type": "passthru",
-            "transitions":
-            {
+            "transitions": {
                 "end": "end"
             }
         },
-        "end":
-        {
+        "end": {
             "type": "end"
         }
     },
-    "swimlanes":
-    {
-        "approver":
-        {
+    "swimlanes": {
+        "approver": {
             "principals": []
         }
     },
-    "forms":
-    {
-        "main":
-        {
-            "schema":
-            {
+    "forms": {
+        "main": {
+            "schema": {
                 "type": "object",
-                "properties":
-                {
-                    "dueDate":
-                    {
+                "properties": {
+                    "dueDate": {
                         "type": "string"
                     }
                 }
             },
-            "options":
-            {
-                "fields":
-                {
-                    "dueDate":
-                    {
+            "options": {
+                "fields": {
+                    "dueDate": {
                         "type": "date",
                         "label": "Due Date",
                         "required": true

@@ -3,27 +3,27 @@
 // 1:1 API Fork of TextStatistics.php by Dave Child (Thanks mate!)
 // https://github.com/DaveChild/Text-Statistics
 function cleanText(text) {
-    // all these tags should be preceeded by a full stop. 
-    var fullStopTags = ['li', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'dd'];
+    // all these tags should be preceeded by a full stop.
+    const fullStopTags = ['li', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'dd'];
 
-    fullStopTags.forEach(function(tag) {
-        text = text.replace("</" + tag + ">", ".");
+    fullStopTags.forEach((tag) => {
+        text = text.replace(`</${tag}>`, '.');
     });
 
     text = text
-        .replace(/<[^>]+>/g, "") // Strip tags
-        .replace(/[,:;()\/&+]|\-\-/g, " ") // Replace commas, hyphens etc (count them as spaces)
-        .replace(/[\.!?]/g, ".") // Unify terminators
-        .replace(/^\s+/, "") // Strip leading whitespace
-        .replace(/[\.]?(\w+)[\.]?(\w+)@(\w+)[\.](\w+)[\.]?/g, "$1$2@$3$4") // strip periods in email addresses (so they remain counted as one word)
-        .replace(/[ ]*(\n|\r\n|\r)[ ]*/g, ".") // Replace new lines with periods
-        .replace(/([\.])[\.]+/g, ".") // Check for duplicated terminators
-        .replace(/[ ]*([\.])/g, ". ") // Pad sentence terminators
-        .replace(/\s+/g, " ") // Remove multiple spaces
-        .replace(/\s+$/, ""); // Strip trailing whitespace
+        .replace(/<[^>]+>/g, '') // Strip tags
+        .replace(/[,:;()\/&+]|\-\-/g, ' ') // Replace commas, hyphens etc (count them as spaces)
+        .replace(/[\.!?]/g, '.') // Unify terminators
+        .replace(/^\s+/, '') // Strip leading whitespace
+        .replace(/[\.]?(\w+)[\.]?(\w+)@(\w+)[\.](\w+)[\.]?/g, '$1$2@$3$4') // strip periods in email addresses (so they remain counted as one word)
+        .replace(/[ ]*(\n|\r\n|\r)[ ]*/g, '.') // Replace new lines with periods
+        .replace(/([\.])[\.]+/g, '.') // Check for duplicated terminators
+        .replace(/[ ]*([\.])/g, '. ') // Pad sentence terminators
+        .replace(/\s+/g, ' ') // Remove multiple spaces
+        .replace(/\s+$/, ''); // Strip trailing whitespace
 
     if (text.slice(-1) != '.') {
-        text += "."; // Add final terminator, just in case it's missing.
+        text += '.'; // Add final terminator, just in case it's missing.
     }
     return text;
 }
@@ -34,32 +34,32 @@ var TextStatistics = function TextStatistics(text) {
 
 TextStatistics.prototype.fleschKincaidReadingEase = function(text) {
     text = text ? cleanText(text) : this.text;
-    return Math.round((206.835 - (1.015 * this.averageWordsPerSentence(text)) - (84.6 * this.averageSyllablesPerWord(text))) * 10) / 10;
+    return Math.round((206.835 - 1.015 * this.averageWordsPerSentence(text) - 84.6 * this.averageSyllablesPerWord(text)) * 10) / 10;
 };
 
 TextStatistics.prototype.fleschKincaidGradeLevel = function(text) {
     text = text ? cleanText(text) : this.text;
-    return Math.round(((0.39 * this.averageWordsPerSentence(text)) + (11.8 * this.averageSyllablesPerWord(text)) - 15.59) * 10) / 10;
+    return Math.round((0.39 * this.averageWordsPerSentence(text) + 11.8 * this.averageSyllablesPerWord(text) - 15.59) * 10) / 10;
 };
 
 TextStatistics.prototype.gunningFogScore = function(text) {
     text = text ? cleanText(text) : this.text;
-    return Math.round(((this.averageWordsPerSentence(text) + this.percentageWordsWithThreeSyllables(text, false)) * 0.4) * 10) / 10;
+    return Math.round((this.averageWordsPerSentence(text) + this.percentageWordsWithThreeSyllables(text, false)) * 0.4 * 10) / 10;
 };
 
 TextStatistics.prototype.colemanLiauIndex = function(text) {
     text = text ? cleanText(text) : this.text;
-    return Math.round(((5.89 * (this.letterCount(text) / this.wordCount(text))) - (0.3 * (this.sentenceCount(text) / this.wordCount(text))) - 15.8) * 10) / 10;
+    return Math.round((5.89 * (this.letterCount(text) / this.wordCount(text)) - 0.3 * (this.sentenceCount(text) / this.wordCount(text)) - 15.8) * 10) / 10;
 };
 
 TextStatistics.prototype.smogIndex = function(text) {
     text = text ? cleanText(text) : this.text;
-    return Math.round(1.043 * Math.sqrt((this.wordsWithThreeSyllables(text) * (30 / this.sentenceCount(text))) + 3.1291) * 10) / 10;
+    return Math.round(1.043 * Math.sqrt(this.wordsWithThreeSyllables(text) * (30 / this.sentenceCount(text)) + 3.1291) * 10) / 10;
 };
 
 TextStatistics.prototype.automatedReadabilityIndex = function(text) {
     text = text ? cleanText(text) : this.text;
-    return Math.round(((4.71 * (this.letterCount(text) / this.wordCount(text))) + (0.5 * (this.wordCount(text) / this.sentenceCount(text))) - 21.43) * 10) / 10;
+    return Math.round((4.71 * (this.letterCount(text) / this.wordCount(text)) + 0.5 * (this.wordCount(text) / this.sentenceCount(text)) - 21.43) * 10) / 10;
 };
 
 TextStatistics.prototype.textLength = function(text) {
@@ -69,7 +69,7 @@ TextStatistics.prototype.textLength = function(text) {
 
 TextStatistics.prototype.letterCount = function(text) {
     text = text ? cleanText(text) : this.text;
-    text = text.replace(/[^a-z]+/ig, "");
+    text = text.replace(/[^a-z]+/gi, '');
     return text.length;
 };
 
@@ -92,11 +92,11 @@ TextStatistics.prototype.averageWordsPerSentence = function(text) {
 
 TextStatistics.prototype.averageSyllablesPerWord = function(text) {
     text = text ? cleanText(text) : this.text;
-    var syllableCount = 0,
-        wordCount = this.wordCount(text),
-        self = this;
+    let syllableCount = 0;
+    const wordCount = this.wordCount(text);
+    const self = this;
 
-    text.split(/\s+/).forEach(function(word) {
+    text.split(/\s+/).forEach((word) => {
         syllableCount += self.syllableCount(word);
     });
 
@@ -106,13 +106,12 @@ TextStatistics.prototype.averageSyllablesPerWord = function(text) {
 
 TextStatistics.prototype.wordsWithThreeSyllables = function(text, countProperNouns) {
     text = text ? cleanText(text) : this.text;
-    var longWordCount = 0,
-        self = this;
+    let longWordCount = 0;
+    const self = this;
 
-    countProperNouns = countProperNouns === false ? false : true;
+    countProperNouns = countProperNouns !== false;
 
-    text.split(/\s+/).forEach(function(word) {
-
+    text.split(/\s+/).forEach((word) => {
         // We don't count proper nouns or capitalised words if the countProperNouns attribute is set.
         // Defaults to true.
         if (!word.match(/^[A-Z]/) || countProperNouns) {
@@ -130,26 +129,26 @@ TextStatistics.prototype.percentageWordsWithThreeSyllables = function(text, coun
 };
 
 TextStatistics.prototype.syllableCount = function(word) {
-    var syllableCount = 0,
-        prefixSuffixCount = 0,
-        wordPartCount = 0;
+    let syllableCount = 0;
+    let prefixSuffixCount = 0;
+    let wordPartCount = 0;
 
     // Prepare word - make lower case and remove non-word characters
-    word = word.toLowerCase().replace(/[^a-z]/g, "");
+    word = word.toLowerCase().replace(/[^a-z]/g, '');
 
     // Specific common exceptions that don't follow the rule set below are handled individually
     // Array of problem words (with word as key, syllable count as value)
-    var problemWords = {
-        "simile": 3,
-        "forever": 3,
-        "shoreline": 2
+    const problemWords = {
+        simile: 3,
+        forever: 3,
+        shoreline: 2
     };
 
     // Return if we've hit one of those...
     if (problemWords.hasOwnProperty(word)) return problemWords[word];
 
     // These syllables would be counted as two but should be one
-    var subSyllables = [
+    const subSyllables = [
         /cial/,
         /tia/,
         /cius/,
@@ -169,61 +168,32 @@ TextStatistics.prototype.syllableCount = function(word) {
     ];
 
     // These syllables would be counted as one but should be two
-    var addSyllables = [
-        /ia/,
-        /riet/,
-        /dien/,
-        /iu/,
-        /io/,
-        /ii/,
-        /[aeiouym]bl$/,
-        /[aeiou]{3}/,
-        /^mc/,
-        /ism$/,
-        /([^aeiouy])\1l$/,
-        /[^l]lien/,
-        /^coa[dglx]./,
-        /[^gq]ua[^auieo]/,
-        /dnt$/,
-        /uity$/,
-        /ie(r|st)$/
-    ];
+    const addSyllables = [/ia/, /riet/, /dien/, /iu/, /io/, /ii/, /[aeiouym]bl$/, /[aeiou]{3}/, /^mc/, /ism$/, /([^aeiouy])\1l$/, /[^l]lien/, /^coa[dglx]./, /[^gq]ua[^auieo]/, /dnt$/, /uity$/, /ie(r|st)$/];
 
     // Single syllable prefixes and suffixes
-    var prefixSuffix = [
-        /^un/,
-        /^fore/,
-        /ly$/,
-        /less$/,
-        /ful$/,
-        /ers?$/,
-        /ings?$/
-    ];
+    const prefixSuffix = [/^un/, /^fore/, /ly$/, /less$/, /ful$/, /ers?$/, /ings?$/];
 
     // Remove prefixes and suffixes and count how many were taken
-    prefixSuffix.forEach(function(regex) {
+    prefixSuffix.forEach((regex) => {
         if (word.match(regex)) {
-            word = word.replace(regex, "");
+            word = word.replace(regex, '');
             prefixSuffixCount++;
         }
     });
 
-    wordPartCount = word
-        .split(/[^aeiouy]+/ig)
-        .filter(function(wordPart) {
-            return !!wordPart.replace(/\s+/ig, "").length;
-        })
-        .length;
+    wordPartCount = word.split(/[^aeiouy]+/gi).filter((wordPart) => {
+        return !!wordPart.replace(/\s+/gi, '').length;
+    }).length;
 
     // Get preliminary syllable count...
     syllableCount = wordPartCount + prefixSuffixCount;
 
     // Some syllables do not follow normal rules - check for them
-    subSyllables.forEach(function(syllable) {
+    subSyllables.forEach((syllable) => {
         if (word.match(syllable)) syllableCount--;
     });
 
-    addSyllables.forEach(function(syllable) {
+    addSyllables.forEach((syllable) => {
         if (word.match(syllable)) syllableCount++;
     });
 

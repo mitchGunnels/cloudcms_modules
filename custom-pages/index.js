@@ -1,9 +1,5 @@
-define(function (require) {
-
-    
+define((require) => {
     require('./gadgets/admin-tools/admin-tools.js');
-    
-    require('./gadgets/reports/reports.js');
-    
-});
 
+    require('./gadgets/reports/reports.js');
+});

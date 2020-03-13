@@ -1,3 +1,3 @@
 define(function(require, exports, module) {
-    require("./script/ckeditor-mods.js");
+    require('./script/ckeditor-mods.js');
 });

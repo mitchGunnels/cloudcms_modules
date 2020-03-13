@@ -1,7 +1,7 @@
 /* index.d.ts (C) 2015-present SheetJS and contributors */
 // TypeScript Version: 2.2
-import * as CFB from "cfb";
-import * as SSF from "ssf";
+import * as CFB from 'cfb';
+import * as SSF from 'ssf';
 
 /** Version string */
 export const version: string;
@@ -625,7 +625,7 @@ export interface Sheet2HTMLOpts {
 
 export interface Sheet2JSONOpts extends DateNFOption {
     /** Output format */
-    header?: "A"|number|string[];
+    header?: 'A' | number | string[];
 
     /** Override worksheet range */
     range?: any;
@@ -687,8 +687,8 @@ export interface XLSX$Utils {
     json_to_sheet(data: any[], opts?: JSON2SheetOpts): WorkSheet;
 
     /** BROWSER ONLY! Converts a TABLE DOM element to a worksheet. */
-    table_to_sheet(data: any,  opts?: Table2SheetOpts): WorkSheet;
-    table_to_book(data: any,  opts?: Table2SheetOpts): WorkBook;
+    table_to_sheet(data: any, opts?: Table2SheetOpts): WorkSheet;
+    table_to_book(data: any, opts?: Table2SheetOpts): WorkBook;
 
     /* --- Export Functions --- */
 
@@ -757,10 +757,10 @@ export interface XLSX$Utils {
     book_append_sheet(workbook: WorkBook, worksheet: WorkSheet, name?: string): void;
 
     /** Set sheet visibility (visible/hidden/very hidden) */
-    book_set_sheet_visibility(workbook: WorkBook, sheet: number|string, visibility: number): void;
+    book_set_sheet_visibility(workbook: WorkBook, sheet: number | string, visibility: number): void;
 
     /** Set number format for a cell */
-    cell_set_number_format(cell: CellObject, fmt: string|number): CellObject;
+    cell_set_number_format(cell: CellObject, fmt: string | number): CellObject;
 
     /** Set hyperlink for a cell */
     cell_set_hyperlink(cell: CellObject, target: string, tooltip?: string): CellObject;
@@ -772,7 +772,7 @@ export interface XLSX$Utils {
     cell_add_comment(cell: CellObject, text: string, author?: string): void;
 
     /** Assign an Array Formula to a range */
-    sheet_set_array_formula(ws: WorkSheet, range: Range|string, formula: string): WorkSheet;
+    sheet_set_array_formula(ws: WorkSheet, range: Range | string, formula: string): WorkSheet;
 
     /** Add an array of arrays of JS data to a worksheet */
     sheet_add_aoa<T>(ws: WorkSheet, data: T[][], opts?: SheetAOAOpts): WorkSheet;
@@ -781,7 +781,6 @@ export interface XLSX$Utils {
     /** Add an array of JS objects to a worksheet */
     sheet_add_json(ws: WorkSheet, data: any[], opts?: SheetJSONOpts): WorkSheet;
     sheet_add_json<T>(ws: WorkSheet, data: T[], opts?: SheetJSONOpts): WorkSheet;
-
 
     consts: XLSX$Consts;
 }

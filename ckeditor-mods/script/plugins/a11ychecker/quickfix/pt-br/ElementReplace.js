@@ -3,57 +3,58 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/license
  */
 
-( function() {
-	'use strict';
+(function() {
+    'use strict';
 
-	CKEDITOR.plugins.a11ychecker.quickFixes.get( { langCode: 'pt-br',
-		name: 'QuickFix',
-		callback: function( QuickFix ) {
-			/**
-			 * Replaces provided element with element that a different tag name, preserving its children.
-			 *
-			 * @member CKEDITOR.plugins.a11ychecker.quickFix
-			 * @class ElementReplace
-			 * @constructor
-			 * @param {CKEDITOR.plugins.a11ychecker.Issue} issue
-			 */
-			function ElementReplace( issue ) {
-				QuickFix.call( this, issue );
-			}
+    CKEDITOR.plugins.a11ychecker.quickFixes.get({
+        langCode: 'pt-br',
+        name: 'QuickFix',
+        callback(QuickFix) {
+            /**
+             * Replaces provided element with element that a different tag name, preserving its children.
+             *
+             * @member CKEDITOR.plugins.a11ychecker.quickFix
+             * @class ElementReplace
+             * @constructor
+             * @param {CKEDITOR.plugins.a11ychecker.Issue} issue
+             */
+            function ElementReplace(issue) {
+                QuickFix.call(this, issue);
+            }
 
-			ElementReplace.prototype = new QuickFix();
-			ElementReplace.prototype.constructor = ElementReplace;
+            ElementReplace.prototype = new QuickFix();
+            ElementReplace.prototype.constructor = ElementReplace;
 
-			/**
-			 * Returns the name of the tag that issue.element should be converted to.
-			 *
-			 * @member CKEDITOR.plugins.a11ychecker.quickFix.ElementReplace
-			 * @param {Object} formAttributes Form attributes from {@link #fix}.
-			 * @returns {String}
-			 */
-			ElementReplace.prototype.getTargetName = function( formAttributes ) {
-				return 'h1';
-			};
+            /**
+             * Returns the name of the tag that issue.element should be converted to.
+             *
+             * @member CKEDITOR.plugins.a11ychecker.quickFix.ElementReplace
+             * @param {Object} formAttributes Form attributes from {@link #fix}.
+             * @returns {String}
+             */
+            ElementReplace.prototype.getTargetName = function(formAttributes) {
+                return 'h1';
+            };
 
-			ElementReplace.prototype.display = function( form ) {
-				form.setInputs( {} );
-			};
+            ElementReplace.prototype.display = function(form) {
+                form.setInputs({});
+            };
 
-			ElementReplace.prototype.fix = function( formAttributes, callback ) {
-				var newElement = new CKEDITOR.dom.element( this.getTargetName( formAttributes ) );
+            ElementReplace.prototype.fix = function(formAttributes, callback) {
+                const newElement = new CKEDITOR.dom.element(this.getTargetName(formAttributes));
 
-				newElement.replace( this.issue.element );
-				this.issue.element.moveChildren( newElement );
+                newElement.replace(this.issue.element);
+                this.issue.element.moveChildren(newElement);
 
-				this.issue.element = newElement;
+                this.issue.element = newElement;
 
-				if ( callback ) {
-					callback( this );
-				}
-			};
+                if (callback) {
+                    callback(this);
+                }
+            };
 
-			ElementReplace.prototype.lang = {};
-			CKEDITOR.plugins.a11ychecker.quickFixes.add( 'pt-br/ElementReplace', ElementReplace );
-		}
-	} );
-}() );
+            ElementReplace.prototype.lang = {};
+            CKEDITOR.plugins.a11ychecker.quickFixes.add('pt-br/ElementReplace', ElementReplace);
+        }
+    });
+})();

@@ -9,7 +9,7 @@
 }
 
 .disabled-cursor {
-    cursor: not-allowed
+    cursor: not-allowed;
 }
 
 .enabled-cursor {

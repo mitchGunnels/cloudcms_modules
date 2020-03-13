@@ -1,75 +1,62 @@
 {
     "title": "PROD - Review and Publish",
     "description": "Review and approve content changes. Mark as published. Copy to master(PROD) branch",
-    "nodes":
-    {
-        "start":
-        {
+    "nodes": {
+        "start": {
             "type": "start",
-            "transitions":
-            {
+            "transitions": {
                 "start": "review1"
             }
         },
-        "review1":
-        {
+        "review1": {
             "type": "participant",
             "title": "Review of content change",
-            "transitions":
-            {
+            "transitions": {
                 "approve": "approve",
                 "reject": "reject"
             },
             "swimlane": "approver"
         },
-        "approve":
-        {
+        "approve": {
             "type": "passthru",
-            "transitions":
-            {
+            "transitions": {
                 "finish": "end"
             },
-            "handlers":
-            {
+            "handlers": {
                 "enter": [
-                {
-                    "type": "setProperties",
-                    "config":
                     {
-                        "properties": [
-                        {
-                            "name": "state",
-                            "value": "live"
-                        }]
-                    }
-                },
-                {
-                    "type": "syncNode",
-                    "config":
+                        "type": "setProperties",
+                        "config": {
+                            "properties": [
+                                {
+                                    "name": "state",
+                                    "value": "live"
+                                }
+                            ]
+                        }
+                    },
                     {
-                        "targetBranchId": "master",
-                        "includeAllAssociations": true
+                        "type": "syncNode",
+                        "config": {
+                            "targetBranchId": "master",
+                            "includeAllAssociations": true
+                        }
                     }
-                }]
+                ]
             }
         },
-        "reject":
-        {
+        "reject": {
             "type": "passthru",
-            "transitions":
-            {
+            "transitions": {
                 "finish": "end"
             }
         },
-        "end":
-        {
+        "end": {
             "type": "end"
         }
     },
-    "swimlanes":
-    {
-        "approver":
-        {
+    "swimlanes": {
+        "approver": {
             "principals": []
         }
     },

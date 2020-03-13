@@ -1,5 +1,4 @@
-CKEditor Accessibility Checker
-==================================================
+# CKEditor Accessibility Checker
 
 # Overview
 
@@ -7,16 +6,16 @@ This package contains the distribution version of Accessibility Checker.
 
 ## Requirements
 
-* CKEditor **4.3.0** or later.
-* [Balloon Panel](https://ckeditor.com/cke4/addon/balloonpanel) plugin for CKEditor.
-* jQuery **1.x** or later in order to run [Quail](http://quailjs.org/).
+-   CKEditor **4.3.0** or later.
+-   [Balloon Panel](https://ckeditor.com/cke4/addon/balloonpanel) plugin for CKEditor.
+-   jQuery **1.x** or later in order to run [Quail](http://quailjs.org/).
 
 ## Browser Support
 
 Accessibility Checker has [the same browser compatibility as CKEditor](https://docs.ckeditor.com/ckeditor4/latest/guide/dev_browsers.html), with the following exceptions:
 
-* Internet Explorer 8 is not supported.
-* Internet Explorer 9 Quirks Mode is not supported.
+-   Internet Explorer 8 is not supported.
+-   Internet Explorer 9 Quirks Mode is not supported.
 
 ## Installation
 

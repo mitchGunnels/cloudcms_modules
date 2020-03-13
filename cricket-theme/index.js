@@ -1,14 +1,11 @@
-define(function(require, exports, module) {
+define((require, exports, module) => {
+    const UI = require('ui');
 
-    var UI = require("ui");
-    
-    var moduleId = UI.extractModuleID(module.uri);
-    
+    const moduleId = UI.extractModuleID(module.uri);
     // register the theme: "cricket"
     UI.registerTheme({
-        "key": "cricket",
-        "title": "Cricket",
-        "module": "_modules/" + moduleId + "/cricket-theme.js"
+        key: 'cricket',
+        title: 'Cricket',
+        module: `_modules/${moduleId}/cricket-theme.js`
     });
-
 });

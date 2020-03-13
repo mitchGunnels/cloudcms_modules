@@ -1,20 +1,19 @@
-define(function (require, exports, module) {
-    require("../libs/diff-match-patch.js");
+define((require, exports, module) => {
+    require('../libs/diff-match-patch.js');
     require('css!../css/style.css');
-    const $ = require("jquery");
+    const $ = require('jquery');
     const dmp = new diff_match_patch();
     const windowHref = window.location.href;
-    const dropdownToggleButton = ".dropdown-toggle";
+    const dropdownToggleButton = '.dropdown-toggle';
     const dropdownMenu = "ul[aria-labelledby='list-button-multi-documents-action-selector']";
-    const newDropdownOption = '<li class="diff-tool"><a title="Compare Text Versions">' +
-        '<i class="fa fa-object-group"></i>&nbsp;Compare Text Versions</a></li>';
-    const listItem = "li.diff-tool";
-    const listItemAnchor = "li.diff-tool a";
-    const disabled = "disabled";
-    const activeListItem = "active-list-item";
-    const disabledCursor = "disabled-cursor";
-    const enabledCursor = "enabled-cursor";
-    const selectedItems = "input.list-check-box:checked";
+    const newDropdownOption = '<li class="diff-tool"><a title="Compare Text Versions">' + '<i class="fa fa-object-group"></i>&nbsp;Compare Text Versions</a></li>';
+    const listItem = 'li.diff-tool';
+    const listItemAnchor = 'li.diff-tool a';
+    const disabled = 'disabled';
+    const activeListItem = 'active-list-item';
+    const disabledCursor = 'disabled-cursor';
+    const enabledCursor = 'enabled-cursor';
+    const selectedItems = 'input.list-check-box:checked';
 
     function enableDiffTool() {
         $(listItem).addClass(activeListItem);
@@ -31,7 +30,7 @@ define(function (require, exports, module) {
     }
 
     function isVersionsList() {
-        return window.location.href.indexOf("versions") > -1;
+        return window.location.href.indexOf('versions') > -1;
     }
 
     function isTwoItemsSelected() {
@@ -62,14 +61,17 @@ define(function (require, exports, module) {
 
     function getSelectedItems() {
         // Returns an array of the versions user selected
-        let selectedItems = [];
+        const selectedItems = [];
 
-        $('.document-versions .table').find('tr td input[type="checkbox"]:checked').closest('tr').filter(function () {
-            const $this = $(this);
-            const id = $this.attr('id'); // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
+        $('.document-versions .table')
+            .find('tr td input[type="checkbox"]:checked')
+            .closest('tr')
+            .filter(function() {
+                const $this = $(this);
+                const id = $this.attr('id'); // id = 134586:c8dfe996d5910f74ac9e/cf40e11e62dedcfd288d
 
-            selectedItems.push(id);
-        });
+                selectedItems.push(id);
+            });
         return selectedItems;
     }
 
@@ -79,9 +81,9 @@ define(function (require, exports, module) {
         newItem = newItem || {};
         oldItem = oldItem || {};
 
-        let usedKeys = {};
+        const usedKeys = {};
 
-        for (let property in newItem) {
+        for (const property in newItem) {
             if (newItem.hasOwnProperty(property)) {
                 modalContent += isRoot ? `<div class="section-header">${property}</div>` : `<div class='field-content'><span class="field-label">${property}: </span>`;
                 modalContent += buildPageContent({
@@ -89,11 +91,11 @@ define(function (require, exports, module) {
                     oldItem: oldItem[property],
                     isRoot: false
                 });
-                modalContent += isRoot ? '' : `</div>`;
+                modalContent += isRoot ? '' : '</div>';
                 usedKeys[property] = true;
             }
         }
-        for (let property in oldItem) {
+        for (const property in oldItem) {
             if (oldItem.hasOwnProperty(property)) {
                 if (!usedKeys[property]) {
                     modalContent += isRoot ? `<div class="section-header">${property}</div>` : `<div class='field-content'><span class="field-label">${property}: </span>`;
@@ -102,7 +104,7 @@ define(function (require, exports, module) {
                         oldItem: oldItem[property],
                         isRoot: false
                     });
-                    modalContent += isRoot ? '' : `</div>`;
+                    modalContent += isRoot ? '' : '</div>';
                 }
             }
         }
@@ -143,27 +145,31 @@ define(function (require, exports, module) {
     function buildPageContent({ isRoot, oldItem, newItem }) {
         if (isRoot) {
             return iterateThroughObject({ isRoot, newItem, oldItem });
-        } else if ((newItem && Array.isArray(newItem)) || (oldItem && Array.isArray(oldItem))) {
-            return iterateThroughArray({ newItem, oldItem });
-        } else if ((newItem && typeof newItem === 'object') || (oldItem && typeof oldItem === 'object')) {
-            return iterateThroughObject({ newItem, oldItem });
-        } else {
-            // If the item is neither an array nor an object at this point, assume it's a scalar value
-            return renderDiff({ oldItem, newItem });
         }
+        if ((newItem && Array.isArray(newItem)) || (oldItem && Array.isArray(oldItem))) {
+            return iterateThroughArray({ newItem, oldItem });
+        }
+        if ((newItem && typeof newItem === 'object') || (oldItem && typeof oldItem === 'object')) {
+            return iterateThroughObject({ newItem, oldItem });
+        }
+        // If the item is neither an array nor an object at this point, assume it's a scalar value
+        return renderDiff({ oldItem, newItem });
     }
 
     function renderModal() {
-        Ratchet.observable("document").get()
+        Ratchet.observable('document')
+            .get()
             // Return all document versions on this page, no limit, sort with newest first
-            .listVersions({ full: true, limit: -1, sort: { "_system.modified_on.ms": -1 } })
-            .then(function () {
+            .listVersions({ full: true, limit: -1, sort: { '_system.modified_on.ms': -1 } })
+            .then(function() {
                 let mainModalContent = '';
                 const selectedItems = getSelectedItems();
-                const versionsList = this.asArray()
+                const versionsList = this.asArray();
 
                 // Given the array of all the versions on the page, find the ones we put a checkmark on
-                const matchingResults = versionsList.filter(version => selectedItems.includes(version._doc));
+                const matchingResults = versionsList.filter((version) => {
+                    return selectedItems.includes(version._doc);
+                });
 
                 // Remove all the superfluous functions and stuff, just give us the JSON
                 const newDocumentVersion = matchingResults[0].json();
@@ -194,7 +200,7 @@ define(function (require, exports, module) {
 
     $(document).on('click', 'li.diff-tool.active-list-item', renderModal);
 
-    $(document).on('cloudcms-ready', function () {
+    $(document).on('cloudcms-ready', () => {
         // Remove listener, prevent leaking
         $(dropdownToggleButton).off('click', optionsListener);
 
@@ -202,12 +208,11 @@ define(function (require, exports, module) {
             // Adding a timeout to fix a weird bug where my newDropdownOption was not getting
             // appended to the menu (Harry suggested this fix)
             if ($(dropdownMenu).find('.diff-tool').length === 0) {
-                setTimeout(function () {
-                    $(dropdownMenu).prepend(newDropdownOption)
+                setTimeout(() => {
+                    $(dropdownMenu).prepend(newDropdownOption);
                 }, 0);
                 $(dropdownToggleButton).on('click', optionsListener);
             }
-
         }
     });
 });

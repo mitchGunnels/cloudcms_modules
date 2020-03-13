@@ -19,18 +19,14 @@
                             "title": "Admin Tools",
                             "uri": "#/projects/{projectId}/admin-tools",
                             "iconClass": "fa fa-pencil",
-                            "allowPermission": [
-                                "manager"
-                            ]
+                            "allowPermission": ["manager"]
                         },
                         {
                             "key": "reports/reports",
                             "title": "Reports",
                             "uri": "#/projects/{projectId}/reports",
                             "iconClass": "fa fa-bomb",
-                            "allowPermission": [
-                                "read"
-                            ]
+                            "allowPermission": ["read"]
                         }
                     ]
                 }

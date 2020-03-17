@@ -101,18 +101,7 @@ define((require, exports, module) => {
         return chain.queryNodes(queryObject);
     }
 
-    $(document).on('cloudcms-ready', (event) => {
-        let branch;
-        if (Ratchet) {
-            branch = Ratchet.observable('branch').get();
-        }
-        // only inject form if user is on branch
-        if (branch && !branch.isMaster()) {
-            populateDashlet();
-        }
-    });
-
-    $(document).on('click', `${searchButtonSelector}`, () => {
+    function searchByUrl() {
         const searchValue = $('#search-val').val();
         const currentUrl = window.location.href;
         if (searchValue) {
@@ -136,5 +125,24 @@ define((require, exports, module) => {
             setMessage('Please enter the URL that you want to search.', errorMessageClass);
             enableButtons();
         }
+    }
+
+    $(document).on('cloudcms-ready', () => {
+        let branch;
+        if (Ratchet) {
+            branch = Ratchet.observable('branch').get();
+        }
+        // only inject form if user is on branch
+        if (branch && !branch.isMaster()) {
+            populateDashlet();
+        }
+
+        $('#search-val').on('keydown', function(event) {
+            if (event && event.key && event.key === 'Enter') {
+                searchByUrl();
+            }
+        });
     });
+
+    $(document).on('click', `${searchButtonSelector}`, searchByUrl);
 });

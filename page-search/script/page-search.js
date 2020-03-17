@@ -73,7 +73,7 @@ define((require, exports, module) => {
 
     function clearResults() {
         $(resultSelector)
-            .removeClass(resultClass)
+            .removeClass(resultMessageClass)
             .empty();
     }
 

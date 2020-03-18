@@ -104,6 +104,7 @@ define((require, exports, module) => {
     function searchByUrl() {
         const searchValue = $('#search-val').val();
         const currentUrl = window.location.href;
+        const branch = Ratchet.observable('branch').get();
         if (searchValue) {
             clearMessage();
             clearResults();
@@ -113,9 +114,13 @@ define((require, exports, module) => {
                     setMessage('No results found for the URL.', errorMessageClass);
                     enableButtons();
                 } else {
+                    let masterBranchId = '';
+                    if (branch.isMaster) {
+                        masterBranchId = `/wid/${branch.getId()}`;
+                    }
                     this.asArray().forEach((node) => {
-                        const curResult = `${currentUrl}/documents/${node._doc}`;
-                        setResult(`<a href="${curResult}" target="_blank">${curResult}</a>`, node._doc);
+                        const curResult = `${currentUrl}${masterBranchId}/documents/${node._doc}`;
+                        setResult(`<a href="${curResult}" target="_blank">${node.title}</a>`, node._doc);
                     });
                     enableButtons();
                 }
@@ -133,7 +138,7 @@ define((require, exports, module) => {
             branch = Ratchet.observable('branch').get();
         }
         // only inject form if user is on branch
-        if (branch && !branch.isMaster()) {
+        if (branch) {
             populateDashlet();
         }
 

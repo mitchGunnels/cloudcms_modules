@@ -17,7 +17,7 @@ define((require, exports, module) => {
 
     const resultClass = 'search-result';
     const resultSelector = `${dashletSelector} .${resultClass}`;
-    const result = `<div class=${resultClass}><ul></ul></div>`;
+    const result = `<div class=${resultClass}></div>`;
     const resultMessageClass = 'resultMessage';
 
     const searchClass = 'search-submit';
@@ -38,8 +38,7 @@ define((require, exports, module) => {
                               ${searchButtonSelector} { display: inline-block; margin: 10px 0 10px 10px; }
                               ${dashletSelector} label { width: 100%; display: flex; flex-direction: column; }
                               ${errorMessageSelector} { color: #a94442; }
-                              ${resultSelector} { overflow-wrap: break-word}
-                              ${resultSelector} ul { list-style: none}`;
+                              ${resultSelector} { overflow-wrap: break-word}`;
 
     function populateDashlet() {
         $(dashletSelector).append(`<style>${activationStyles}</style>`);
@@ -79,7 +78,7 @@ define((require, exports, module) => {
     }
 
     function setResult(searchResult) {
-        $(`${resultSelector} ul`).append(searchResult);
+        $(resultSelector).append(searchResult);
     }
 
     function genericErrorLoggerHalter(err) {
@@ -119,7 +118,7 @@ define((require, exports, module) => {
                     }
                     this.asArray().forEach((node) => {
                         const curResult = `${currentUrl}${masterBranchId}/documents/${node._doc}`;
-                        setResult(`<li><a href="${curResult}" target="_blank">${node.title}</a></li>`);
+                        setResult(`<div><a href="${curResult}" target="_blank">${node.getTitle()}</a></div>`);
                     });
                     enableButtons();
                 }
